@@ -32,9 +32,15 @@ public class KitchenAdapter extends RecyclerView.Adapter<KitchenAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         KitchenItem item = kitchenItems.get(position);
-        holder.nameTextView.setText(item.name());
-        holder.quantityTextView.setText("Quantity: " + item.quantity());
-        holder.iconImageView.setImageResource(item.quantity());
+        holder.quantityTextView.setText(item.getQuantity().toString());
+	    // Dynamic Name
+	    holder.nameTextView.setText(item.getIngredient().getDisplayName(holder.itemView.getContext()));
+
+	    // Dynamic Icon
+	    int iconResId = item.getIngredient().getIconResId(holder.itemView.getContext());
+	    if (iconResId != 0) {
+		    holder.iconImageView.setImageResource(iconResId);
+	    }
     }
 
     @Override

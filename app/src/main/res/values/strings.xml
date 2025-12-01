@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Mealy</string>
+
+    <string name="ing_apple">Apple</string>
+    <string name="ing_banana">Banana</string>
+    <string name="ing_orange">Orange</string>
+    <string name="ing_milk">Milk</string>
+    <string name="ing_bread">Bread</string>
+    <string name="ing_cheese">Cheese</string>
+    <string name="ing_butter">Butter</string>
+    <string name="ing_flour">Flour</string>
+    <string name="ing_sugar">Sugar</string>
+    <string name="ing_salt">Salt</string>
+    <string name="ing_pepper">Pepper</string>
+    <string name="ing_eggs">Eggs</string>
+    <string name="ing_cucumber">Cucumber</string>
+    <string name="ing_tomato">Yogurt</string>
 </resources>

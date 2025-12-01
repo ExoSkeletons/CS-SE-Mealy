@@ -1,11 +1,14 @@
 package com.eanie.mealy.models;
 
+import android.app.Application;
+
 import com.eanie.mealy.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -17,6 +20,10 @@ public class RecipeViewModel extends UserDataViewModel {
 		if (id == null || id.isEmpty()) return new MutableLiveData<>(new ArrayList<>());
 		return repo.recipesOf(id);
 	});
+
+	public RecipeViewModel(@NonNull Application application) {
+		super(application);
+	}
 
 	public LiveData<List<Recipe>> myRecipes() {
 		return myRecipes;

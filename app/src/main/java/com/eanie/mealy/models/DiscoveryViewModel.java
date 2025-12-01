@@ -22,15 +22,15 @@ public class DiscoveryViewModel extends ViewModel {
 	public DiscoveryViewModel() {
 		makeableRecipes.addSource(recipes, r -> {
 			if (items.getValue() != null)
-				makeableRecipes.postValue(update(r, items.getValue()));
+				makeableRecipes.postValue(filterMakeable(r, items.getValue()));
 		});
 		makeableRecipes.addSource(items, i -> {
 			if (recipes.getValue() != null)
-				makeableRecipes.postValue(update(recipes.getValue(), i));
+				makeableRecipes.postValue(filterMakeable(recipes.getValue(), i));
 		});
 	}
 
-	private List<Recipe> update(List<Recipe> recipes, List<KitchenItem> i) {
+	private static List<Recipe> filterMakeable(List<Recipe> recipes, List<KitchenItem> i) {
 		var makeable = new ArrayList<Recipe>();
 		for (var recipe : recipes)
 			if (recipe.canBeMadeWith(i))
@@ -38,7 +38,7 @@ public class DiscoveryViewModel extends ViewModel {
 		return makeable;
 	}
 
-	// Calls this whenever the KitchenViewModel updates
+	// Calls this whenever the ItemsViewModel updates
 	public void updateIngredients(List<KitchenItem> ingredients) {
 		items.setValue(ingredients);
 	}
