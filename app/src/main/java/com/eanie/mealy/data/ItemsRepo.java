@@ -24,6 +24,7 @@ public class ItemsRepo {
 				.collection("users")
 				.document(userId)
 				.collection("ingredients")
-				.add(ingredient);
+				.document(ingredient.getIngredietKey())
+				.set(ingredient);
 	}
 }

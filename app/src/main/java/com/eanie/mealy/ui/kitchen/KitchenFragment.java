@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eanie.mealy.Ingredient;
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
@@ -51,18 +50,18 @@ public class KitchenFragment extends Fragment {
 
 		// Create sample data
 		List<KitchenItem> kitchenItems = new ArrayList<>();
-		kitchenItems.add(new KitchenItem(new Ingredient("ing_apple"), new Quantity(5))); // Using a default drawable for now
-		kitchenItems.add(new KitchenItem(new Ingredient("ing_cheese"), new Quantity(200, UnitType.GRAMS)));
-		kitchenItems.add(new KitchenItem(new Ingredient("ing_cucumber"), new Quantity(3)));
-		kitchenItems.add(new KitchenItem(new Ingredient("ing_milk"), new Quantity(1.5, UnitType.LITERS)));
-		kitchenItems.add(new KitchenItem(new Ingredient("ing_bread"), new Quantity(2000, UnitType.GRAMS)));
+		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5))); // Using a default drawable for now
+		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
+		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
+		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
+		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2000, UnitType.GRAMS)));
 
 		// This user id is tempory (it is just my fake user) -Aviad
 		mViewModel.setUserId("lvwuK3xBNufRynvXdB8XRqirziu2");
-		/*view.findViewById(R.id.imageButton).setOnClickListener(v -> {
+		view.findViewById(R.id.imageButton).setOnClickListener(v -> {
 			for (KitchenItem item : kitchenItems)
 				mViewModel.addIngredient(item);
-		});*/
+		});
 		// Get items live with -
 		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
 

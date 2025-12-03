@@ -1,24 +1,35 @@
 package com.eanie.mealy.ui.kitchen;
 
-import com.eanie.mealy.Ingredient;
 import com.eanie.mealy.Quantity;
+import com.google.firebase.firestore.DocumentId;
 
 public class KitchenItem {
-	// If you want to query deeper properties, embedding the object is fine for Firestore.
-	private Ingredient ingredient;
+	@DocumentId
+	private String ingredientKey;
 	private Quantity quantity;
 
 	// Required for Firestore
-	public KitchenItem() {}
+	public KitchenItem() {
+	}
 
-	public KitchenItem(Ingredient ingredient, Quantity quantity) {
-		this.ingredient = ingredient;
+	public KitchenItem(String ingredientKey, Quantity quantity) {
+		this.ingredientKey = ingredientKey;
 		this.quantity = quantity;
 	}
 
-	public Ingredient getIngredient() { return ingredient; }
-	public void setIngredient(Ingredient ingredient) { this.ingredient = ingredient; }
+	public String getIngredietKey() {
+		return ingredientKey;
+	}
 
-	public Quantity getQuantity() { return quantity; }
-	public void setQuantity(Quantity quantity) { this.quantity = quantity; }
+	public void setIngredient(String ingredientKey) {
+		this.ingredientKey = ingredientKey;
+	}
+
+	public Quantity getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Quantity quantity) {
+		this.quantity = quantity;
+	}
 }

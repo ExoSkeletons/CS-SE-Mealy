@@ -3,8 +3,10 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.widget.Toast;
 
+import com.eanie.mealy.R;
 import com.eanie.mealy.data.ItemsRepo;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
+import com.eanie.mealy.ui.kitchen.Resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class ItemsViewModel extends UserDataViewModel {
 		if (getUserId() != null) {
 			Toast.makeText(
 					getApplication(),
-					"Added " + item.getIngredient().getDisplayName(getApplication()),
+					"Added " + Resources.getString(getApplication(), item.getIngredietKey(), R.string.ing_eggs),
 					Toast.LENGTH_SHORT
 			).show();
 			if (getUserId() != null)
