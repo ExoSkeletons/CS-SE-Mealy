@@ -7,6 +7,7 @@ import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -29,7 +30,18 @@ public class RecipeViewModel extends UserDataViewModel {
 		return myRecipes;
 	}
 
-	public void addRecipe(Recipe recipe) {
-		repo.addRecipe(recipe);
+	public void add(Recipe recipe) {
+		if (getUserId() == null) return;
+		recipe.setChefId(getUserId());
+		recipe.setId(null);
+		repo.insert(recipe);
+	}
+
+	public void set(Recipe recipe) {
+		if (getUserId() == null) return;
+		recipe.setChefId(getUserId());
+		if (Objects.requireNonNull(myRecipes.getValue()).stream()
+				.noneMatch(r -> r.getId().equals(recipe.getId()))) return;
+		repo.insert(recipe);
 	}
 }

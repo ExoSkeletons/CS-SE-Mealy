@@ -24,7 +24,16 @@ public class RecipeRepo {
 		);
 	}
 
-	public void addRecipe(Recipe recipe) {
-		db.collection("recipes").add(recipe);
+	public void insert(Recipe recipe) {
+		db
+				.collection("recipes")
+				.add(recipe);
+	}
+
+	public void delete(Recipe recipe) {
+		db
+				.collection("recipes")
+				.document(recipe.getId())
+				.delete();
 	}
 }
