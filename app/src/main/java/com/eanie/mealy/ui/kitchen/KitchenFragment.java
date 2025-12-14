@@ -62,14 +62,17 @@ public class KitchenFragment extends Fragment {
 			for (KitchenItem item : kitchenItems)
 				mViewModel.addIngredient(item);
 		});
-		// Get items live with -
-		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
-
-		});
 
 		// TODO: switch to use RecyclerView ListAdapter!!!! for kitchen adapter
 		KitchenAdapter adapter = new KitchenAdapter(kitchenItems);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns in the grid
+
+		// Get items live with -
+		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
+			kitchenItems.clear();
+			kitchenItems.addAll(items);
+			adapter.notifyDataSetChanged();
+		});
 	}
 }
