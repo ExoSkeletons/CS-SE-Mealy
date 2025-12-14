@@ -27,4 +27,13 @@ public class ItemsRepo {
 				.document(ingredient.getIngredietKey())
 				.set(ingredient);
 	}
+
+	public void delete(String userId, KitchenItem ingredient) {
+		db
+				.collection("users")
+				.document(userId)
+				.collection("ingredients")
+				.document(ingredient.getIngredietKey())
+				.delete();
+	}
 }
