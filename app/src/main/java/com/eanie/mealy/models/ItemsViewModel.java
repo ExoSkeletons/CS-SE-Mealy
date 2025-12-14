@@ -33,14 +33,14 @@ public class ItemsViewModel extends UserDataViewModel {
 	}
 
 	public void addIngredient(KitchenItem item) {
-		if (getUserId() != null) {
-			Toast.makeText(
-					getApplication(),
-					"Added " + Resources.getString(getApplication(), item.getIngredietKey(), R.string.ing_eggs),
-					Toast.LENGTH_SHORT
-			).show();
-			if (getUserId() != null)
 				repo.addIngredient(getUserId(), item);
+		if (getUserId() == null) return;
+
+		Toast.makeText(
+				getApplication(),
+				"Added " + Resources.getString(getApplication(), item.getIngredietKey(), R.string.ing_eggs),
+				Toast.LENGTH_SHORT
+		).show();
 		}
 	}
 }
