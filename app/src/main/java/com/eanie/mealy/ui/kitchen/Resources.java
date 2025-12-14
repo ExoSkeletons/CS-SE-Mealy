@@ -18,4 +18,9 @@ public class Resources {
 		int resId = context.getResources().getIdentifier(key, "string", context.getPackageName());
 		return resId != 0 ? context.getString(resId) : defaultString;
 	}
+
+	public static int getInteger(Context context, String key, int defaultInt) {
+		int resId = context.getResources().getIdentifier(key, "int", context.getPackageName());
+		return resId != 0 ? context.getResources().getInteger(resId) : defaultInt;
+	}
 }
