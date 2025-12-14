@@ -19,7 +19,7 @@ public class ItemsRepo {
 		);
 	}
 
-	public void addIngredient(String userId, KitchenItem ingredient) {
+	public void insert(String userId, KitchenItem ingredient) {
 		db
 				.collection("users")
 				.document(userId)
