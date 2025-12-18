@@ -66,7 +66,9 @@ public class ItemsViewModel extends UserDataViewModel {
 				.orElse(null);
 		if (item == null) return;
 
-		double newAmount = amount + (additive ? item.getQuantity().getAmount() : 0);
+		double newAmount = additive
+				? amount + item.getQuantity().getAmount()
+				: amount;
 		if (newAmount <= 0)
 			repo.delete(getUserId(), item);
 		else {
