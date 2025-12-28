@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-public class RecipeViewModel extends UserDataViewModel {
+public class UserRecipesViewModel extends UserDataViewModel {
 	private final RecipeRepo repo = new RecipeRepo();
 
 	private final LiveData<List<Recipe>> myRecipes = Transformations.switchMap(userId, id -> {
@@ -22,7 +22,7 @@ public class RecipeViewModel extends UserDataViewModel {
 		return repo.recipesOf(id);
 	});
 
-	public RecipeViewModel(@NonNull Application application) {
+	public UserRecipesViewModel(@NonNull Application application) {
 		super(application);
 	}
 

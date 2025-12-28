@@ -38,7 +38,6 @@ public class DiscoveryViewModel extends ViewModel {
 		return makeable;
 	}
 
-	// Calls this whenever the ItemsViewModel updates
 	public void updateIngredients(List<KitchenItem> ingredients) {
 		items.setValue(ingredients);
 	}
