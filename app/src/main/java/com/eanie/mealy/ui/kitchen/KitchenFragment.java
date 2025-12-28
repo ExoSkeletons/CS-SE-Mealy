@@ -16,14 +16,19 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+
 public class KitchenFragment extends Fragment {
 
-    public static KitchenFragment newInstance() {
-        return new KitchenFragment();
+	public static KitchenFragment newInstance(String userId) {
+		var fragment = new KitchenFragment();
+		Bundle args = new Bundle();
+		args.putString(ARG_UUID, userId);
+		fragment.setArguments(args);
+		return fragment;
     }
 
 	private UserItemsViewModel mViewModel;
@@ -31,8 +36,14 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mViewModel = new ViewModelProvider(this).get(UserItemsViewModel.class);
-		// TODO: Use the ViewModel
+
+		mViewModel = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
+
+		var args = getArguments();
+		if (args != null) {
+			var userId = args.getString(ARG_UUID, null);
+			if (userId != null) mViewModel.setUserId(userId);
+		}
 	}
 
     @Nullable
@@ -62,8 +73,6 @@ public class KitchenFragment extends Fragment {
 
         adapter.submitList(kitchenItems);
 
-		// This user id is tempory (it is just my fake user) -Aviad
-		mViewModel.setUserId("lvwuK3xBNufRynvXdB8XRqirziu2");
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> {
 			for (KitchenItem item : kitchenItems)
 				mViewModel.addIngredient(item);
