@@ -24,7 +24,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
         void onRecipeClick(Recipe recipe);
     }
 
-    public RecipeAdapter(List<Recipe> recipes, OnRecipeClickListener listener) {
+    public RecipeAdapter(OnRecipeClickListener listener) {
         super(new RecipeItemItemCallback());
         this.listener = listener;
     }
@@ -41,8 +41,8 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
     public void onBindViewHolder(@NonNull RecipeItemViewHolder holder, int position) {
         Recipe recipe = getItem(position);
 
-        holder.titleTextView.setText(recipe.name());
-        holder.descriptionTextView.setText(recipe.instructions()); // todo: get description
+        holder.titleTextView.setText(recipe.getName());
+        holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onRecipeClick(recipe);
@@ -68,7 +68,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
         @Override
         public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-            return Objects.equals(oldItem.name(), newItem.name()); // todo: use id instead of name
+            return Objects.equals(oldItem.getId(), newItem.getId());
         }
     }
 }

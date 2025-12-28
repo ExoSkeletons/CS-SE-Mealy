@@ -46,7 +46,7 @@ public class RecipeBrowseFragment extends Fragment {
 
         List<Recipe> demoRecipes = createDemoRecipes();
 
-        RecipeAdapter adapter = new RecipeAdapter(demoRecipes, recipe -> {
+        RecipeAdapter adapter = new RecipeAdapter(recipe -> {
             // navigate to recipe fragment
             var recipeFragment = RecipeFragment.newInstance(recipe);
             getParentFragmentManager().beginTransaction()
