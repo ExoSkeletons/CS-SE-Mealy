@@ -34,7 +34,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
         KitchenItem item = getItem(position);
 
         holder.quantityTextView.setText(item.getQuantity().toString());
-        holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), item.getIngredientKey(), R.string.ing_eggs));
+	    holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), item.getIngredientKey(), item.getIngredientKey()));
         if (!showIcon)
             holder.iconImageView.setVisibility(View.GONE);
         else {
