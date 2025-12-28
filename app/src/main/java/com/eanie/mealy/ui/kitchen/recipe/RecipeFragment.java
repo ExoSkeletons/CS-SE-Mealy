@@ -70,7 +70,7 @@ public class RecipeFragment extends Fragment {
         rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
 
         view.findViewById(R.id.btn_make).setOnClickListener(v -> {
-            // mViewModel.makeRecipe(recipe);
+            mViewModel.consumeFrom(recipe);
         });
     }
 }
