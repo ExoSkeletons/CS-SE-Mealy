@@ -1,17 +1,19 @@
 package com.eanie.mealy;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.kitchen.recipe.RecipeBrowseFragment;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btnTabKitchen;
     private Button btnTabRecipes;
+
+	private final String demoUUID = "lvwuK3xBNufRynvXdB8XRqirziu2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showKitchenFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, KitchenFragment.newInstance())
+		        .replace(R.id.container, KitchenFragment.newInstance(demoUUID))
                 .commit();
     }
 
     private void showRecipesFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, RecipeBrowseFragment.newInstance())
+		        .replace(R.id.container, RecipeBrowseFragment.newInstance(demoUUID))
                 .commit();
     }
 }

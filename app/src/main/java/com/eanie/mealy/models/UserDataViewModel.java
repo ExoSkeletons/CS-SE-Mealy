@@ -2,12 +2,15 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 public class UserDataViewModel extends AndroidViewModel {
+	public static final String ARG_UUID = "uuid";
+
 	protected final MutableLiveData<String> userId = new MutableLiveData<>();
 
 	public UserDataViewModel(@NonNull Application application) {
@@ -15,7 +18,7 @@ public class UserDataViewModel extends AndroidViewModel {
 	}
 
 	public void setUserId(String id) {
-		if (userId.getValue() == null || !userId.getValue().equals(id))
+		if (!Objects.equals(userId.getValue(), id))
 			userId.postValue(id);
 	}
 
