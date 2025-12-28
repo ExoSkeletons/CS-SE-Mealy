@@ -38,7 +38,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
         if (!showIcon)
             holder.iconImageView.setVisibility(View.GONE);
         else {
-            holder.iconImageView.setImageDrawable(Resources.getDrawable(holder.itemView.getContext(), item.getIngredientKey(), R.drawable.ic_ing_eggs));
+	        holder.iconImageView.setImageDrawable(Resources.getDrawable(holder.itemView.getContext(), item.getIngredientKey(), R.drawable.ic_launcher_foreground));
             holder.iconImageView.setVisibility(View.VISIBLE);
         }
     }
