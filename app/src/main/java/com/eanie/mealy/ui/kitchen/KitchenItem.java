@@ -2,8 +2,9 @@ package com.eanie.mealy.ui.kitchen;
 
 import com.eanie.mealy.Ingredient;
 import com.eanie.mealy.Quantity;
+import java.io.Serializable;
 
-public class KitchenItem {
+public class KitchenItem implements Serializable {
 	// If you want to query deeper properties, embedding the object is fine for Firestore.
 	private Ingredient ingredient;
 	private Quantity quantity;

@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.R;
 
-import java.util.List;
+public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
+    private final boolean showIcon;
 
-public class KitchenAdapter extends ListAdapter<KitchenItem, KitchenAdapter.ViewHolder> {
-    protected KitchenAdapter() {
+    public KitchenItemAdapter(boolean showIcon) {
         super(new KitchenItemItemCallback());
+        this.showIcon = showIcon;
     }
 
     @NonNull
@@ -37,9 +38,8 @@ public class KitchenAdapter extends ListAdapter<KitchenItem, KitchenAdapter.View
         holder.nameTextView.setText(item.getIngredient().getDisplayName(holder.itemView.getContext()));
         // Dynamic Icon
         int iconResId = item.getIngredient().getIconResId(holder.itemView.getContext());
-        if (iconResId != 0) {
-            holder.iconImageView.setImageResource(iconResId);
-        }
+        if (iconResId != 0) holder.iconImageView.setImageResource(iconResId);
+        if (!showIcon) holder.iconImageView.setVisibility(View.GONE);
     }
 
     private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {

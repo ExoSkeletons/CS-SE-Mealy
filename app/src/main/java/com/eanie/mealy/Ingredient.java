@@ -1,9 +1,9 @@
 package com.eanie.mealy;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import java.io.Serializable;
 
-public class Ingredient {
+public class Ingredient implements Serializable {
     private String nameKey; // e.g., "ing_apple"
 
     // Required for Firestore

@@ -1,69 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btn_start_recipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <!-- שם מתכון -->
     <TextView
         android:id="@+id/tv_recipe_title"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Chocolate Cake"
-        android:textStyle="bold"
         android:textSize="22sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textStyle="bold" />
 
     <!-- תיאור קצר -->
     <TextView
         android:id="@+id/tv_recipe_short_description"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rich and moist chocolate cake with dark chocolate ganache."
-        android:textSize="14sp"
-        android:textColor="#666666"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_recipe_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="Rich and moist chocolate cake with dark chocolate ganache."
+        android:textColor="#666666"
+        android:textSize="14sp" />
 
     <!-- שם משתמש של היוצר -->
     <TextView
         android:id="@+id/tv_recipe_author"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="by @username"
-        android:textSize="13sp"
-        android:textColor="#888888"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_recipe_short_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="by @username"
+        android:textColor="#888888"
+        android:textSize="13sp" />
 
     <!-- כותרת לרשימת מצרכים -->
     <TextView
         android:id="@+id/tv_ingredients_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ingredients"
-        android:textStyle="bold"
-        android:textSize="16sp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_recipe_author"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="Ingredients"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <!-- רשימת מצרכים (RecyclerView שכל איבר בו הוא kitchen_item בעתיד) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_ingredients"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_ingredients_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tv_preparation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:rotationX="0"
+        android:text="Instructions"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_preparation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Preheat the oven to 180°C.  Mix the eggs and sugar in a bowl.  Add the butter, flour, and chocolate.  Pour into a baking pan and bake for 30 minutes." />
+
+    <Button
+        android:id="@+id/btn_make"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Start Cooking" />
+
+</LinearLayout>
