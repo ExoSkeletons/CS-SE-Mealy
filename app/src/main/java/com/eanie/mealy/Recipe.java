@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+
 public final class Recipe implements Serializable {
     @DocumentId
     private String id;
@@ -30,7 +32,7 @@ public final class Recipe implements Serializable {
         this.chefId = chefId;
     }
 
-    public boolean canBeMadeWith(List<KitchenItem> ingredients) {
+	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
         return new HashSet<>(ingredients).containsAll(this.ingredients);
     }
 

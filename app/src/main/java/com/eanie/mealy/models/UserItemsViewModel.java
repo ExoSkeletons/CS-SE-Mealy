@@ -46,13 +46,17 @@ public class UserItemsViewModel extends UserDataViewModel {
 		repo.insert(getUserId(), item);
 	}
 
-	public boolean consumeFrom(Recipe recipe) {
-		if (getUserId() == null) return false;
-		if (!recipe.canBeMadeWith(myItems().getValue()))
-			return false;
+	public void consumeFrom(Recipe recipe) {
+		if (getUserId() == null) throw new RuntimeException("No user id");
+
+		var items = myItems().getValue();
+		if (items == null) throw new RuntimeException("Items is null");
+
+		if (!recipe.canBeMadeWith(items))
+			throw new RuntimeException("Recipe cannot be made with ingredients");
+
 		for (KitchenItem item : recipe.getIngredients())
 			increaseAmount(item.getIngredientKey(), -item.getQuantity().getAmount());
-		return true;
 	}
 
 	private void updateAmount(String itemKey, double amount, boolean additive) {
