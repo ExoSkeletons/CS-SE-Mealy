@@ -40,7 +40,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 
 		Toast.makeText(
 				getApplication(),
-				"Added " + Resources.getString(getApplication(), item.getIngredietKey(), R.string.ing_eggs),
+				"Added " + Resources.getString(getApplication(), item.getIngredientKey(), R.string.ing_eggs),
 				Toast.LENGTH_SHORT
 		).show();
 		repo.insert(getUserId(), item);
@@ -51,7 +51,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 		if (!recipe.canBeMadeWith(myItems().getValue()))
 			return false;
 		for (KitchenItem item : recipe.getIngredients())
-			increaseAmount(item.getIngredietKey(), -item.getQuantity().getAmount());
+			increaseAmount(item.getIngredientKey(), -item.getQuantity().getAmount());
 		return true;
 	}
 
@@ -61,7 +61,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 
 		var item = Objects.requireNonNull(myItems().getValue()).stream()
 				.filter(Objects::nonNull)
-				.filter(i -> i.getIngredietKey().equals(itemKey))
+				.filter(i -> i.getIngredientKey().equals(itemKey))
 				.findFirst()
 				.orElse(null);
 		if (item == null) return;
@@ -98,7 +98,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 		} else {
 			var item = Objects.requireNonNull(myItems().getValue()).stream()
 					.filter(Objects::nonNull)
-					.filter(i -> i.getIngredietKey().equals(itemKey))
+					.filter(i -> i.getIngredientKey().equals(itemKey))
 					.findFirst()
 					.orElse(null);
 			if (item != null)

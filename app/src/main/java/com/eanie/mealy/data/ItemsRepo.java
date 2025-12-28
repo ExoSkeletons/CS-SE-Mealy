@@ -24,7 +24,7 @@ public class ItemsRepo {
 				.collection("users")
 				.document(userId)
 				.collection("ingredients")
-				.document(ingredient.getIngredietKey())
+				.document(ingredient.getIngredientKey())
 				.set(ingredient);
 	}
 
@@ -33,7 +33,7 @@ public class ItemsRepo {
 				.collection("users")
 				.document(userId)
 				.collection("ingredients")
-				.document(ingredient.getIngredietKey())
+				.document(ingredient.getIngredientKey())
 				.delete();
 	}
 }

@@ -34,11 +34,11 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
         KitchenItem item = getItem(position);
 
         holder.quantityTextView.setText(item.getQuantity().toString());
-        holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), item.getIngredietKey(), R.string.ing_eggs));
+        holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), item.getIngredientKey(), R.string.ing_eggs));
         if (!showIcon)
             holder.iconImageView.setVisibility(View.GONE);
         else {
-            holder.iconImageView.setImageDrawable(Resources.getDrawable(holder.itemView.getContext(), item.getIngredietKey(), R.drawable.ic_ing_eggs));
+            holder.iconImageView.setImageDrawable(Resources.getDrawable(holder.itemView.getContext(), item.getIngredientKey(), R.drawable.ic_ing_eggs));
             holder.iconImageView.setVisibility(View.VISIBLE);
         }
     }
@@ -51,7 +51,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
         @Override
         public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-            return oldItem.getIngredietKey().equals(newItem.getIngredietKey());
+            return oldItem.getIngredientKey().equals(newItem.getIngredientKey());
         }
     }
 

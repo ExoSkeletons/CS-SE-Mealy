@@ -18,11 +18,11 @@ public class KitchenItem implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public String getIngredietKey() {
+	public String getIngredientKey() {
 		return ingredientKey;
 	}
 
-	public void setIngredient(String ingredientKey) {
+	public void setIngredientKey(String ingredientKey) {
 		this.ingredientKey = ingredientKey;
 	}
 
