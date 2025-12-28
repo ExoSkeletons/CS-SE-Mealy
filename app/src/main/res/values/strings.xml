@@ -2,6 +2,7 @@
     <string name="app_name">Mealy</string>
 
     <string name="ing_apple">Apple</string>
+    <string name="ing_carrot">Carrot</string>
     <string name="ing_banana">Banana</string>
     <string name="ing_orange">Orange</string>
     <string name="ing_milk">Milk</string>

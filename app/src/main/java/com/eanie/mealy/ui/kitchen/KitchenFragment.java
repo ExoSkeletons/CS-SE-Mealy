@@ -22,31 +22,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class KitchenFragment extends Fragment {
 
-	public static KitchenFragment newInstance() {
-		return new KitchenFragment();
-	}
+    public static KitchenFragment newInstance() {
+        return new KitchenFragment();
+    }
 
-	private ItemsViewModel mViewModel;
+    private ItemsViewModel mViewModel;
 
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mViewModel = new ViewModelProvider(this).get(ItemsViewModel.class);
-		// TODO: Use the ViewModel
-	}
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(ItemsViewModel.class);
+        // TODO: Use the ViewModel
+    }
 
-	@Nullable
-	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-	                         @Nullable Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_kitchen, container, false);
-	}
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_kitchen, container, false);
+    }
 
-	@Override
-	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
+        RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 
 		// Create sample data
 		List<KitchenItem> kitchenItems = new ArrayList<>();
@@ -56,17 +56,18 @@ public class KitchenFragment extends Fragment {
 		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
 		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2000, UnitType.GRAMS)));
 
+        KitchenItemAdapter adapter = new KitchenItemAdapter(true);
+        stock_list.setAdapter(adapter);
+        stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns in the grid
+
+        adapter.submitList(kitchenItems);
+
 		// This user id is tempory (it is just my fake user) -Aviad
 		mViewModel.setUserId("lvwuK3xBNufRynvXdB8XRqirziu2");
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> {
 			for (KitchenItem item : kitchenItems)
 				mViewModel.addIngredient(item);
 		});
-
-		// TODO: switch to use RecyclerView ListAdapter!!!! for kitchen adapter
-		KitchenAdapter adapter = new KitchenAdapter(kitchenItems);
-		stock_list.setAdapter(adapter);
-		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns in the grid
 
 		// Get items live with -
 		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {

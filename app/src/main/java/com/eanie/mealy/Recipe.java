@@ -3,35 +3,36 @@ package com.eanie.mealy;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.google.firebase.firestore.DocumentId;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-public final class Recipe {
-	@DocumentId
-	private String id;
-	private String name;
-	private String instructions;
-	private final List<KitchenItem> ingredients;
-	private String chefId;
+public final class Recipe implements Serializable {
+    @DocumentId
+    private String id;
+    private String name;
+    private String instructions;
+    private final List<KitchenItem> ingredients;
+    private String chefId;
 
-	public Recipe(
-			String id,
-			String name,
-			String instructions,
-			List<KitchenItem> ingredients,
-			String chefId
-	) {
-		this.id = id;
-		this.name = name;
-		this.instructions = instructions;
-		this.ingredients = ingredients;
-		this.chefId = chefId;
-	}
+    public Recipe(
+            String id,
+            String name,
+            String instructions,
+            List<KitchenItem> ingredients,
+            String chefId
+    ) {
+        this.id = id;
+        this.name = name;
+        this.instructions = instructions;
+        this.ingredients = ingredients;
+        this.chefId = chefId;
+    }
 
-	public boolean canBeMadeWith(List<KitchenItem> ingredients) {
-		return new HashSet<>(ingredients).containsAll(this.ingredients);
-	}
+    public boolean canBeMadeWith(List<KitchenItem> ingredients) {
+        return new HashSet<>(ingredients).containsAll(this.ingredients);
+    }
 
 	public void setId(String id) {
 		this.id = id;

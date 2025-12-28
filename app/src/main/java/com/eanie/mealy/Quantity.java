@@ -1,8 +1,9 @@
 package com.eanie.mealy;
 
 import androidx.annotation.NonNull;
+import java.io.Serializable;
 
-public class Quantity {
+public class Quantity implements Serializable {
 	private double amount;
 	private UnitType unitType;
 
