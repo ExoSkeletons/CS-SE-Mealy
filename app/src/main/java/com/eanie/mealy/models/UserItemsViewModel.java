@@ -19,7 +19,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-public class ItemsViewModel extends UserDataViewModel {
+public class UserItemsViewModel extends UserDataViewModel {
 	private final ItemsRepo repo = new ItemsRepo();
 
 	private final LiveData<List<KitchenItem>> ingredients = Transformations.switchMap(userId, id -> {
@@ -27,7 +27,7 @@ public class ItemsViewModel extends UserDataViewModel {
 		return repo.itemsOf(id);
 	});
 
-	public ItemsViewModel(@NonNull Application application) {
+	public UserItemsViewModel(@NonNull Application application) {
 		super(application);
 	}
 

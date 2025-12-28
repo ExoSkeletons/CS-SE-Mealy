@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
-import com.eanie.mealy.models.ItemsViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,12 @@ public class KitchenFragment extends Fragment {
 		return new KitchenFragment();
 	}
 
-	private ItemsViewModel mViewModel;
+	private UserItemsViewModel mViewModel;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mViewModel = new ViewModelProvider(this).get(ItemsViewModel.class);
+		mViewModel = new ViewModelProvider(this).get(UserItemsViewModel.class);
 		// TODO: Use the ViewModel
 	}
 
