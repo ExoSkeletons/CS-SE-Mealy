@@ -50,7 +50,7 @@ public class KitchenFragment extends Fragment {
 
 		// Create sample data
 		List<KitchenItem> kitchenItems = new ArrayList<>();
-		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5))); // Using a default drawable for now
+	    kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5)));
 		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
 		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
 		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
