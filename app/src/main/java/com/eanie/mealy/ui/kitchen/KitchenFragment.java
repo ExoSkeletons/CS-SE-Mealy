@@ -71,8 +71,11 @@ public class KitchenFragment extends Fragment {
 
 		// Get items live with -
 		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
-			kitchenItems.clear();
-			kitchenItems.addAll(items);
+            if (items == null) return;
+
+            kitchenItems.clear();
+            if (!items.isEmpty())
+                kitchenItems.addAll(items);
 			adapter.notifyDataSetChanged();
 		});
 	}
