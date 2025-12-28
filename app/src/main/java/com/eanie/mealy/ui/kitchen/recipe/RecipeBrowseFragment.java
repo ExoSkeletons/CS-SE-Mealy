@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,33 +62,38 @@ public class RecipeBrowseFragment extends Fragment {
     private List<Recipe> createDemoRecipes() {
         List<Recipe> list = new ArrayList<>();
         List<KitchenItem> emptyIngredients = Collections.emptyList();
+        String demoChef = "demo-chef";
 
         list.add(new Recipe(
+                "123",
                 "Pasta Bolognese",
                 "Classic pasta with meat sauce.",
                 emptyIngredients,
-                "demo-chef"
+                demoChef
         ));
 
         list.add(new Recipe(
+                "456",
                 "Vegetable Stir-Fry",
                 "Quick dinner with mixed vegetables.",
                 emptyIngredients,
-                "demo-chef"
+                demoChef
         ));
 
         list.add(new Recipe(
+                "789",
                 "Chocolate Cake",
                 "Rich and moist chocolate cake.",
                 emptyIngredients,
-                "demo-chef"
+                demoChef
         ));
 
         list.add(new Recipe(
+                "321",
                 "Omelette",
                 "Simple omelette with cheese and herbs.",
                 emptyIngredients,
-                "demo-chef"
+                demoChef
         ));
 
         return list;

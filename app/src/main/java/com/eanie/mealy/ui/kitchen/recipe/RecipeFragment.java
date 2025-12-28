@@ -16,14 +16,14 @@ import android.widget.TextView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.Recipe;
-import com.eanie.mealy.models.ItemsViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 public class RecipeFragment extends Fragment {
     private static final String ARG_RECIPE = "recipe";
     private Recipe recipe;
 
-    private ItemsViewModel mViewModel = new ViewModelProvider(this).get(ItemsViewModel .class);
+    private final UserItemsViewModel mViewModel = new ViewModelProvider(this).get(UserItemsViewModel .class);
 
     public RecipeFragment() {
     }
@@ -58,13 +58,13 @@ public class RecipeFragment extends Fragment {
 
         if (recipe == null) return;
 
-        ((TextView) view.findViewById(R.id.tv_recipe_title)).setText(recipe.name());
-        ((TextView) view.findViewById(R.id.tv_recipe_short_description)).setText(recipe.name()); // todo: get description
-        ((TextView) view.findViewById(R.id.tv_preparation)).setText(recipe.instructions());
-        ((TextView) view.findViewById(R.id.tv_recipe_author)).setText(recipe.chefId()); // todo: get chef name
+        ((TextView) view.findViewById(R.id.tv_recipe_title)).setText(recipe.getName());
+        ((TextView) view.findViewById(R.id.tv_recipe_short_description)).setText(recipe.getName()); // todo: get description
+        ((TextView) view.findViewById(R.id.tv_preparation)).setText(recipe.getInstructions());
+        ((TextView) view.findViewById(R.id.tv_recipe_author)).setText(recipe.getChefId()); // todo: get chef name
 
         KitchenItemAdapter adapter = new KitchenItemAdapter(false);
-        adapter.submitList(recipe.ingredients());
+        adapter.submitList(recipe.getIngredients());
         RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
         rvIngredients.setAdapter(adapter);
         rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));

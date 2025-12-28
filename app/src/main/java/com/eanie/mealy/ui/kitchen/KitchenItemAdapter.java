@@ -34,12 +34,13 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
         KitchenItem item = getItem(position);
 
         holder.quantityTextView.setText(item.getQuantity().toString());
-        // Dynamic Name
-        holder.nameTextView.setText(item.getIngredient().getDisplayName(holder.itemView.getContext()));
-        // Dynamic Icon
-        int iconResId = item.getIngredient().getIconResId(holder.itemView.getContext());
-        if (iconResId != 0) holder.iconImageView.setImageResource(iconResId);
-        if (!showIcon) holder.iconImageView.setVisibility(View.GONE);
+        holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), item.getIngredietKey(), R.string.ing_eggs));
+        if (!showIcon)
+            holder.iconImageView.setVisibility(View.GONE);
+        else {
+            holder.iconImageView.setImageDrawable(Resources.getDrawable(holder.itemView.getContext(), item.getIngredietKey(), R.drawable.ic_ing_eggs));
+            holder.iconImageView.setVisibility(View.VISIBLE);
+        }
     }
 
     private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
@@ -50,7 +51,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
         @Override
         public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-            return oldItem.getIngredient().getNameKey().equals(newItem.getIngredient().getNameKey());
+            return oldItem.getIngredietKey().equals(newItem.getIngredietKey());
         }
     }
 
