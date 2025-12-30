@@ -27,21 +27,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <TextView
             android:id="@+id/btn_tab_kitchen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
+            android:paddingVertical="8dp"
             android:text="Kitchen"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:background="@drawable/btn_tab_kitchen_bg"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_tab_recipes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
+            android:paddingVertical="8dp"
             android:text="Recipes"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:background="@drawable/btn_tab_kitchen_bg"
+            android:clickable="true"
+            android:focusable="true" />
+
 
     </LinearLayout>
 

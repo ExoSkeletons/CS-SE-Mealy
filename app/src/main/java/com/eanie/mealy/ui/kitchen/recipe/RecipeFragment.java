@@ -1,5 +1,7 @@
 package com.eanie.mealy.ui.kitchen.recipe;
 
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,19 +9,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eanie.mealy.R;
-import com.eanie.mealy.Recipe;
-import com.eanie.mealy.models.SingleRecipeViewModel;
-import com.eanie.mealy.models.UserItemsViewModel;
-import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import com.eanie.mealy.R;
+import com.eanie.mealy.Recipe;
+import com.eanie.mealy.models.SingleRecipeViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
+
 
 public class RecipeFragment extends Fragment {
 	private static final String ARG_RECIPE = "recipe";
@@ -27,14 +28,16 @@ public class RecipeFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private SingleRecipeViewModel recipeVM;
 
-	public static RecipeFragment newInstance(String userId, Recipe recipe) {
-		RecipeFragment fragment = new RecipeFragment();
-		Bundle args = new Bundle();
-		args.putSerializable(ARG_RECIPE, recipe);
-		args.putString(ARG_UUID, userId);
-		fragment.setArguments(args);
-		return fragment;
-	}
+    public RecipeFragment() {
+    }
+
+    public static RecipeFragment newInstance(String userId, Recipe recipe) {
+        RecipeFragment fragment = new RecipeFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_RECIPE, recipe);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {

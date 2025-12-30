@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:layout_margin="6dp"
+    >
+כ
+    <!-- כאן נשארים כל מה שכבר יש לך: האייקון, השם, הכמות, הכפתורים -->
 
     <ImageView
         android:id="@+id/item_icon"
@@ -20,10 +25,43 @@
         android:text="Item Name"
         android:textAppearance="?attr/textAppearanceListItem" />
 
-    <TextView
-        android:id="@+id/item_quantity"
+    <!-- שורת כמות + כפתורי + / - -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantity: 0" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="4dp">
+
+        <Button
+            android:id="@+id/btn_decrease"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="-"
+            android:textColor="@android:color/black"
+            android:backgroundTint="#7E57C2"
+            android:minWidth="32dp"
+            android:minHeight="32dp" />
+
+
+        <TextView
+            android:id="@+id/item_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/btn_increase"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:textColor="@android:color/black"
+            android:backgroundTint="#7E57C2"
+            android:minWidth="32dp"
+            android:minHeight="32dp" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

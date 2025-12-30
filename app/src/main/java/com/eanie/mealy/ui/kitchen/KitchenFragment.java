@@ -1,9 +1,18 @@
 package com.eanie.mealy.ui.kitchen;
 
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
@@ -12,14 +21,6 @@ import com.eanie.mealy.models.UserItemsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 
@@ -65,7 +66,7 @@ public class KitchenFragment extends Fragment {
 		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
 		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
 		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
-		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2000, UnitType.GRAMS)));
+		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS)));
 
         KitchenItemAdapter adapter = new KitchenItemAdapter(true);
         stock_list.setAdapter(adapter);
@@ -74,8 +75,7 @@ public class KitchenFragment extends Fragment {
         adapter.submitList(kitchenItems);
 
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> {
-			for (KitchenItem item : kitchenItems)
-				mViewModel.addIngredient(item);
+            Toast.makeText(getContext(), "Add clicked", Toast.LENGTH_SHORT).show();
 		});
 
 		// Get items live with -
