@@ -13,8 +13,6 @@ import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserRecipesViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -89,13 +87,15 @@ public class RecipeBrowseFragment extends Fragment {
                     .commit();
         });
 
+	    adapter.submitList(createDemoRecipes());
+
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
+		/*discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
 			if (recipes == null) adapter.submitList(Collections.emptyList());
 			else adapter.submitList(new ArrayList<>(recipes));
-		});
+		});*/
 	}
 
 	private List<Recipe> createDemoRecipes() {
