@@ -93,7 +93,15 @@ public class UserItemsViewModel extends UserDataViewModel {
 		if (itemKey == null) return;
 		if (getUserId() == null) return;
 
-		double stepBy = 1.0f;
+		double stepSize = stepSize(itemKey);
+
+		increaseAmount(itemKey, stepSize * scaledBy);
+	}
+
+	public double stepSize(String itemKey) {
+		if (itemKey == null) return 0;
+
+		double stepBy = 1.0;
 
 		Context context = getApplication();
 		int stepFromResources = Resources.getInteger(context, itemKey, -1);
@@ -108,8 +116,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 			if (item != null)
 				stepBy = item.getQuantity().getUnitType().stepAmountBy;
 		}
-
-		increaseAmount(itemKey, stepBy * scaledBy);
+		return stepBy;
 	}
 
 	public void plusAmount(String itemKey) {

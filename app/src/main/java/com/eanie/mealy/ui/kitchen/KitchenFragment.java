@@ -131,7 +131,7 @@ public class KitchenFragment extends Fragment {
 						"ing_onion",
 						"ing_tomato",
 						"ing_yogurt"
-				).map(k -> new KitchenItem(k, new Quantity(1)))
+				).map(k -> new KitchenItem(k, new Quantity(mViewModel.stepSize(k))))
 				.filter(i -> mItems == null || !mItems.contains(i))
 				.toList();
 
