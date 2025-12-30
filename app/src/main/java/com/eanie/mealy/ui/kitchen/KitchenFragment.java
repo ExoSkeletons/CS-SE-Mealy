@@ -29,16 +29,13 @@ public class KitchenFragment extends Fragment {
     private UserItemsViewModel mViewModel;
     private DiscoveryViewModel discoveryVM;
 
-    private KitchenItemAdapter adapter;
-    private final List<KitchenItem> kitchenItems = new ArrayList<>();
-
-    public static KitchenFragment newInstance(String userId) {
-        var fragment = new KitchenFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_UUID, userId);
-        fragment.setArguments(args);
-        return fragment;
-    }
+	public static KitchenFragment newInstance(String userId) {
+		var fragment = new KitchenFragment();
+		Bundle args = new Bundle();
+		args.putString(ARG_UUID, userId);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,15 +67,15 @@ public class KitchenFragment extends Fragment {
 
         RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 
-        // 🔹 יוצרים Adapter עם listener ל-+ ו- -
-        if (adapter == null) {
-            adapter = new KitchenItemAdapter(
-                    true,
-                    new KitchenItemAdapter.OnQuantityChangeListener() {
-                        @Override
-                        public void onPlus(String ingredientKey) {
-                            mViewModel.plusAmount(ingredientKey);
-                        }
+		// 🔹 יוצרים Adapter עם listener ל-+ ו- -
+
+		KitchenItemAdapter adapter = new KitchenItemAdapter(
+				true,
+				new KitchenItemAdapter.OnQuantityChangeListener() {
+					@Override
+					public void onPlus(String ingredientKey) {
+						mViewModel.plusAmount(ingredientKey);
+					}
 
                         @Override
                         public void onMinus(String ingredientKey) {
@@ -91,39 +88,33 @@ public class KitchenFragment extends Fragment {
         stock_list.setAdapter(adapter);
         stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 עמודות
 
-        // 🔹 נתוני דמו התחלתיים — רק אם אין כלום (עד שיגיעו נתונים מה-ViewModel)
-        if (kitchenItems.isEmpty()) {
-            kitchenItems.add(new KitchenItem("ing_apple",    new Quantity(5)));
-            kitchenItems.add(new KitchenItem("ing_cheese",   new Quantity(200, UnitType.GRAMS)));
-            kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
-            kitchenItems.add(new KitchenItem("ing_milk",     new Quantity(1.5, UnitType.LITERS)));
-            kitchenItems.add(new KitchenItem("ing_bread",    new Quantity(2, UnitType.KILOGRAMS)));
-        }
+		// demo
+		var kitchenItems = new ArrayList<KitchenItem>();
+		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5)));
+		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
+		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
+		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
+		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS)));
 
         adapter.submitList(new ArrayList<>(kitchenItems));
         discoveryVM.updateIngredients(new ArrayList<>(kitchenItems));
 
-        // 🔹 כפתור הפלוס – פותח דיאלוג בחירת מצרכים
-        view.findViewById(R.id.imageButton).setOnClickListener(v -> {
-            showAddIngredientsDialog();
-        });
+		// open add items dialog
+		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
 
         // 🔹 מאזינים לשינויים במלאי מתוך ה-ViewModel
         mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
             if (items == null) return;
 
-            kitchenItems.clear();
-            if (!items.isEmpty()) {
-                kitchenItems.addAll(items);
-            }
+			kitchenItems.clear();
+			kitchenItems.addAll(items);
 
-            // מעדכן את הרשימה על המסך
-            adapter.submitList(new ArrayList<>(kitchenItems));
-
-            // מעדכן גם את Discovery (כדי שהמתכונים האפשריים יתאימו למה שיש במטבח)
-            discoveryVM.updateIngredients(new ArrayList<>(kitchenItems));
-        });
-    }
+			// מעדכן את הרשימה על המסך
+			adapter.submitList(new ArrayList<>(kitchenItems));
+			// מעדכן גם את Discovery (כדי שהמתכונים האפשריים יתאימו למה שיש במטבח)
+			discoveryVM.updateIngredients(new ArrayList<>(kitchenItems));
+		});
+	}
 
     // 🔹 דיאלוג בחירת מצרכים להוספה
     private void showAddIngredientsDialog() {

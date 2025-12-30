@@ -63,4 +63,10 @@ public class Quantity implements Serializable {
         return amountStr + " " + unitType.postfix;
     }
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		Quantity quantity = (Quantity) o;
+		return Double.compare(amount, quantity.amount) == 0 && unitType == quantity.unitType;
+	}
 }

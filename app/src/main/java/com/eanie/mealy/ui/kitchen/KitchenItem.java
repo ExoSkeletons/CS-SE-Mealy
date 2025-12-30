@@ -33,4 +33,15 @@ public class KitchenItem implements Serializable {
 	public void setQuantity(Quantity quantity) {
 		this.quantity = quantity;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		return Objects.equals(ingredientKey, ((KitchenItem) o).ingredientKey);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(ingredientKey);
+	}
 }

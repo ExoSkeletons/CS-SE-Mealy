@@ -51,52 +51,41 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         KitchenItem item = getItem(position);
 
-        // שם הפריט
-        holder.nameTextView.setText(
-                Resources.getString(
-                        holder.itemView.getContext(),
-                        item.getIngredientKey(),
-                        item.getIngredientKey())
-        );
+		holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), itemKey, itemKey));
+		holder.quantityTextView.setText(item.getQuantity().toString());
+		if (!showIcon)
+			holder.iconImageView.setVisibility(View.GONE);
+		else {
+			holder.iconImageView.setImageDrawable(
+					Resources.getDrawable(
+							holder.itemView.getContext(),
+							item.getIngredientKey(),
+							R.drawable.ic_launcher_foreground
+					)
+			);
+			holder.iconImageView.setVisibility(View.VISIBLE);
+		}
 
-        // כמות
-        holder.quantityTextView.setText(item.getQuantity().toString());
+		// ===== כפתור + =====
+		holder.btnIncrease.setOnClickListener(v -> {
+			int pos = holder.getBindingAdapterPosition();
+			if (pos == RecyclerView.NO_POSITION) return;
 
-        // אייקון
-        if (!showIcon) {
-            holder.iconImageView.setVisibility(View.GONE);
-        } else {
-            holder.iconImageView.setImageDrawable(
-                    Resources.getDrawable(
-                            holder.itemView.getContext(),
-                            item.getIngredientKey(),
-                            R.drawable.ic_launcher_foreground)
-            );
-            holder.iconImageView.setVisibility(View.VISIBLE);
-        }
-
-        // ===== כפתור + =====
-        holder.btnIncrease.setOnClickListener(v -> {
-            int pos = holder.getBindingAdapterPosition();
-            if (pos == RecyclerView.NO_POSITION) return;
-
-            KitchenItem current = getItem(pos);
-            if (quantityListener != null) {
-                quantityListener.onPlus(current.getIngredientKey());
-            }
-        });
+			KitchenItem current = getItem(pos);
+			if (quantityListener != null)
+				quantityListener.onPlus(current.getIngredientKey());
+		});
 
         // ===== כפתור - =====
         holder.btnDecrease.setOnClickListener(v -> {
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
 
-            KitchenItem current = getItem(pos);
-            if (quantityListener != null) {
-                quantityListener.onMinus(current.getIngredientKey());
-            }
-        });
-    }
+			KitchenItem current = getItem(pos);
+			if (quantityListener != null)
+				quantityListener.onMinus(current.getIngredientKey());
+		});
+	}
 
     // השוואת פריטים לריענון יעיל
     private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
@@ -105,28 +94,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
             return oldItem == newItem;
         }
 
-        @Override
-        public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-            if (!oldItem.getIngredientKey().equals(newItem.getIngredientKey())) {
-                return false;
-            }
-
-            Quantity oq = oldItem.getQuantity();
-            Quantity nq = newItem.getQuantity();
-
-            if (oq == null && nq == null) return true;
-            if (oq == null || nq == null) return false;
-
-            if (Double.compare(oq.getAmount(), nq.getAmount()) != 0) {
-                return false;
-            }
-
-            if (oq.getUnitType() != nq.getUnitType()) {
-                return false;
-            }
-
-            return true;
-        }
+		@Override
+		public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
+			return oldItem.equals(newItem) && oldItem.getQuantity().equals(newItem.getQuantity());
+		}
 
     }
 
