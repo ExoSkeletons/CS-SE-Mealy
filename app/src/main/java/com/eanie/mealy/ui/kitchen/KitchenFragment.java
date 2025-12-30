@@ -77,16 +77,14 @@ public class KitchenFragment extends Fragment {
 						mViewModel.plusAmount(ingredientKey);
 					}
 
-                        @Override
-                        public void onMinus(String ingredientKey) {
-                            mViewModel.minusAmount(ingredientKey);
-                        }
-                    }
-            );
-        }
-
-        stock_list.setAdapter(adapter);
-        stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 עמודות
+					@Override
+					public void onMinus(String ingredientKey) {
+						mViewModel.minusAmount(ingredientKey);
+					}
+				}
+		);
+		stock_list.setAdapter(adapter);
+		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// demo
 		var kitchenItems = new ArrayList<KitchenItem>();
@@ -116,69 +114,42 @@ public class KitchenFragment extends Fragment {
 		});
 	}
 
-    // 🔹 דיאלוג בחירת מצרכים להוספה
-    private void showAddIngredientsDialog() {
-        String[] ingredientNames = {
-                "Apple",
-                "Bread",
-                "Butter",
-                "Cheese",
-                "Cucumber",
-                "Eggs",
-                "Flour",
-                "Milk",
-                "Mushrooms",
-                "Onion",
-                "Tomato",
-                "Yogurt"
-        };
+	// 🔹 דיאלוג בחירת מצרכים להוספה
+	private void showAddIngredientsDialog() {
+		var mItems = mViewModel.myItems().getValue();
+		var ingredientKeys = Stream.of(
+						"ing_apple",
+						"ing_bread",
+						"ing_butter",
+						"ing_cheese",
+						"ing_cucumber",
+						"ing_eggs",
+						"ing_flour",
+						"ing_milk",
+						"ing_mushrooms",
+						"ing_onion",
+						"ing_tomato",
+						"ing_yogurt"
+				).map(k -> new KitchenItem(k, new Quantity(1)))
+				.filter(i -> mItems == null || !mItems.contains(i))
+				.toList();
 
-        String[] ingredientKeys = {
-                "ing_apple",
-                "ing_bread",
-                "ing_butter",
-                "ing_cheese",
-                "ing_cucumber",
-                "ing_eggs",
-                "ing_flour",
-                "ing_milk",
-                "ing_mushrooms",
-                "ing_onion",
-                "ing_tomato",
-                "ing_yogurt"
-        };
+		boolean[] checked = new boolean[ingredientKeys.size()];
 
-        boolean[] checked = new boolean[ingredientNames.length];
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Choose ingredients")
-                .setMultiChoiceItems(ingredientNames, checked, (dialog, which, isChecked) -> {
-                    checked[which] = isChecked;
-                })
-                .setPositiveButton("Add", (dialog, which) -> {
-                    for (int i = 0; i < ingredientKeys.length; i++) {
-                        if (!checked[i]) continue;   // רק מה שסומן
-
-                        String key = ingredientKeys[i];
-
-                        // בודקים אם כבר קיים כזה פריט ברשימה
-                        boolean exists = false;
-                        for (KitchenItem item : kitchenItems) {
-                            if (item.getIngredientKey().equals(key)) {
-                                exists = true;
-                                break;
-                            }
-                        }
-                        if (exists) continue;
-
-                        Quantity defaultQty = new Quantity(1);
-                        KitchenItem newItem = new KitchenItem(key, defaultQty);
-
-                        // 🔹 מוסיפים דרך ה-ViewModel (שישמור ויעדכן LiveData)
-                        mViewModel.addIngredient(newItem);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
+		new AlertDialog.Builder(requireContext())
+				.setTitle("Choose ingredients")
+				.setMultiChoiceItems(
+						ingredientKeys.stream()
+								.map(KitchenItem::getIngredientKey)
+								.toArray(String[]::new),
+						checked,
+						(dialog, which, isChecked) -> checked[which] = isChecked
+				)
+				.setPositiveButton("Add", (dialog, which) ->
+						IntStream.range(0, ingredientKeys.size())
+								.filter(i -> checked[i])
+								.forEachOrdered(i -> mViewModel.addIngredient(ingredientKeys.get(i))))
+				.setNegativeButton("Cancel", null)
+				.show();
+	}
 }
