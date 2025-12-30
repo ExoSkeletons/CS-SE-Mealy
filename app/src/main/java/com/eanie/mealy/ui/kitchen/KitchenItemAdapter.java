@@ -14,15 +14,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
-import com.eanie.mealy.UnitType;
 
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
 
     private final boolean showIcon;
 
-    public KitchenItemAdapter(boolean showIcon) {
+    // 🔹 מאזין לשינוי כמות
+    public interface OnQuantityChangeListener {
+        void onPlus(String ingredientKey);
+        void onMinus(String ingredientKey);
+    }
+
+    private final OnQuantityChangeListener quantityListener;
+
+    // 🔹 בנאי ראשי – עם listener (בשביל KitchenFragment)
+    public KitchenItemAdapter(boolean showIcon, OnQuantityChangeListener quantityListener) {
         super(new KitchenItemItemCallback());
         this.showIcon = showIcon;
+        this.quantityListener = quantityListener;
+    }
+
+    // 🔹 בנאי נוסף – בלי listener (בשביל מסכים שרק מציגים, כמו RecipeFragment)
+    public KitchenItemAdapter(boolean showIcon) {
+        this(showIcon, null);
     }
 
     @NonNull
@@ -37,7 +51,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         KitchenItem item = getItem(position);
 
-        // הצגת השם
+        // שם הפריט
         holder.nameTextView.setText(
                 Resources.getString(
                         holder.itemView.getContext(),
@@ -45,8 +59,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
                         item.getIngredientKey())
         );
 
+        // כמות
         holder.quantityTextView.setText(item.getQuantity().toString());
 
+        // אייקון
         if (!showIcon) {
             holder.iconImageView.setVisibility(View.GONE);
         } else {
@@ -59,25 +75,15 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
             holder.iconImageView.setVisibility(View.VISIBLE);
         }
 
+        // ===== כפתור + =====
         holder.btnIncrease.setOnClickListener(v -> {
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
 
             KitchenItem current = getItem(pos);
-
-            Quantity q = current.getQuantity();
-            double amount = q.getAmount();
-            UnitType unit = q.getUnitType();
-            double step = unit.stepAmountBy;
-            amount = amount + step;
-            current.setQuantity(new Quantity(amount, unit));
-            notifyItemChanged(pos);
-            q.normalize();
-
-
-            current.setQuantity(new Quantity(amount, unit));
-
-            notifyItemChanged(pos);
+            if (quantityListener != null) {
+                quantityListener.onPlus(current.getIngredientKey());
+            }
         });
 
         // ===== כפתור - =====
@@ -86,24 +92,13 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
             if (pos == RecyclerView.NO_POSITION) return;
 
             KitchenItem current = getItem(pos);
-
-            Quantity q = current.getQuantity();
-            double amount = q.getAmount();
-            UnitType unit = q.getUnitType();
-
-            double step = unit.stepAmountBy;
-            if (amount > 0) {
-                amount = amount - step;
-                if (amount < 0) amount = 0; // לוודא לא לרדת מתחת ל-0
-                current.setQuantity(new Quantity(amount, unit));
-                q.normalize();
-                notifyItemChanged(pos);
-
+            if (quantityListener != null) {
+                quantityListener.onMinus(current.getIngredientKey());
             }
         });
     }
 
-    // השוואה בין פריטים לריענון יעיל של הרשימה
+    // השוואת פריטים לריענון יעיל
     private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
         @Override
         public boolean areItemsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
@@ -112,9 +107,27 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
         @Override
         public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-            return oldItem.getIngredientKey().equals(newItem.getIngredientKey())
-                    && oldItem.getQuantity().equals(newItem.getQuantity());
+            if (!oldItem.getIngredientKey().equals(newItem.getIngredientKey())) {
+                return false;
+            }
+
+            Quantity oq = oldItem.getQuantity();
+            Quantity nq = newItem.getQuantity();
+
+            if (oq == null && nq == null) return true;
+            if (oq == null || nq == null) return false;
+
+            if (Double.compare(oq.getAmount(), nq.getAmount()) != 0) {
+                return false;
+            }
+
+            if (oq.getUnitType() != nq.getUnitType()) {
+                return false;
+            }
+
+            return true;
         }
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
