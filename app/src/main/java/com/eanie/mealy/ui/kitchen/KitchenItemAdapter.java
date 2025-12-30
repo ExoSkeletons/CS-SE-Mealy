@@ -50,6 +50,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         KitchenItem item = getItem(position);
+		var itemKey = item.getIngredientKey();
 
 		holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), itemKey, itemKey));
 		holder.quantityTextView.setText(item.getQuantity().toString());
