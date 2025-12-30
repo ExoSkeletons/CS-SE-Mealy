@@ -27,8 +27,8 @@ import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 
-    private UserItemsViewModel mViewModel;
-    private DiscoveryViewModel discoveryVM;
+	private UserItemsViewModel userItemsVM;
+	private DiscoveryViewModel discoveryVM;
 
 	public static KitchenFragment newInstance(String userId) {
 		var fragment = new KitchenFragment();
@@ -43,16 +43,16 @@ public class KitchenFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // ViewModels
-        mViewModel = new ViewModelProvider(this).get(UserItemsViewModel.class);
         discoveryVM = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
+		userItemsVM = new ViewModelProvider(this).get(UserItemsViewModel.class);
 
         // קבלת userId מה-Arguments
         var args = getArguments();
         if (args != null) {
             var userId = args.getString(ARG_UUID, null);
-            if (userId != null) mViewModel.setUserId(userId);
         }
     }
+			if (userId != null) userItemsVM.setUserId(userId);
 
     @Nullable
     @Override
@@ -75,12 +75,12 @@ public class KitchenFragment extends Fragment {
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
-						mViewModel.plusAmount(ingredientKey);
+						userItemsVM.plusAmount(ingredientKey);
 					}
 
 					@Override
 					public void onMinus(String ingredientKey) {
-						mViewModel.minusAmount(ingredientKey);
+						userItemsVM.minusAmount(ingredientKey);
 					}
 				}
 		);
@@ -102,8 +102,8 @@ public class KitchenFragment extends Fragment {
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
 
         // 🔹 מאזינים לשינויים במלאי מתוך ה-ViewModel
-        mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
             if (items == null) return;
+		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
 
 			kitchenItems.clear();
 			kitchenItems.addAll(items);
@@ -117,7 +117,7 @@ public class KitchenFragment extends Fragment {
 
 	// 🔹 דיאלוג בחירת מצרכים להוספה
 	private void showAddIngredientsDialog() {
-		var mItems = mViewModel.myItems().getValue();
+		var mItems = userItemsVM.myItems().getValue();
 		var items = Stream.of(
 						"ing_apple",
 						"ing_bread",
@@ -131,7 +131,7 @@ public class KitchenFragment extends Fragment {
 						"ing_onion",
 						"ing_tomato",
 						"ing_yogurt"
-				).map(k -> new KitchenItem(k, new Quantity(mViewModel.stepSize(k))))
+				).map(k -> new KitchenItem(k, new Quantity(userItemsVM.stepSize(k))))
 				.filter(i -> mItems == null || !mItems.contains(i))
 				.toList();
 
@@ -150,7 +150,7 @@ public class KitchenFragment extends Fragment {
 				.setPositiveButton("Add", (dialog, which) ->
 						IntStream.range(0, items.size())
 								.filter(i -> checked[i])
-								.forEachOrdered(i -> mViewModel.addIngredient(items.get(i))))
+								.forEachOrdered(i -> userItemsVM.addIngredient(items.get(i))))
 				.setNegativeButton("Cancel", null)
 				.show();
 	}
