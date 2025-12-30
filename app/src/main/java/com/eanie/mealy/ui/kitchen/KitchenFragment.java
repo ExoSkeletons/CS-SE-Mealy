@@ -142,6 +142,7 @@ public class KitchenFragment extends Fragment {
 				.setMultiChoiceItems(
 						items.stream()
 								.map(KitchenItem::getIngredientKey)
+								.map(k -> Resources.getString(requireContext(), k, k)) // get name translation
 								.toArray(String[]::new),
 						checked,
 						(dialog, which, isChecked) -> checked[which] = isChecked
