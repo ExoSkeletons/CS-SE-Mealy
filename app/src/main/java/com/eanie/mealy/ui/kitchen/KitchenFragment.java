@@ -118,7 +118,7 @@ public class KitchenFragment extends Fragment {
 	// 🔹 דיאלוג בחירת מצרכים להוספה
 	private void showAddIngredientsDialog() {
 		var mItems = mViewModel.myItems().getValue();
-		var ingredientKeys = Stream.of(
+		var items = Stream.of(
 						"ing_apple",
 						"ing_bread",
 						"ing_butter",
@@ -135,21 +135,21 @@ public class KitchenFragment extends Fragment {
 				.filter(i -> mItems == null || !mItems.contains(i))
 				.toList();
 
-		boolean[] checked = new boolean[ingredientKeys.size()];
+		boolean[] checked = new boolean[items.size()];
 
 		new AlertDialog.Builder(requireContext())
 				.setTitle("Choose ingredients")
 				.setMultiChoiceItems(
-						ingredientKeys.stream()
+						items.stream()
 								.map(KitchenItem::getIngredientKey)
 								.toArray(String[]::new),
 						checked,
 						(dialog, which, isChecked) -> checked[which] = isChecked
 				)
 				.setPositiveButton("Add", (dialog, which) ->
-						IntStream.range(0, ingredientKeys.size())
+						IntStream.range(0, items.size())
 								.filter(i -> checked[i])
-								.forEachOrdered(i -> mViewModel.addIngredient(ingredientKeys.get(i))))
+								.forEachOrdered(i -> mViewModel.addIngredient(items.get(i))))
 				.setNegativeButton("Cancel", null)
 				.show();
 	}
