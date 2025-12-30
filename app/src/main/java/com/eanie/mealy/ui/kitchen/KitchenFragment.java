@@ -1,11 +1,19 @@
 package com.eanie.mealy.ui.kitchen;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.eanie.mealy.Quantity;
+import com.eanie.mealy.R;
+import com.eanie.mealy.UnitType;
+import com.eanie.mealy.models.DiscoveryViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
+
+import java.util.ArrayList;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,14 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.eanie.mealy.Quantity;
-import com.eanie.mealy.R;
-import com.eanie.mealy.UnitType;
-import com.eanie.mealy.models.DiscoveryViewModel;
-import com.eanie.mealy.models.UserItemsViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 

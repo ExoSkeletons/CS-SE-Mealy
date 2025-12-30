@@ -1,12 +1,12 @@
 package com.eanie.mealy;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
 
+import androidx.annotation.NonNull;
+
 public class Quantity implements Serializable {
-	private  double amount;
-	private  UnitType unitType;
+	private double amount;
+	private UnitType unitType;
 
 	public Quantity() {
 	}
@@ -39,29 +39,27 @@ public class Quantity implements Serializable {
 	public void setUnitType(UnitType unitType) {
 		this.unitType = unitType;
 	}
-    public void normalize() {
-        if (unitType == UnitType.GRAMS && amount >= 1000) {
-            amount = amount / 1000.0;       // 1000 g -> 1
-            unitType = UnitType.KILOGRAMS;  // g -> Kg
-        }
 
-        if (unitType == UnitType.KILOGRAMS && amount > 0 && amount < 1) {
-            amount = amount * 1000.0;       // 0.5 Kg -> 500
-            unitType = UnitType.GRAMS;      // Kg -> g
-        }
-    }
 	@NonNull
 	@Override
-    public String toString() {
-        double a = this.amount;
+	public String toString() {
+		var amount = this.amount;
+		var quant = "";
 
-        String amountStr =
-                ((long) a == a)
-                        ? String.valueOf((long) a)
-                        : String.valueOf(a);
+		if (amount < 1) {
+			quant = "m";
+			amount *= 100;
+		} else if (amount > 1000) {
+			quant = "K";
+			amount /= 1000;
+		}
 
-        return amountStr + " " + unitType.postfix;
-    }
+		return
+				((long) amount == amount
+						? (long) amount
+						: String.format("%s", amount)
+				) + " " + quant + unitType.postfix;
+	}
 
 	@Override
 	public boolean equals(Object o) {

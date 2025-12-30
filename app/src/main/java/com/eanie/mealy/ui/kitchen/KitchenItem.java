@@ -1,15 +1,16 @@
 package com.eanie.mealy.ui.kitchen;
 
 import com.eanie.mealy.Quantity;
-import java.io.Serializable;
 import com.google.firebase.firestore.DocumentId;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 public class KitchenItem implements Serializable {
 	@DocumentId
 	private String ingredientKey;
 	private Quantity quantity;
 
-	// Required for Firestore
 	public KitchenItem() {
 	}
 
