@@ -1,11 +1,21 @@
 package com.eanie.mealy.ui.kitchen.recipe;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.eanie.mealy.Quantity;
+import com.eanie.mealy.R;
+import com.eanie.mealy.Recipe;
+import com.eanie.mealy.UnitType;
+import com.eanie.mealy.models.DiscoveryViewModel;
+import com.eanie.mealy.models.UserRecipesViewModel;
+import com.eanie.mealy.ui.kitchen.KitchenItem;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,12 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.eanie.mealy.R;
-import com.eanie.mealy.models.DiscoveryViewModel;
-import com.eanie.mealy.models.UserRecipesViewModel;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class RecipeBrowseFragment extends Fragment {
 
