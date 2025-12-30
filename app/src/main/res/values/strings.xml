@@ -16,4 +16,9 @@
     <string name="ing_eggs">Eggs</string>
     <string name="ing_cucumber">Cucumber</string>
     <string name="ing_tomato">Yogurt</string>
+    <string name="ing_onion">Onion</string>
+    <string name="ing_mushroom">Mushroom</string>
+    <string name="ing_yogurt">Yogurt</string>
+    <string name="ing_pasta">Pasta</string>
+    <string name="ing_garlic">Garlic</string>
 </resources>
