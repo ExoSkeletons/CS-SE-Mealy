@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Recipe"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <!-- שם המתכון -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recipe Name" />
+
+        <EditText
+            android:id="@+id/et_recipe_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter recipe name"
+            android:inputType="textPersonName"
+            android:padding="12dp" />
+
+        <!-- מצרכים -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <!-- מיכל למצרכים נוספים אם צריך -->
+        <LinearLayout
+            android:id="@+id/ingredients_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/btn_add_ingredient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ Add Ingredient"
+            android:textAllCaps="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- הוראות הכנה -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preparation"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/et_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:hint="Write preparation steps..."
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:padding="12dp" />
+
+        <!-- שמירה \ ביטול -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp">
+
+            <Button
+                android:id="@+id/btn_save_recipe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Cancel"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
