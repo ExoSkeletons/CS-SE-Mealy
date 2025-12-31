@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.eanie.mealy.ui.kitchen.recipe.AddRecipeFragment;
 
 public class KitchenFragment extends Fragment {
 
@@ -48,7 +49,15 @@ public class KitchenFragment extends Fragment {
 
         RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 
-		// Create sample data
+        view.findViewById(R.id.btn_add_recipe).setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.container, AddRecipeFragment.newInstance())
+                    .addToBackStack("add-recipe")
+                    .commit();
+        });
+
+
+        // Create sample data
 		List<KitchenItem> kitchenItems = new ArrayList<>();
 		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5))); // Using a default drawable for now
 		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));

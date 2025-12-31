@@ -21,6 +21,19 @@
             android:layout_height="wrap_content" />
     </ScrollView>
 
+    <Button
+        android:id="@+id/btn_add_recipe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add New Recipe"
+        android:textAllCaps="false"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/imageButton" />
+
     <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
