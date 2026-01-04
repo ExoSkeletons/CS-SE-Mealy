@@ -11,7 +11,7 @@ import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -88,15 +88,15 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// demo
-		var kitchenItems = new ArrayList<KitchenItem>();
-		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5)));
-		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
-		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
-		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
-		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS)));
-
-        adapter.submitList(new ArrayList<>(kitchenItems));
-        discoveryVM.updateIngredients(new ArrayList<>(kitchenItems));
+		var demoItems = List.of(
+				new KitchenItem("ing_apple", new Quantity(5)),
+				new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)),
+				new KitchenItem("ing_cucumber", new Quantity(3)),
+				new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)),
+				new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS))
+		);
+		adapter.submitList(demoItems);
+		discoveryVM.updateIngredients(demoItems);
 
 		// open add items dialog
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
