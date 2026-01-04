@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
-
 	private UserItemsViewModel userItemsVM;
 	private DiscoveryViewModel discoveryVM;
 
