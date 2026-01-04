@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,37 +37,34 @@ public class KitchenFragment extends Fragment {
 		return fragment;
 	}
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        // ViewModels
-        discoveryVM = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
-		userItemsVM = new ViewModelProvider(this).get(UserItemsViewModel.class);
+		// ViewModels
+		userItemsVM = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
+		discoveryVM = getDefaultViewModelProviderFactory().create(DiscoveryViewModel.class);
 
-        // קבלת userId מה-Arguments
-        var args = getArguments();
-        if (args != null) {
-            var userId = args.getString(ARG_UUID, null);
-        }
-    }
+		var args = getArguments();
+		if (args != null) {
+			var userId = args.getString(ARG_UUID, null);
 			if (userId != null) userItemsVM.setUserId(userId);
+		}
+	}
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_kitchen, container, false);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater,
+	                         @Nullable ViewGroup container,
+	                         @Nullable Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.fragment_kitchen, container, false);
+	}
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView stock_list = view.findViewById(R.id.stock_rv);
-
-		// 🔹 יוצרים Adapter עם listener ל-+ ו- -
+		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
 				true,
@@ -108,7 +104,6 @@ public class KitchenFragment extends Fragment {
 		});
 	}
 
-	// 🔹 דיאלוג בחירת מצרכים להוספה
 	private void showAddIngredientsDialog() {
 		var mItems = userItemsVM.myItems().getValue();
 		var items = Stream.of(

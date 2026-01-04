@@ -7,49 +7,51 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eanie.mealy.R;
+
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.eanie.mealy.Quantity;
-import com.eanie.mealy.R;
-
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
 
-    private final boolean showIcon;
+	private final boolean showIcon;
 
-    // 🔹 מאזין לשינוי כמות
-    public interface OnQuantityChangeListener {
-        void onPlus(String ingredientKey);
-        void onMinus(String ingredientKey);
-    }
+	// 🔹 מאזין לשינוי כמות
+	public interface OnQuantityChangeListener {
+		void onPlus(String ingredientKey);
 
-    private final OnQuantityChangeListener quantityListener;
+		void onMinus(String ingredientKey);
+	}
 
-    // 🔹 בנאי ראשי – עם listener (בשביל KitchenFragment)
-    public KitchenItemAdapter(boolean showIcon, OnQuantityChangeListener quantityListener) {
-        super(new KitchenItemItemCallback());
-        this.showIcon = showIcon;
-        this.quantityListener = quantityListener;
-    }
+	private final OnQuantityChangeListener quantityListener;
 
-    // 🔹 בנאי נוסף – בלי listener (בשביל מסכים שרק מציגים, כמו RecipeFragment)
-    public KitchenItemAdapter(boolean showIcon) {
-        this(showIcon, null);
-    }
+	// 🔹 בנאי ראשי – עם listener (בשביל KitchenFragment)
+	public KitchenItemAdapter(boolean showIcon, OnQuantityChangeListener quantityListener) {
+		super(new KitchenItemItemCallback());
+		this.showIcon = showIcon;
+		this.quantityListener = quantityListener;
+	}
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.kitchen_item, parent, false);
-        return new ViewHolder(view);
-    }
+	// 🔹 בנאי נוסף – בלי listener (בשביל מסכים שרק מציגים, כמו RecipeFragment)
+	public KitchenItemAdapter(boolean showIcon) {
+		this(showIcon, null);
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        KitchenItem item = getItem(position);
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(parent.getContext())
+				.inflate(R.layout.kitchen_item, parent, false);
+		return new ViewHolder(view);
+	}
+
+	@Override
+	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+		KitchenItem item = getItem(position);
 		var itemKey = item.getIngredientKey();
 
 		holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), itemKey, itemKey));
@@ -87,35 +89,35 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		}
 	}
 
-    // השוואת פריטים לריענון יעיל
-    private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
-        @Override
-        public boolean areItemsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-            return oldItem == newItem;
-        }
+	// השוואת פריטים לריענון יעיל
+	private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
+		@Override
+		public boolean areItemsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
+			return Objects.equals(oldItem.getIngredientKey(), newItem.getIngredientKey());
+		}
 
 		@Override
 		public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-			return oldItem.equals(newItem) && oldItem.getQuantity().equals(newItem.getQuantity());
+			return oldItem.equals(newItem);
 		}
 
-    }
+	}
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+	public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView iconImageView;
-        TextView nameTextView;
-        TextView quantityTextView;
-        Button btnIncrease;
-        Button btnDecrease;
+		ImageView iconImageView;
+		TextView nameTextView;
+		TextView quantityTextView;
+		Button btnIncrease;
+		Button btnDecrease;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            iconImageView = itemView.findViewById(R.id.item_icon);
-            nameTextView = itemView.findViewById(R.id.item_name);
-            quantityTextView = itemView.findViewById(R.id.item_quantity);
-            btnIncrease = itemView.findViewById(R.id.btn_increase);
-            btnDecrease = itemView.findViewById(R.id.btn_decrease);
-        }
-    }
+		public ViewHolder(@NonNull View itemView) {
+			super(itemView);
+			iconImageView = itemView.findViewById(R.id.item_icon);
+			nameTextView = itemView.findViewById(R.id.item_name);
+			quantityTextView = itemView.findViewById(R.id.item_quantity);
+			btnIncrease = itemView.findViewById(R.id.btn_increase);
+			btnDecrease = itemView.findViewById(R.id.btn_decrease);
+		}
+	}
 }

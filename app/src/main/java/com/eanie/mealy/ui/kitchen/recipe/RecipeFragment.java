@@ -28,17 +28,17 @@ public class RecipeFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private SingleRecipeViewModel recipeVM;
 
-    public RecipeFragment() {
-    }
+	public RecipeFragment() {
+	}
 
-    public static RecipeFragment newInstance(String userId, Recipe recipe) {
-        RecipeFragment fragment = new RecipeFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_RECIPE, recipe);
-	    args.putString(ARG_UUID, userId);
-        fragment.setArguments(args);
-        return fragment;
-    }
+	public static RecipeFragment newInstance(String userId, Recipe recipe) {
+		RecipeFragment fragment = new RecipeFragment();
+		Bundle args = new Bundle();
+		args.putSerializable(ARG_RECIPE, recipe);
+		args.putString(ARG_UUID, userId);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
