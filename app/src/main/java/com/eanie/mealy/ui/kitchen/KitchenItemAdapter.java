@@ -67,25 +67,24 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			holder.iconImageView.setVisibility(View.VISIBLE);
 		}
 
-		// ===== כפתור + =====
-		holder.btnIncrease.setOnClickListener(v -> {
-			int pos = holder.getBindingAdapterPosition();
-			if (pos == RecyclerView.NO_POSITION) return;
+		if (quantityListener != null) {
+			// ===== כפתור + =====
+			holder.btnIncrease.setOnClickListener(v -> {
+				int pos = holder.getBindingAdapterPosition();
+				if (pos == RecyclerView.NO_POSITION) return;
 
-			KitchenItem current = getItem(pos);
-			if (quantityListener != null)
+				KitchenItem current = getItem(pos);
 				quantityListener.onPlus(current.getIngredientKey());
-		});
+			});
+			// ===== כפתור - =====
+			holder.btnDecrease.setOnClickListener(v -> {
+				int pos = holder.getBindingAdapterPosition();
+				if (pos == RecyclerView.NO_POSITION) return;
 
-        // ===== כפתור - =====
-        holder.btnDecrease.setOnClickListener(v -> {
-            int pos = holder.getBindingAdapterPosition();
-            if (pos == RecyclerView.NO_POSITION) return;
-
-			KitchenItem current = getItem(pos);
-			if (quantityListener != null)
+				KitchenItem current = getItem(pos);
 				quantityListener.onMinus(current.getIngredientKey());
-		});
+			});
+		}
 	}
 
     // השוואת פריטים לריענון יעיל
