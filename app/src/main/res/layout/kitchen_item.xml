@@ -4,13 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="6dp"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:layout_margin="6dp"
-    >
-כ
-    <!-- כאן נשארים כל מה שכבר יש לך: האייקון, השם, הכמות, הכפתורים -->
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/item_icon"
@@ -25,24 +22,22 @@
         android:text="Item Name"
         android:textAppearance="?attr/textAppearanceListItem" />
 
-    <!-- שורת כמות + כפתורי + / - -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
         android:gravity="center"
-        android:layout_marginTop="4dp">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_decrease"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="-"
-            android:textColor="@android:color/black"
             android:backgroundTint="#7E57C2"
+            android:minHeight="32dp"
             android:minWidth="32dp"
-            android:minHeight="32dp" />
-
+            android:text="-"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/item_quantity"
@@ -55,13 +50,10 @@
             android:id="@+id/btn_increase"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="+"
-            android:textColor="@android:color/black"
             android:backgroundTint="#7E57C2"
+            android:minHeight="32dp"
             android:minWidth="32dp"
-            android:minHeight="32dp" />
-
-
+            android:text="+"
+            android:textColor="@android:color/black" />
     </LinearLayout>
-
 </LinearLayout>
