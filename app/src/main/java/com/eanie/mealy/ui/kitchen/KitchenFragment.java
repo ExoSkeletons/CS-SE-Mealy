@@ -12,7 +12,7 @@ import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
@@ -106,6 +106,7 @@ public class KitchenFragment extends Fragment {
 
 	private void showAddIngredientsDialog() {
 		var mItems = userItemsVM.myItems().getValue();
+		var mIds = mItems == null ? null : mItems.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
 		var items = Stream.of(
 						"ing_apple",
 						"ing_bread",
@@ -119,9 +120,9 @@ public class KitchenFragment extends Fragment {
 						"ing_onion",
 						"ing_tomato",
 						"ing_yogurt"
-				).map(k -> new KitchenItem(k, new Quantity(userItemsVM.stepSize(k))))
-				.filter(i -> mItems == null || !mItems.contains(i))
-				.toList();
+				).map(k -> userItemsVM.buy(k))
+				.filter(newItem -> mIds == null || !mIds.contains(newItem.getIngredientKey()))
+				.collect(Collectors.toList());
 
 		boolean[] checked = new boolean[items.size()];
 
