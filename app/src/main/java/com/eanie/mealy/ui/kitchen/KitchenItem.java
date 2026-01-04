@@ -6,7 +6,9 @@ import com.google.firebase.firestore.DocumentId;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class KitchenItem implements Serializable {
+import androidx.annotation.NonNull;
+
+public class KitchenItem implements Cloneable, Serializable {
 	@DocumentId
 	private String ingredientKey;
 	private Quantity quantity;
@@ -38,11 +40,25 @@ public class KitchenItem implements Serializable {
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
-		return Objects.equals(ingredientKey, ((KitchenItem) o).ingredientKey);
+		return Objects.equals(ingredientKey, ((KitchenItem) o).ingredientKey) &&
+				Objects.equals(quantity, ((KitchenItem) o).quantity);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(ingredientKey);
+	}
+
+	@NonNull
+	@Override
+	public KitchenItem clone() {
+		try {
+			var clone = (KitchenItem) super.clone();
+			clone.ingredientKey = ingredientKey;
+			clone.quantity = quantity.clone();
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError();
+		}
 	}
 }

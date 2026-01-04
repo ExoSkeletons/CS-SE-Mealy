@@ -101,17 +101,10 @@ public class KitchenFragment extends Fragment {
 		// open add items dialog
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
 
-        // 🔹 מאזינים לשינויים במלאי מתוך ה-ViewModel
-            if (items == null) return;
 		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
-
-			kitchenItems.clear();
-			kitchenItems.addAll(items);
-
-			// מעדכן את הרשימה על המסך
-			adapter.submitList(new ArrayList<>(kitchenItems));
-			// מעדכן גם את Discovery (כדי שהמתכונים האפשריים יתאימו למה שיש במטבח)
-			discoveryVM.updateIngredients(new ArrayList<>(kitchenItems));
+			if (items == null) return;
+			adapter.submitList(items);
+			discoveryVM.updateIngredients(items);
 		});
 	}
 

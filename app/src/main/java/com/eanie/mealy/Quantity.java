@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import androidx.annotation.NonNull;
 
-public class Quantity implements Serializable {
+public class Quantity implements Cloneable, Serializable {
 	private double amount;
 	private UnitType unitType;
 
@@ -66,5 +66,18 @@ public class Quantity implements Serializable {
 		if (o == null || getClass() != o.getClass()) return false;
 		Quantity quantity = (Quantity) o;
 		return Double.compare(amount, quantity.amount) == 0 && unitType == quantity.unitType;
+	}
+
+	@NonNull
+	@Override
+	public Quantity clone() {
+		try {
+			var clone = (Quantity) super.clone();
+			clone.amount = amount;
+			clone.unitType = unitType;
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError();
+		}
 	}
 }

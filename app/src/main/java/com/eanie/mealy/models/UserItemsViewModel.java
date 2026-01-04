@@ -69,6 +69,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 				.findFirst()
 				.orElse(null);
 		if (item == null) return;
+		item = item.clone();
 
 		double newAmount = additive
 				? amount + item.getQuantity().getAmount()
