@@ -63,9 +63,8 @@ public class KitchenFragment extends Fragment {
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
-
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
+				true,
 				true,
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
@@ -79,6 +78,7 @@ public class KitchenFragment extends Fragment {
 					}
 				}
 		);
+		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
@@ -123,23 +123,32 @@ public class KitchenFragment extends Fragment {
 				.filter(newItem -> mIds == null || !mIds.contains(newItem.getIngredientKey()))
 				.collect(Collectors.toList());
 
-		boolean[] checked = new boolean[items.size()];
+		if (items.isEmpty()) {
+			new AlertDialog.Builder(requireContext())
+					.setTitle("No ingredients left to buy")
+					.setMessage("You have everything!")
+					.setPositiveButton("Ok", null)
+					.show();
+			return;
+		}
+
+		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
+		dialogAdapter.setSelectionMode(true);
+		RecyclerView rv = new RecyclerView(requireContext());
+		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+		rv.setAdapter(dialogAdapter);
+		dialogAdapter.submitList(items);
 
 		new AlertDialog.Builder(requireContext())
-				.setTitle("Choose ingredients")
-				.setMultiChoiceItems(
-						items.stream()
-								.map(KitchenItem::getIngredientKey)
-								.map(k -> Resources.getString(requireContext(), k, k)) // get name translation
-								.toArray(String[]::new),
-						checked,
-						(dialog, which, isChecked) -> checked[which] = isChecked
-				)
-				.setPositiveButton("Add", (dialog, which) ->
-						IntStream.range(0, items.size())
-								.filter(i -> checked[i])
-								.forEachOrdered(i -> userItemsVM.addIngredient(items.get(i))))
-				.setNegativeButton("Cancel", null)
+				.setTitle("Select ingredients to Add")
+				.setView(rv)
+				.setPositiveButton("Add Selected", (dialog, which) -> {
+					var selected = dialogAdapter.getSelectedKeys();
+					items.stream()
+							.filter(i -> selected.contains(i.getIngredientKey()))
+							.forEach(userItemsVM::addIngredient);
+				})
+				.setNegativeButton(android.R.string.cancel, null)
 				.show();
 	}
 }
