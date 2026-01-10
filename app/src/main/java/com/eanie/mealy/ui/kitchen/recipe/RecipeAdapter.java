@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.eanie.mealy.ui.kitchen.KitchenItem;
 
 import java.util.List;
 import java.util.Objects;
+
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
     private final OnRecipeClickListener listener;
@@ -43,20 +45,41 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
         holder.titleTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
+        List<KitchenItem> ingredients = recipe.getIngredients();
+        if (ingredients == null || ingredients.isEmpty()) {
+            holder.ingredientsRv.setVisibility(View.GONE);
+        } else {
+            holder.ingredientsRv.setVisibility(View.VISIBLE);
+            holder.ingredientsAdapter.submitItems(limit(ingredients, 8));
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onRecipeClick(recipe);
         });
     }
+    private static <T> List<T> limit(List<T> list, int max) {
+        if (list == null) return List.of();
+        return list.size() <= max ? list : list.subList(0, max);
+    }
+
 
     public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView descriptionTextView;
+        RecyclerView ingredientsRv;
+        IngredientPreviewAdapter ingredientsAdapter;
 
         public RecipeItemViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.tv_recipe_name);
             descriptionTextView = itemView.findViewById(R.id.tv_recipe_description);
+            ingredientsRv = itemView.findViewById(R.id.rv_ingredients_preview);
+            ingredientsAdapter = new IngredientPreviewAdapter();
+
+            ingredientsRv.setLayoutManager(
+                    new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
+            );
+            ingredientsRv.setAdapter(ingredientsAdapter);
         }
     }
 
@@ -70,5 +93,6 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
         public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
             return Objects.equals(oldItem.getId(), newItem.getId());
         }
+
     }
 }
