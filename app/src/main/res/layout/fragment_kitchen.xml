@@ -9,7 +9,7 @@
         android:id="@+id/bg_fridge"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_ing_friger"
+        android:src="@drawable/ic_fridge"
         android:scaleType="centerCrop"
         android:alpha="0.18"
         app:layout_constraintTop_toTopOf="parent"
