@@ -1,19 +1,11 @@
 package com.eanie.mealy.ui.kitchen;
 
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.eanie.mealy.Quantity;
-import com.eanie.mealy.R;
-import com.eanie.mealy.UnitType;
-import com.eanie.mealy.models.DiscoveryViewModel;
-import com.eanie.mealy.models.UserItemsViewModel;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import com.eanie.mealy.Quantity;
+import com.eanie.mealy.R;
+import com.eanie.mealy.UnitType;
+import com.eanie.mealy.models.DiscoveryViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
@@ -62,8 +63,17 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+        View myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
+        boolean isChef = true; //demo
+        myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
+        myRecipesBtn.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.container, new MyRecipesFragment())
+                    .addToBackStack("my-recipes")
+                    .commit();
+        });
 
-		KitchenItemAdapter adapter = new KitchenItemAdapter(
+        KitchenItemAdapter adapter = new KitchenItemAdapter(
 				true,
 				true,
 				new KitchenItemAdapter.OnQuantityChangeListener() {

@@ -3,6 +3,7 @@ package com.eanie.mealy.ui.kitchen.recipe;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,13 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
         holder.titleTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
+        holder.favoriteCheckBox.setOnCheckedChangeListener(null);
+        holder.favoriteCheckBox.setChecked(FavoritesStore.isFavorite(recipe));
+
+        holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            FavoritesStore.setFavorite(recipe, isChecked);
+        });
+
         List<KitchenItem> ingredients = recipe.getIngredients();
         if (ingredients == null || ingredients.isEmpty()) {
             holder.ingredientsRv.setVisibility(View.GONE);
@@ -56,6 +64,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onRecipeClick(recipe);
         });
+
     }
     private static <T> List<T> limit(List<T> list, int max) {
         if (list == null) return List.of();
@@ -68,6 +77,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
         TextView descriptionTextView;
         RecyclerView ingredientsRv;
         IngredientPreviewAdapter ingredientsAdapter;
+        CheckBox favoriteCheckBox;
 
         public RecipeItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +85,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
             descriptionTextView = itemView.findViewById(R.id.tv_recipe_description);
             ingredientsRv = itemView.findViewById(R.id.rv_ingredients_preview);
             ingredientsAdapter = new IngredientPreviewAdapter();
+            favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
 
             ingredientsRv.setLayoutManager(
                     new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
