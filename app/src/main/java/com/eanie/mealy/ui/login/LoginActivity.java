@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.eanie.mealy.MainActivity;
 import com.eanie.mealy.databinding.ActivityLoginBinding;
 
 import androidx.annotation.StringRes;
@@ -44,16 +45,15 @@ public class LoginActivity extends AppCompatActivity {
 				passwordEditText.setError(getString(loginFormState.getPasswordError()));
 		});
 
-		loginViewModel.getAuthResult().observe(this, loginResult -> {
-			if (loginResult == null) return;
+		loginViewModel.getAuthResult().observe(this, result -> {
+			if (result == null) return;
 			loadingProgressBar.setVisibility(View.GONE);
-			if (loginResult.getError() != null) {
-				showLoginFailed(loginResult.getError());
+			if (result.getError() != null) {
+				showLoginFailed(result.getError());
 				return;
 			}
-			if (loginResult.getSuccess() != null) {
-
-			}
+			if (result.getSuccess() != null)
+				MainActivity.start(this);
 		});
 
 		TextWatcher afterTextChangedListener = new TextWatcher() {

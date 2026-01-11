@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 
+import com.eanie.mealy.MainActivity;
 import com.eanie.mealy.databinding.ActivityRegisterBinding;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,9 +54,8 @@ public class RegisterActivity extends AppCompatActivity {
 
 		loginViewModel.getAuthResult().observe(this, result -> {
 			if (result == null) return;
-			if (result.getSuccess() != null) {
-
-			}
+			if (result.getSuccess() != null)
+				MainActivity.start(this);
 		});
 	}
 }
