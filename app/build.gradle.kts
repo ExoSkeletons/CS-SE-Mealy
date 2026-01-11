@@ -32,6 +32,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -46,6 +49,7 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.recyclerview)
+    implementation(libs.annotation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
