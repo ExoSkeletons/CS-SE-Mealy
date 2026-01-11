@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +64,10 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
+		if (user != null)
+			((TextView) view.findViewById(R.id.tv_username)).setText(user.getDisplayName());
 
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
 				true,
