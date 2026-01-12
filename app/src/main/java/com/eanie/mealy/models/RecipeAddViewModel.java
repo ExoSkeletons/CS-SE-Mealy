@@ -38,4 +38,11 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
         // todo: generate recipe id?
         add(buildRecipe()); // save recipe to firebase
     }
+
+    public void addIngredient(KitchenItem kitchenItem) {
+        var items = ingredients.getValue();
+        if (items == null) items = List.of();
+        items.add(kitchenItem);
+        ingredients.postValue(items);
+    }
 }

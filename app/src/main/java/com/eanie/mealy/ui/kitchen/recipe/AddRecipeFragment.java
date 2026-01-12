@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.models.RecipeAddViewModel;
+import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -33,13 +35,23 @@ public class AddRecipeFragment extends Fragment {
     }
 
     private RecipeAddViewModel recipeAddViewModel;
+    private UserItemsViewModel userItemsVM;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        userItemsVM = new ViewModelProvider(this).get(UserItemsViewModel.class);
         recipeAddViewModel = new ViewModelProvider(this).get(RecipeAddViewModel.class);
+
+        var user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            var uuid = user.getUid();
+            userItemsVM.setUserId(uuid);
+            recipeAddViewModel.setUserId(uuid);
+        }
 
         return inflater.inflate(R.layout.fragment_add_recipe, container, false);
     }
@@ -64,7 +76,12 @@ public class AddRecipeFragment extends Fragment {
         Button btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
         btnAddIngredient.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Add ingredient", Toast.LENGTH_SHORT).show();
-            // todo: show dialog to add ingredient
+            /*KitchenFragment.showAddIngredientsDialog(
+                    getContext(),
+                    recipeAddViewModel.ingredients.getValue(),
+                    userItemsVM,
+                    recipeAddViewModel::addIngredient
+            );*/
         });
 
         etName.addTextChangedListener(new TextWatcher() {
@@ -75,12 +92,10 @@ public class AddRecipeFragment extends Fragment {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
         });
         etInstructions.addTextChangedListener(new TextWatcher() {
