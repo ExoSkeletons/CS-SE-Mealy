@@ -1,43 +1,59 @@
 package com.eanie.mealy;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.kitchen.recipe.RecipeBrowseFragment;
+import com.google.firebase.auth.FirebaseAuth;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+	public static void start(Activity activity) {
+		Intent intent = new Intent(activity, MainActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		activity.startActivity(intent);
+		activity.setResult(RESULT_OK);
+		activity.finish();
+	}
 
-    private Button btnTabKitchen;
-    private Button btnTabRecipes;
+	private TextView btnTabKitchen;
+	private TextView btnTabRecipes;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+	private String uuid = null;
 
-        btnTabKitchen = findViewById(R.id.btn_tab_kitchen);
-        btnTabRecipes = findViewById(R.id.btn_tab_recipes);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            showKitchenFragment();
-        }
+		btnTabKitchen = findViewById(R.id.btn_tab_kitchen);
+		btnTabRecipes = findViewById(R.id.btn_tab_recipes);
 
-        btnTabKitchen.setOnClickListener(v -> showKitchenFragment());
-        btnTabRecipes.setOnClickListener(v -> showRecipesFragment());
-    }
+		var user = FirebaseAuth.getInstance().getCurrentUser();
+		if (user == null) return;
 
-    private void showKitchenFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, KitchenFragment.newInstance())
-                .commit();
-    }
+		uuid = user.getUid();
 
-    private void showRecipesFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, RecipeBrowseFragment.newInstance())
-                .commit();
-    }
+		if (savedInstanceState == null) showKitchenFragment();
+
+		// ליסטנרים ללשוניות
+		btnTabKitchen.setOnClickListener(v -> showKitchenFragment());
+		btnTabRecipes.setOnClickListener(v -> showRecipesFragment());
+	}
+
+	private void showKitchenFragment() {
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, KitchenFragment.newInstance(uuid))
+				.commit();
+	}
+
+	private void showRecipesFragment() {
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, RecipeBrowseFragment.newInstance(uuid))
+				.commit();
+	}
 }

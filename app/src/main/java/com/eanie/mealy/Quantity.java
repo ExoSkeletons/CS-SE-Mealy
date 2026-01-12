@@ -1,9 +1,10 @@
 package com.eanie.mealy;
 
-import androidx.annotation.NonNull;
 import java.io.Serializable;
 
-public class Quantity implements Serializable {
+import androidx.annotation.NonNull;
+
+public class Quantity implements Cloneable, Serializable {
 	private double amount;
 	private UnitType unitType;
 
@@ -11,8 +12,11 @@ public class Quantity implements Serializable {
 	}
 
 	public Quantity(double amount) {
-		this.amount = amount;
-		this.unitType = UnitType.COUNT;
+		this(amount, UnitType.COUNT);
+	}
+
+	public Quantity(UnitType unitType) {
+		this(1, unitType);
 	}
 
 	public Quantity(double amount, UnitType unitType) {
@@ -55,5 +59,25 @@ public class Quantity implements Serializable {
 						? (long) amount
 						: String.format("%s", amount)
 				) + " " + quant + unitType.postfix;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		Quantity quantity = (Quantity) o;
+		return Double.compare(amount, quantity.amount) == 0 && unitType == quantity.unitType;
+	}
+
+	@NonNull
+	@Override
+	public Quantity clone() {
+		try {
+			var clone = (Quantity) super.clone();
+			clone.amount = amount;
+			clone.unitType = unitType;
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError();
+		}
 	}
 }

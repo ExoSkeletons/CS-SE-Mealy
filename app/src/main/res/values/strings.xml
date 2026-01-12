@@ -15,5 +15,21 @@
     <string name="ing_pepper">Pepper</string>
     <string name="ing_eggs">Eggs</string>
     <string name="ing_cucumber">Cucumber</string>
-    <string name="ing_tomato">Yogurt</string>
+    <string name="ing_tomato">Tomato</string>
+    <string name="ing_onion">Onion</string>
+    <string name="ing_mushroom">Mushroom</string>
+    <string name="ing_yogurt">Yogurt</string>
+    <string name="ing_pasta">Pasta</string>
+    <string name="ing_garlic">Garlic</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="registration_failed">Registration Failed</string>
+    <string name="web_client_id">549702177131-hob22c3grna2ckv6l0tgbqkmssn1od07.apps.googleusercontent.com</string>
 </resources>

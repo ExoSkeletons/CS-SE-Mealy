@@ -1,9 +1,12 @@
 package com.eanie.mealy;
 
+import androidx.annotation.NonNull;
+
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -13,9 +16,11 @@ public final class Recipe implements Serializable {
     private String id;
     private String name;
     private String instructions;
-    private final List<KitchenItem> ingredients;
+    private List<KitchenItem> ingredients;
     private String chefId;
-
+    public Recipe() {
+        this.ingredients = new ArrayList<>();
+    }
     public Recipe(
             String id,
             String name,
@@ -30,7 +35,7 @@ public final class Recipe implements Serializable {
         this.chefId = chefId;
     }
 
-    public boolean canBeMadeWith(List<KitchenItem> ingredients) {
+	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
         return new HashSet<>(ingredients).containsAll(this.ingredients);
     }
 
@@ -45,7 +50,9 @@ public final class Recipe implements Serializable {
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
-
+    public void setIngredients(List<KitchenItem> ingredients) {
+        this.ingredients = ingredients;
+    }
 	public void setChefId(String chefId) {
 		this.chefId = chefId;
 	}

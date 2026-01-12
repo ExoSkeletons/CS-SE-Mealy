@@ -4,85 +4,157 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
+import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.eanie.mealy.ui.kitchen.recipe.AddRecipeFragment;
+
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
+	private UserItemsViewModel userItemsVM;
+	private DiscoveryViewModel discoveryVM;
 
-    public static KitchenFragment newInstance() {
-        return new KitchenFragment();
-    }
-
-	private UserItemsViewModel mViewModel;
+	public static KitchenFragment newInstance(String userId) {
+		var fragment = new KitchenFragment();
+		Bundle args = new Bundle();
+		args.putString(ARG_UUID, userId);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mViewModel = new ViewModelProvider(this).get(UserItemsViewModel.class);
-		// TODO: Use the ViewModel
+
+		// ViewModels
+		userItemsVM = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
+		discoveryVM = getDefaultViewModelProviderFactory().create(DiscoveryViewModel.class);
+
+		var args = getArguments();
+		if (args != null) {
+			var userId = args.getString(ARG_UUID, null);
+			if (userId != null) userItemsVM.setUserId(userId);
+		}
 	}
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_kitchen, container, false);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater,
+	                         @Nullable ViewGroup container,
+	                         @Nullable Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.fragment_kitchen, container, false);
+	}
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView stock_list = view.findViewById(R.id.stock_rv);
+		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
+		if (user != null)
+			((TextView) view.findViewById(R.id.tv_username)).setText(user.getDisplayName());
 
-        view.findViewById(R.id.btn_add_recipe).setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.container, AddRecipeFragment.newInstance())
-                    .addToBackStack("add-recipe")
-                    .commit();
-        });
+		KitchenItemAdapter adapter = new KitchenItemAdapter(
+				true,
+				true,
+				new KitchenItemAdapter.OnQuantityChangeListener() {
+					@Override
+					public void onPlus(String ingredientKey) {
+						userItemsVM.plusAmount(ingredientKey);
+					}
 
+					@Override
+					public void onMinus(String ingredientKey) {
+						userItemsVM.minusAmount(ingredientKey);
+					}
+				}
+		);
+		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
+		stock_list.setAdapter(adapter);
+		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        // Create sample data
-		List<KitchenItem> kitchenItems = new ArrayList<>();
-		kitchenItems.add(new KitchenItem("ing_apple", new Quantity(5))); // Using a default drawable for now
-		kitchenItems.add(new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)));
-		kitchenItems.add(new KitchenItem("ing_cucumber", new Quantity(3)));
-		kitchenItems.add(new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)));
-		kitchenItems.add(new KitchenItem("ing_bread", new Quantity(2000, UnitType.GRAMS)));
+		// demo
+		var demoItems = List.of(
+				new KitchenItem("ing_apple", new Quantity(5)),
+				new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)),
+				new KitchenItem("ing_cucumber", new Quantity(3)),
+				new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)),
+				new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS))
+		);
+		adapter.submitList(demoItems);
+		discoveryVM.updateIngredients(demoItems);
 
-        KitchenItemAdapter adapter = new KitchenItemAdapter(true);
-        stock_list.setAdapter(adapter);
-        stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns in the grid
+		// open add items dialog
+		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
 
-        adapter.submitList(kitchenItems);
-
-		// This user id is tempory (it is just my fake user) -Aviad
-		mViewModel.setUserId("lvwuK3xBNufRynvXdB8XRqirziu2");
-		view.findViewById(R.id.imageButton).setOnClickListener(v -> {
-			for (KitchenItem item : kitchenItems)
-				mViewModel.addIngredient(item);
+		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
+			if (items == null) return;
+			adapter.submitList(items);
+			discoveryVM.updateIngredients(items);
 		});
+	}
 
-		// Get items live with -
-		mViewModel.myItems().observe(getViewLifecycleOwner(), items -> {
-			kitchenItems.clear();
-			kitchenItems.addAll(items);
-			adapter.notifyDataSetChanged();
-		});
+	private void showAddIngredientsDialog() {
+		var mItems = userItemsVM.myItems().getValue();
+		var mIds = mItems == null ? null : mItems.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
+		var items = Stream.of(
+						"ing_apple",
+						"ing_bread",
+						"ing_butter",
+						"ing_cheese",
+						"ing_cucumber",
+						"ing_eggs",
+						"ing_flour",
+						"ing_milk",
+						"ing_mushrooms",
+						"ing_onion",
+						"ing_tomato",
+						"ing_yogurt"
+				).map(k -> userItemsVM.buy(k))
+				.filter(newItem -> mIds == null || !mIds.contains(newItem.getIngredientKey()))
+				.collect(Collectors.toList());
+
+		if (items.isEmpty()) {
+			new AlertDialog.Builder(requireContext())
+					.setTitle("No ingredients left to buy")
+					.setMessage("You have everything!")
+					.setPositiveButton("Ok", null)
+					.show();
+			return;
+		}
+
+		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
+		dialogAdapter.setSelectionMode(true);
+		RecyclerView rv = new RecyclerView(requireContext());
+		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+		rv.setAdapter(dialogAdapter);
+		dialogAdapter.submitList(items);
+
+		new AlertDialog.Builder(requireContext())
+				.setTitle("Select ingredients to Add")
+				.setView(rv)
+				.setPositiveButton("Add Selected", (dialog, which) -> {
+					var selected = dialogAdapter.getSelectedKeys();
+					items.stream()
+							.filter(i -> selected.contains(i.getIngredientKey()))
+							.forEach(userItemsVM::addIngredient);
+				})
+				.setNegativeButton(android.R.string.cancel, null)
+				.show();
 	}
 }

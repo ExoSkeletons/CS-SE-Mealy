@@ -1,15 +1,18 @@
 package com.eanie.mealy.ui.kitchen;
 
 import com.eanie.mealy.Quantity;
-import java.io.Serializable;
 import com.google.firebase.firestore.DocumentId;
 
-public class KitchenItem implements Serializable {
+import java.io.Serializable;
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
+
+public class KitchenItem implements Cloneable, Serializable {
 	@DocumentId
 	private String ingredientKey;
 	private Quantity quantity;
 
-	// Required for Firestore
 	public KitchenItem() {
 	}
 
@@ -32,5 +35,30 @@ public class KitchenItem implements Serializable {
 
 	public void setQuantity(Quantity quantity) {
 		this.quantity = quantity;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		return Objects.equals(ingredientKey, ((KitchenItem) o).ingredientKey) &&
+				Objects.equals(quantity, ((KitchenItem) o).quantity);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(ingredientKey);
+	}
+
+	@NonNull
+	@Override
+	public KitchenItem clone() {
+		try {
+			var clone = (KitchenItem) super.clone();
+			clone.ingredientKey = ingredientKey;
+			clone.quantity = quantity.clone();
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError();
+		}
 	}
 }

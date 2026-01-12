@@ -2,10 +2,10 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 
-import com.eanie.mealy.R;
+import com.eanie.mealy.Quantity;
 import com.eanie.mealy.Recipe;
+import com.eanie.mealy.UnitType;
 import com.eanie.mealy.data.ItemsRepo;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.eanie.mealy.ui.kitchen.Resources;
@@ -37,22 +37,20 @@ public class UserItemsViewModel extends UserDataViewModel {
 
 	public void addIngredient(KitchenItem item) {
 		if (getUserId() == null) return;
-
-		Toast.makeText(
-				getApplication(),
-				"Added " + Resources.getString(getApplication(), item.getIngredientKey(), R.string.ing_eggs),
-				Toast.LENGTH_SHORT
-		).show();
 		repo.insert(getUserId(), item);
 	}
 
-	public boolean consumeFrom(Recipe recipe) {
-		if (getUserId() == null) return false;
-		if (!recipe.canBeMadeWith(myItems().getValue()))
-			return false;
+	public void consumeFrom(Recipe recipe) {
+		if (getUserId() == null) throw new RuntimeException("No user id");
+
+		var items = myItems().getValue();
+		if (items == null) throw new RuntimeException("Items is null");
+
+		if (!recipe.canBeMadeWith(items))
+			throw new RuntimeException("Recipe cannot be made with ingredients");
+
 		for (KitchenItem item : recipe.getIngredients())
 			increaseAmount(item.getIngredientKey(), -item.getQuantity().getAmount());
-		return true;
 	}
 
 	private void updateAmount(String itemKey, double amount, boolean additive) {
@@ -65,6 +63,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 				.findFirst()
 				.orElse(null);
 		if (item == null) return;
+		item = item.clone();
 
 		double newAmount = additive
 				? amount + item.getQuantity().getAmount()
@@ -85,34 +84,69 @@ public class UserItemsViewModel extends UserDataViewModel {
 		updateAmount(itemKey, amount, true);
 	}
 
-	private void stepAmount(String itemKey, double scaledBy) {
-		if (itemKey == null) return;
-		if (getUserId() == null) return;
+	public double stepSize(String itemKey) {
+		if (itemKey == null) return 0;
 
-		double stepBy = 1.0f;
-
+		// try get step size from resources
 		Context context = getApplication();
-		int stepFromResources = Resources.getInteger(context, itemKey, -1);
-		if (stepFromResources >= 0) {
-			stepBy = stepFromResources;
-		} else {
-			var item = Objects.requireNonNull(myItems().getValue()).stream()
-					.filter(Objects::nonNull)
-					.filter(i -> i.getIngredientKey().equals(itemKey))
-					.findFirst()
-					.orElse(null);
-			if (item != null)
-				stepBy = item.getQuantity().getUnitType().stepAmountBy;
-		}
+		int stepFromResources = Resources.getInteger(context, "step_" + itemKey, -1);
+		if (stepFromResources >= 0) return stepFromResources;
 
-		increaseAmount(itemKey, stepBy * scaledBy);
+		// try get step size from matching existing ingredient
+		var item = Objects.requireNonNull(myItems().getValue()).stream()
+				.filter(Objects::nonNull)
+				.filter(i -> i.getIngredientKey().equals(itemKey))
+				.findFirst()
+				.orElse(null);
+		if (item != null)
+			return item.getQuantity().getUnitType().stepAmountBy;
+
+		return 1.0;
 	}
 
+	public UnitType unitType(String itemKey) {
+		if (itemKey == null) return UnitType.COUNT;
+
+		// try get unit type from existing matching ingredient
+		var item = Objects.requireNonNull(myItems().getValue()).stream()
+				.filter(Objects::nonNull)
+				.filter(i -> i.getIngredientKey().equals(itemKey))
+				.findFirst()
+				.orElse(null);
+		if (item != null)
+			return item.getQuantity().getUnitType();
+
+		// todo: try get unit type from repo
+
+		// try get unit type from resources
+		Context context = getApplication();
+		String stepFromResources = Resources.getString(context, "unit_" + itemKey, null);
+		if (stepFromResources != null) {
+			try {
+				return UnitType.valueOf(stepFromResources);
+			} catch (IllegalArgumentException ignored) {
+			}
+		}
+
+		return UnitType.COUNT;
+	}
+
+
 	public void plusAmount(String itemKey) {
-		stepAmount(itemKey, 1.0);
+		updateAmount(itemKey, stepSize(itemKey), true);
 	}
 
 	public void minusAmount(String itemKey) {
-		stepAmount(itemKey, -1.0);
+		updateAmount(itemKey, -stepSize(itemKey), true);
+	}
+
+	public KitchenItem buy(String itemKey) {
+		return new KitchenItem(
+				itemKey,
+				new Quantity(
+						stepSize(itemKey),
+						unitType(itemKey)
+				)
+		);
 	}
 }

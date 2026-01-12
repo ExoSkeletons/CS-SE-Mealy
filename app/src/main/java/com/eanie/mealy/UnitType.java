@@ -2,8 +2,11 @@ package com.eanie.mealy;
 
 public enum UnitType {
 	COUNT(""),
-	GRAMS("g", 10),
-	LITERS("L", 0.5f),
+	GRAMS("g", 50),
+    KILOGRAMS("Kg", 0.5),
+
+    LITERS("L", 0.5f),
+	TABLE_SPOONS("Tsp")
 	;
 
 	public final String postfix;
@@ -15,7 +18,6 @@ public enum UnitType {
 	}
 
 	UnitType(String postfix) {
-		this.postfix = postfix;
-		this.stepAmountBy = 1;
+		this(postfix, 1);
 	}
 }
