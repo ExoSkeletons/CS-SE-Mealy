@@ -1,5 +1,6 @@
 package com.eanie.mealy.ui.kitchen;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.eanie.mealy.models.UserItemsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,8 +101,13 @@ public class KitchenFragment extends Fragment {
 		adapter.submitList(demoItems);
 		discoveryVM.updateIngredients(demoItems);
 
-		// open add items dialog
-		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
+        // open add items dialog
+        view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog(
+                getContext(),
+                userItemsVM.myItems().getValue(),
+                userItemsVM,
+                userItemsVM::addIngredient
+        ));
 
 		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
 			if (items == null) return;
@@ -109,52 +116,51 @@ public class KitchenFragment extends Fragment {
 		});
 	}
 
-	private void showAddIngredientsDialog() {
-		var mItems = userItemsVM.myItems().getValue();
-		var mIds = mItems == null ? null : mItems.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
-		var items = Stream.of(
-						"ing_apple",
-						"ing_bread",
-						"ing_butter",
-						"ing_cheese",
-						"ing_cucumber",
-						"ing_eggs",
-						"ing_flour",
-						"ing_milk",
-						"ing_mushrooms",
-						"ing_onion",
-						"ing_tomato",
-						"ing_yogurt"
-				).map(k -> userItemsVM.buy(k))
-				.filter(newItem -> mIds == null || !mIds.contains(newItem.getIngredientKey()))
-				.collect(Collectors.toList());
+    public static void showAddIngredientsDialog(Context context, List<KitchenItem> excluded, UserItemsViewModel userItemsVM, Consumer<KitchenItem> consume) {
+        var exIds = excluded == null ? null : excluded.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
+        var items = Stream.of(
+                        "ing_apple",
+                        "ing_bread",
+                        "ing_butter",
+                        "ing_cheese",
+                        "ing_cucumber",
+                        "ing_eggs",
+                        "ing_flour",
+                        "ing_milk",
+                        "ing_mushrooms",
+                        "ing_onion",
+                        "ing_tomato",
+                        "ing_yogurt"
+                ).map(userItemsVM::buy)
+                .filter(newItem -> exIds == null || !exIds.contains(newItem.getIngredientKey()))
+                .collect(Collectors.toList());
 
-		if (items.isEmpty()) {
-			new AlertDialog.Builder(requireContext())
-					.setTitle("No ingredients left to buy")
-					.setMessage("You have everything!")
-					.setPositiveButton("Ok", null)
-					.show();
-			return;
-		}
+        if (items.isEmpty()) {
+            new AlertDialog.Builder(context)
+                    .setTitle("No ingredients left to buy")
+                    .setMessage("You have everything!")
+                    .setPositiveButton("Ok", null)
+                    .show();
+            return;
+        }
 
-		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
-		dialogAdapter.setSelectionMode(true);
-		RecyclerView rv = new RecyclerView(requireContext());
-		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
-		rv.setAdapter(dialogAdapter);
-		dialogAdapter.submitList(items);
+        KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
+        dialogAdapter.setSelectionMode(true);
+        RecyclerView rv = new RecyclerView(context);
+        rv.setLayoutManager(new GridLayoutManager(context, 3));
+        rv.setAdapter(dialogAdapter);
+        dialogAdapter.submitList(items);
 
-		new AlertDialog.Builder(requireContext())
-				.setTitle("Select ingredients to Add")
-				.setView(rv)
-				.setPositiveButton("Add Selected", (dialog, which) -> {
-					var selected = dialogAdapter.getSelectedKeys();
-					items.stream()
-							.filter(i -> selected.contains(i.getIngredientKey()))
-							.forEach(userItemsVM::addIngredient);
-				})
-				.setNegativeButton(android.R.string.cancel, null)
-				.show();
-	}
+        new AlertDialog.Builder(context)
+                .setTitle("Select ingredients to Add")
+                .setView(rv)
+                .setPositiveButton("Add Selected", (dialog, which) -> {
+                    var selected = dialogAdapter.getSelectedKeys();
+                    items.stream()
+                            .filter(i -> selected.contains(i.getIngredientKey()))
+                            .forEach(consume);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
 }
