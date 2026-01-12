@@ -71,14 +71,22 @@ public class KitchenFragment extends Fragment {
 		if (user != null)
 			((TextView) view.findViewById(R.id.tv_username)).setText(user.getDisplayName());
 
-		KitchenItemAdapter adapter = new KitchenItemAdapter(
-				true,
-				true,
-				new KitchenItemAdapter.OnQuantityChangeListener() {
-					@Override
-					public void onPlus(String ingredientKey) {
-						userItemsVM.plusAmount(ingredientKey);
-					}
+        var btnAddRecipe = view.findViewById(R.id.btn_add_recipe);
+        btnAddRecipe.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.container, AddRecipeFragment.newInstance())
+                    .addToBackStack("add-recipe")
+                    .commit();
+        });
+
+        KitchenItemAdapter adapter = new KitchenItemAdapter(
+                true,
+                true,
+                new KitchenItemAdapter.OnQuantityChangeListener() {
+                    @Override
+                    public void onPlus(String ingredientKey) {
+                        userItemsVM.plusAmount(ingredientKey);
+                    }
 
 					@Override
 					public void onMinus(String ingredientKey) {
