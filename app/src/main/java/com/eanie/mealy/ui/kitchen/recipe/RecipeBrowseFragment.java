@@ -10,6 +10,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import static com.eanie.mealy.models.UserDataViewModel.withUserId;
 
@@ -20,6 +21,9 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		discoveryVM = getDefaultViewModelProviderFactory().create(DiscoveryViewModel.class);
+
+		var provider = new ViewModelProvider(requireActivity());
+		discoveryVM = provider.get(DiscoveryViewModel.class);
 	}
 
 	@Override

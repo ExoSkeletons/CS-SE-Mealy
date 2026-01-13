@@ -16,6 +16,7 @@ import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,8 +41,9 @@ public class RecipeFragment extends Fragment {
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		userItemsVM = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
-		recipeVM = getDefaultViewModelProviderFactory().create(SingleRecipeViewModel.class);
+		var provider = new ViewModelProvider(requireActivity());
+		userItemsVM = provider.get(UserItemsViewModel.class);
+		recipeVM = provider.get(SingleRecipeViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {

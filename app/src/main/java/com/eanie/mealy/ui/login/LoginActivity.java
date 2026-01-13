@@ -15,6 +15,7 @@ import com.eanie.mealy.databinding.ActivityLoginBinding;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 public class LoginActivity extends AppCompatActivity {
 	private LoginViewModel loginViewModel;
@@ -27,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 		setContentView(binding.getRoot());
 
 
-		loginViewModel = getDefaultViewModelProviderFactory().create(LoginViewModel.class);
+		loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
 		final EditText usernameEditText = binding.username;
 		final EditText passwordEditText = binding.password;

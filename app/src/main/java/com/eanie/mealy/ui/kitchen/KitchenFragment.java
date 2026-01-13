@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,9 +40,10 @@ public class KitchenFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		// ViewModels
-		userItemsVM = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
-		discoveryVM = getDefaultViewModelProviderFactory().create(DiscoveryViewModel.class);
-		userInfoVM = getDefaultViewModelProviderFactory().create(UserInfoViewModel.class);
+		var provider = new ViewModelProvider(requireActivity());
+		userItemsVM = provider.get(UserItemsViewModel.class);
+		discoveryVM = provider.get(DiscoveryViewModel.class);
+		userInfoVM = provider.get(UserInfoViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {

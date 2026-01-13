@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,7 +62,7 @@ public abstract class RecipeListFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		userInfoVM = getDefaultViewModelProviderFactory().create(UserInfoViewModel.class);
+		userInfoVM = new ViewModelProvider(requireActivity()).get(UserInfoViewModel.class);
 		if (getArguments() != null) {
 			userId = getArguments().getString(ARG_UUID);
 			userInfoVM.setUserId(userId);
