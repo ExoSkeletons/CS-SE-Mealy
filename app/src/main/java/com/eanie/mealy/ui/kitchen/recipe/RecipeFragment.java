@@ -78,7 +78,7 @@ public class RecipeFragment extends Fragment {
 		recipeVM.instructions.observe(getViewLifecycleOwner(), instructions -> ((TextView) view.findViewById(R.id.tv_preparation)).setText(instructions));
 
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
-		KitchenItemAdapter adapter = new KitchenItemAdapter(false);
+		KitchenItemAdapter adapter = new KitchenItemAdapter();
 		rvIngredients.setAdapter(adapter);
 		rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
 		recipeVM.ingredients.observe(getViewLifecycleOwner(), adapter::submitList);

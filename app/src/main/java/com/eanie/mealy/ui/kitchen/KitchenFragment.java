@@ -11,6 +11,7 @@ import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -64,14 +65,21 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+        View myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
+        boolean isChef = true; //demo
+        myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
+        myRecipesBtn.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.container, new MyRecipesFragment())
+                    .addToBackStack("my-recipes")
+                    .commit();
+        });
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
 		if (user != null)
 			((TextView) view.findViewById(R.id.tv_username)).setText(user.getDisplayName());
 
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
-				true,
-				true,
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
@@ -84,6 +92,10 @@ public class KitchenFragment extends Fragment {
 					}
 				}
 		);
+		adapter.setShowQuantity(true);
+		adapter.setShowName(true);
+		adapter.setShowIcon(true);
+		adapter.setMinimalStyle(true);
 		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -138,7 +150,11 @@ public class KitchenFragment extends Fragment {
 			return;
 		}
 
-		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
+		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter();
+		dialogAdapter.setShowQuantity(false);
+		dialogAdapter.setShowName(true);
+		dialogAdapter.setShowIcon(true);
+		dialogAdapter.setMinimalStyle(false);
 		dialogAdapter.setSelectionMode(true);
 		RecyclerView rv = new RecyclerView(requireContext());
 		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
