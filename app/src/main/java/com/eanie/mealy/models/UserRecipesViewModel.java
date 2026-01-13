@@ -1,13 +1,13 @@
 package com.eanie.mealy.models;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import com.eanie.mealy.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -34,6 +34,9 @@ public class UserRecipesViewModel extends UserDataViewModel {
 		if (getUserId() == null) return;
 		recipe.setChefId(getUserId());
 		recipe.setId(null);
-		repo.insert(recipe);
+		repo.insert(recipe, recipe::setId, e -> {
+			e.printStackTrace();
+			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+		});
 	}
 }

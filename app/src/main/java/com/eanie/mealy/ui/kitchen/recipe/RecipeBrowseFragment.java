@@ -6,6 +6,8 @@ import android.view.View;
 import com.eanie.mealy.R;
 import com.eanie.mealy.models.DiscoveryViewModel;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -51,9 +53,9 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 
 	@Override
 	protected void observeData() {
-		/*discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
-			if (recipes == null) adapter.submitList(Collections.emptyList());
-			else adapter.submitList(new ArrayList<>(recipes));
-		});*/
+		discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
+			if (recipes == null) adapter().submitList(List.of());
+			else adapter().submitList(recipes);
+		});
 	}
 }

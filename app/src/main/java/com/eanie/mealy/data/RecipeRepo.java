@@ -1,6 +1,8 @@
 package com.eanie.mealy.data;
 
 import com.eanie.mealy.Recipe;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -24,10 +26,14 @@ public class RecipeRepo {
 		);
 	}
 
-	public void insert(Recipe recipe) {
+	public void insert(Recipe recipe, OnSuccessListener<String> onSuccessListener, OnFailureListener onFailureListener) {
 		db
 				.collection("recipes")
-				.add(recipe);
+				.add(recipe)
+				.addOnFailureListener(onFailureListener)
+				.addOnSuccessListener(documentReference ->
+						onSuccessListener.onSuccess(documentReference.getId())
+				);
 	}
 
 	public void delete(Recipe recipe) {

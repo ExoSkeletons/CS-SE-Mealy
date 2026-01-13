@@ -11,6 +11,7 @@ import com.eanie.mealy.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,88 +23,115 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
-    private final OnRecipeClickListener listener;
+	public interface OnRecipeClickListener {
+		void onRecipeClick(Recipe recipe);
+	}
 
-    public interface OnRecipeClickListener {
-        void onRecipeClick(Recipe recipe);
-    }
+	public interface OnFavoriteClickListener {
+		void onFavorited(Recipe recipe, boolean isFavorite);
+	}
 
-    public RecipeAdapter(OnRecipeClickListener listener) {
-        super(new RecipeItemItemCallback());
-        this.listener = listener;
-    }
+	private final OnRecipeClickListener clickListener;
+	private final OnFavoriteClickListener favoriteListener;
 
-    @NonNull
-    @Override
-    public RecipeItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recipe_item, parent, false);
-        return new RecipeItemViewHolder(view);
-    }
+	private final List<String> favorites = new ArrayList<>();
+	private boolean showFavored = false;
 
-    @Override
-    public void onBindViewHolder(@NonNull RecipeItemViewHolder holder, int position) {
-        Recipe recipe = getItem(position);
+	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
+		super(new RecipeItemItemCallback());
+		this.clickListener = clickListener;
+		this.favoriteListener = favoriteListener;
+	}
 
-        holder.titleTextView.setText(recipe.getName());
-        holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
+	public void submitFavourites(List<String> favorites) {
+		this.favorites.clear();
+		this.favorites.addAll(favorites);
+		notifyDataSetChanged();
+	}
 
-        holder.favoriteCheckBox.setChecked(FavoritesStore.isFavorite(recipe));
-	    holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> FavoritesStore.setFavorite(recipe, isChecked));
+	public void favoritesEnabled(boolean enable) {
+		this.showFavored = enable;
+		notifyDataSetChanged();
+	}
 
-        List<KitchenItem> ingredients = recipe.getIngredients();
-        if (ingredients == null || ingredients.isEmpty()) {
-            holder.ingredientsRv.setVisibility(View.GONE);
-        } else {
-            holder.ingredientsRv.setVisibility(View.VISIBLE);
-	        holder.ingredientsAdapter.submitList(limit(ingredients, 8));
-        }
+	@NonNull
+	@Override
+	public RecipeItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(parent.getContext())
+				.inflate(R.layout.recipe_item, parent, false);
+		return new RecipeItemViewHolder(view);
+	}
 
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onRecipeClick(recipe);
-        });
+	@Override
+	public void onBindViewHolder(@NonNull RecipeItemViewHolder holder, int position) {
+		Recipe recipe = getItem(position);
+		if (recipe == null) return;
 
-    }
-    private static <T> List<T> limit(List<T> list, int max) {
-        if (list == null) return List.of();
-        return list.size() <= max ? list : list.subList(0, max);
-    }
+		holder.titleTextView.setText(recipe.getName());
+		holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
+
+		holder.favoriteCheckBox.setVisibility(showFavored ? View.VISIBLE : View.GONE);
+		holder.favoriteCheckBox.setChecked(showFavored && favorites.contains(recipe.getId()));
+		holder.favoriteCheckBox.setEnabled(favoriteListener != null);
+		holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+			if (favoriteListener != null)
+				favoriteListener.onFavorited(recipe, isChecked);
+		});
+
+		List<KitchenItem> ingredients = recipe.getIngredients();
+		if (ingredients == null || ingredients.isEmpty()) {
+			holder.ingredientsRv.setVisibility(View.GONE);
+		} else {
+			holder.ingredientsRv.setVisibility(View.VISIBLE);
+			holder.ingredientsAdapter.submitList(limit(ingredients, 8));
+		}
+
+		holder.itemView.setOnClickListener(v -> {
+			if (clickListener != null) clickListener.onRecipeClick(recipe);
+		});
+
+	}
+
+	private static <T> List<T> limit(List<T> list, int max) {
+		if (list == null) return List.of();
+		return list.size() <= max ? list : list.subList(0, max);
+	}
 
 
-    public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView descriptionTextView;
-        RecyclerView ingredientsRv;
-	    KitchenItemAdapter ingredientsAdapter;
-        CheckBox favoriteCheckBox;
+	public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
+		TextView titleTextView;
+		TextView descriptionTextView;
+		RecyclerView ingredientsRv;
+		KitchenItemAdapter ingredientsAdapter;
+		CheckBox favoriteCheckBox;
 
-        public RecipeItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            titleTextView = itemView.findViewById(R.id.tv_recipe_name);
-            descriptionTextView = itemView.findViewById(R.id.tv_recipe_description);
-            ingredientsRv = itemView.findViewById(R.id.rv_ingredients_preview);
-	        ingredientsAdapter = new KitchenItemAdapter();
-	        ingredientsAdapter.setShowQuantity(false);
-	        ingredientsAdapter.setShowName(false);
-	        ingredientsAdapter.setShowIcon(true);
-            favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
+		public RecipeItemViewHolder(@NonNull View itemView) {
+			super(itemView);
+			titleTextView = itemView.findViewById(R.id.tv_recipe_name);
+			descriptionTextView = itemView.findViewById(R.id.tv_recipe_description);
+			ingredientsRv = itemView.findViewById(R.id.rv_ingredients_preview);
+			ingredientsAdapter = new KitchenItemAdapter();
+			ingredientsAdapter.setShowQuantity(false);
+			ingredientsAdapter.setShowName(false);
+			ingredientsAdapter.setShowIcon(true);
+			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
 
-            ingredientsRv.setLayoutManager(
-                    new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
-            );
-            ingredientsRv.setAdapter(ingredientsAdapter);
-        }
-    }
+			ingredientsRv.setLayoutManager(
+					new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
+			);
+			ingredientsRv.setAdapter(ingredientsAdapter);
+		}
+	}
 
-    private static class RecipeItemItemCallback extends DiffUtil.ItemCallback<Recipe> {
-        @Override
-        public boolean areItemsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-            return oldItem == newItem;
-        }
+	private static class RecipeItemItemCallback extends DiffUtil.ItemCallback<Recipe> {
+		@Override
+		public boolean areItemsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
+			return oldItem == newItem;
+		}
 
-        @Override
-        public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-            return Objects.equals(oldItem.getId(), newItem.getId());
-        }
-    }
+		@Override
+		public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
+			return Objects.equals(oldItem.getId(), newItem.getId());
+		}
+	}
 }

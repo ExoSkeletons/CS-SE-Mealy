@@ -15,6 +15,9 @@ public class FavoriteRecipesFragment extends RecipeListFragment {
 
 	@Override
 	protected void observeData() {
-		adapter().submitList(FavoritesStore.getFavorites());
+		favoriteRecipes().observe(getViewLifecycleOwner(), recipes -> {
+			if (recipes == null) return;
+			adapter().submitList(recipes);
+		});
 	}
 }

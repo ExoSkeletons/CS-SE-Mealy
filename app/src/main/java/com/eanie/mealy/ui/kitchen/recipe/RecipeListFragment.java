@@ -9,19 +9,26 @@ import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.Recipe;
 import com.eanie.mealy.UnitType;
+import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserDataViewModel.withUserId;
 
 public abstract class RecipeListFragment extends Fragment {
+	private UserInfoViewModel userInfoVM;
+
 	private RecipeAdapter adapter;
 	private String userId;
 
@@ -33,6 +40,18 @@ public abstract class RecipeListFragment extends Fragment {
 		return adapter;
 	}
 
+	LiveData<List<String>> favoriteRecipeIds() {
+		return Transformations.map(userInfoVM.favoriteRecipes, recipes ->
+				recipes.stream()
+						.map(Recipe::getId)
+						.collect(Collectors.toList())
+		);
+	}
+
+	protected LiveData<List<Recipe>> favoriteRecipes() {
+		return userInfoVM.favoriteRecipes;
+	}
+
 	protected abstract int getLayoutId();
 
 	protected int getRecyclerViewId() {
@@ -42,7 +61,11 @@ public abstract class RecipeListFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) userId = getArguments().getString(ARG_UUID);
+		userInfoVM = getDefaultViewModelProviderFactory().create(UserInfoViewModel.class);
+		if (getArguments() != null) {
+			userId = getArguments().getString(ARG_UUID);
+			userInfoVM.setUserId(userId);
+		}
 	}
 
 	@Nullable
@@ -54,24 +77,30 @@ public abstract class RecipeListFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		RecyclerView rv = view.findViewById(getRecyclerViewId());
-		adapter = new RecipeAdapter(recipe -> {
-			getParentFragmentManager().beginTransaction()
-					.replace(R.id.container, RecipeFragment.newInstance(userId, recipe))
-					.addToBackStack("recipe-full")
-					.commit();
-		});
+		adapter = new RecipeAdapter(
+				recipe ->
+						getParentFragmentManager().beginTransaction()
+								.replace(R.id.container, withUserId(userId, RecipeFragment.newInstance(recipe)))
+								.addToBackStack("recipe-full")
+								.commit(),
+				(recipe, isFavorite) -> userInfoVM.setFavorite(recipe.getId(), isFavorite)
+		);
+		adapter.favoritesEnabled(true);
+
 		rv.setLayoutManager(new LinearLayoutManager(getContext()));
 		rv.setAdapter(adapter);
 
-		adapter.submitList(demoRecipes());
-
+		favoriteRecipeIds().observe(getViewLifecycleOwner(), recipes -> {
+			if (recipes == null) return;
+			adapter.submitFavourites(recipes);
+		});
 		observeData();
 	}
 
 	protected abstract void observeData();
 
 
-	private static List<Recipe> demoRecipes() {
+	static List<Recipe> demoRecipes() {
 		String demoChef = "demo-chef";
 		return List.of(
 				new Recipe(
@@ -87,9 +116,18 @@ public abstract class RecipeListFragment extends Fragment {
 				),
 				new Recipe(
 						"456",
-						"Vegetable Stir-Fry",
+						"Vegetable Soup",
 						"Quick dinner with mixed vegetables.",
-						List.of(),
+						List.of(
+								new KitchenItem("ing_potato", new Quantity(4)),
+								new KitchenItem("ing_onion", new Quantity(3)),
+								new KitchenItem("ing_carrot", new Quantity(2)),
+								new KitchenItem("ing_mushroom", new Quantity(200, UnitType.GRAMS)),
+								new KitchenItem("ing_zucchini", new Quantity(1)),
+								new KitchenItem("ing_oil", new Quantity(10, UnitType.GRAMS)),
+								new KitchenItem("ing_pepper", new Quantity(0.2, UnitType.TABLE_SPOONS)),
+								new KitchenItem("ing_salt", new Quantity(0.2, UnitType.TABLE_SPOONS))
+						),
 						demoChef
 				),
 				new Recipe(

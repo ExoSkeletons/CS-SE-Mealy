@@ -7,16 +7,19 @@ import com.eanie.mealy.models.UserRecipesViewModel;
 
 import androidx.annotation.Nullable;
 
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+
 public class MyRecipesFragment extends RecipeListFragment {
 	UserRecipesViewModel userRecipesVM;
-
-	public MyRecipesFragment() {
-	}
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		userRecipesVM = getDefaultViewModelProviderFactory().create(UserRecipesViewModel.class);
+		if (getArguments() != null) {
+			var userId = getArguments().getString(ARG_UUID);
+			userRecipesVM.setUserId(userId);
+		}
 	}
 
 	@Override
