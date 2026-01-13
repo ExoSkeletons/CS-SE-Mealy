@@ -43,7 +43,7 @@ public class IngredientPreviewAdapter extends RecyclerView.Adapter<IngredientPre
         return items.size();
     }
 
-    static class VH extends RecyclerView.ViewHolder {
+	public static class VH extends RecyclerView.ViewHolder {
         private final ImageView iv;
         private final Context context;
 

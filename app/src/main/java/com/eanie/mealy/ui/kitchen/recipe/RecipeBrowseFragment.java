@@ -100,4 +100,11 @@ public class RecipeBrowseFragment extends Fragment {
 		});*/
 	}
 
+	@Override
+	protected void observeData() {
+		/*discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
+			if (recipes == null) adapter.submitList(Collections.emptyList());
+			else adapter.submitList(new ArrayList<>(recipes));
+		});*/
+	}
 }
