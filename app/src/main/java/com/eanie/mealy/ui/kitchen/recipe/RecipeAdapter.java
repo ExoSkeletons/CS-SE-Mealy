@@ -6,12 +6,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.eanie.mealy.R;
 import com.eanie.mealy.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
@@ -19,6 +13,12 @@ import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.List;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
@@ -83,6 +83,9 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
             descriptionTextView = itemView.findViewById(R.id.tv_recipe_description);
             ingredientsRv = itemView.findViewById(R.id.rv_ingredients_preview);
 	        ingredientsAdapter = new KitchenItemAdapter();
+	        ingredientsAdapter.setShowQuantity(false);
+	        ingredientsAdapter.setShowName(false);
+	        ingredientsAdapter.setShowIcon(true);
             favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
 
             ingredientsRv.setLayoutManager(

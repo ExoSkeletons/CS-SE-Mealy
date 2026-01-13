@@ -1,18 +1,9 @@
 package com.eanie.mealy.ui.kitchen;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
@@ -24,6 +15,15 @@ import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
@@ -74,8 +74,6 @@ public class KitchenFragment extends Fragment {
         });
 
         KitchenItemAdapter adapter = new KitchenItemAdapter(
-				true,
-				true,
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
@@ -88,6 +86,10 @@ public class KitchenFragment extends Fragment {
 					}
 				}
 		);
+		adapter.setShowQuantity(true);
+		adapter.setShowName(true);
+		adapter.setShowIcon(true);
+		adapter.setMinimalStyle(true);
 		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -142,7 +144,11 @@ public class KitchenFragment extends Fragment {
 			return;
 		}
 
-		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter(false, true, null);
+		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter();
+		dialogAdapter.setShowQuantity(false);
+		dialogAdapter.setShowName(true);
+		dialogAdapter.setShowIcon(true);
+		dialogAdapter.setMinimalStyle(false);
 		dialogAdapter.setSelectionMode(true);
 		RecyclerView rv = new RecyclerView(requireContext());
 		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));

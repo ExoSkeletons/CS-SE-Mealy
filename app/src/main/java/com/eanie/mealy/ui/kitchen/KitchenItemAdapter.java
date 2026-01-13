@@ -27,28 +27,44 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		void onMinus(String ingredientKey);
 	}
 
-	private final boolean minimalStyle;
-	private final boolean showIcon;
-	private final OnQuantityChangeListener quantityListener;
+	private boolean minimalStyle = false;
+	private boolean showIcon = true;
+	private boolean showQuantity = true;
+	private boolean showName = true;
 
 	private boolean isSelectionEnabled = false;
 	private final Set<String> selectedKeys = new HashSet<>();
 
-	public KitchenItemAdapter(boolean minimalStyle, boolean showIcon, OnQuantityChangeListener quantityListener) {
+	private final OnQuantityChangeListener quantityListener;
+
+	public KitchenItemAdapter(OnQuantityChangeListener quantityListener) {
 		super(new KitchenItemItemCallback());
-		this.minimalStyle = minimalStyle;
-		this.showIcon = showIcon;
 		this.quantityListener = quantityListener;
 	}
 
-	public KitchenItemAdapter(boolean minimalStyle, boolean showIcon) {
-		this(minimalStyle, showIcon, null);
+	public KitchenItemAdapter() {
+		this(null);
 	}
 
-	public KitchenItemAdapter(boolean showIcon) {
-		this(true, showIcon);
+	public void setMinimalStyle(boolean minimalStyle) {
+		this.minimalStyle = minimalStyle;
+		notifyDataSetChanged();
 	}
 
+	public void setShowIcon(boolean showIcon) {
+		this.showIcon = showIcon;
+		notifyDataSetChanged();
+	}
+
+	public void setShowQuantity(boolean showQuantity) {
+		this.showQuantity = showQuantity;
+		notifyDataSetChanged();
+	}
+
+	public void setShowName(boolean showName) {
+		this.showName = showName;
+		notifyDataSetChanged();
+	}
 
 	public void setSelectionMode(boolean enabled) {
 		this.isSelectionEnabled = enabled;
@@ -104,9 +120,12 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		// data binding
 		holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), itemKey, itemKey));
 		holder.quantityTextView.setText(item.getQuantity().toString());
-		if (!showIcon)
-			holder.iconImageView.setVisibility(View.GONE);
-		else {
+
+		// visibility
+		holder.nameTextView.setVisibility(showName ? View.VISIBLE : View.GONE);
+		holder.quantityTextView.setVisibility(showQuantity ? View.VISIBLE : View.GONE);
+		holder.quantityContainer.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
+		if (showIcon) {
 			holder.iconImageView.setImageDrawable(
 					Resources.getDrawable(
 							holder.itemView.getContext(),
@@ -115,12 +134,11 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 					)
 			);
 			holder.iconImageView.setVisibility(View.VISIBLE);
-		}
+		} else
+			holder.iconImageView.setVisibility(View.GONE);
 
 		// quantity controls
 		if (quantityListener != null) {
-			holder.quantityContainer.setVisibility(View.VISIBLE);
-			// ===== כפתור + =====
 			holder.btnIncrease.setOnClickListener(v -> {
 				int pos = holder.getBindingAdapterPosition();
 				if (pos == RecyclerView.NO_POSITION) return;
@@ -128,7 +146,6 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 				KitchenItem current = getItem(pos);
 				quantityListener.onPlus(current.getIngredientKey());
 			});
-			// ===== כפתור - =====
 			holder.btnDecrease.setOnClickListener(v -> {
 				int pos = holder.getBindingAdapterPosition();
 				if (pos == RecyclerView.NO_POSITION) return;
@@ -136,8 +153,6 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 				KitchenItem current = getItem(pos);
 				quantityListener.onMinus(current.getIngredientKey());
 			});
-		} else {
-			holder.quantityContainer.setVisibility(View.GONE);
 		}
 	}
 
