@@ -14,7 +14,7 @@ public class RecipeRepo {
 		return new FirestoreQueryLiveData<>(Recipe.class,
 				db
 						.collection("recipes")
-						.whereEqualTo("userId", userId)
+						.whereEqualTo("chefId", userId)
 		);
 	}
 
