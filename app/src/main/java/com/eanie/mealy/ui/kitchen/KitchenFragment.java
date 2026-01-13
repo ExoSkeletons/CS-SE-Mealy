@@ -10,6 +10,7 @@ import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
+import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
+	private UserInfoViewModel userInfoVM;
 	private DiscoveryViewModel discoveryVM;
 
 	public static KitchenFragment newInstance(String userId) {
@@ -46,11 +48,15 @@ public class KitchenFragment extends Fragment {
 		// ViewModels
 		userItemsVM = getDefaultViewModelProviderFactory().create(UserItemsViewModel.class);
 		discoveryVM = getDefaultViewModelProviderFactory().create(DiscoveryViewModel.class);
+		userInfoVM = getDefaultViewModelProviderFactory().create(UserInfoViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {
 			var userId = args.getString(ARG_UUID, null);
-			if (userId != null) userItemsVM.setUserId(userId);
+			if (userId != null) {
+				userItemsVM.setUserId(userId);
+				userInfoVM.setUserId(userId);
+			}
 		}
 	}
 
@@ -65,15 +71,15 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-        View myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
-        boolean isChef = true; //demo
-        myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
-        myRecipesBtn.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.container, new MyRecipesFragment())
-                    .addToBackStack("my-recipes")
-                    .commit();
-        });
+		View myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
+		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef ->
+				myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE)
+		);
+		myRecipesBtn.setOnClickListener(v ->
+				getParentFragmentManager().beginTransaction()
+						.replace(R.id.container, new MyRecipesFragment())
+						.addToBackStack("my-recipes")
+						.commit());
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
 		if (user != null)

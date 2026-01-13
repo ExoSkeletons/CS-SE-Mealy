@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class UserDataViewModel extends AndroidViewModel {
@@ -26,7 +27,7 @@ public class UserDataViewModel extends AndroidViewModel {
 		return userId.getValue();
 	}
 
-	public MutableLiveData<String> userId() {
+	public LiveData<String> userId() {
 		return userId;
 	}
 }
