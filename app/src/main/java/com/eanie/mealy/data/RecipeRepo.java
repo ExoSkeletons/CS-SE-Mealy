@@ -8,7 +8,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 
 public class RecipeRepo {
-	FirebaseFirestore db = FirebaseFirestore.getInstance();
+	private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 	public LiveData<List<Recipe>> recipesOf(String userId) {
 		return new FirestoreQueryLiveData<>(Recipe.class,
