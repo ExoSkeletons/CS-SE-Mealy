@@ -6,16 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
-import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -107,17 +104,6 @@ public class KitchenFragment extends Fragment {
 		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-		// demo
-		var demoItems = List.of(
-				new KitchenItem("ing_apple", new Quantity(5)),
-				new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)),
-				new KitchenItem("ing_cucumber", new Quantity(3)),
-				new KitchenItem("ing_milk", new Quantity(1.5, UnitType.LITERS)),
-				new KitchenItem("ing_bread", new Quantity(2, UnitType.KILOGRAMS))
-		);
-		adapter.submitList(demoItems);
-		discoveryVM.updateIngredients(demoItems);
 
 		// open add items dialog
 		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
