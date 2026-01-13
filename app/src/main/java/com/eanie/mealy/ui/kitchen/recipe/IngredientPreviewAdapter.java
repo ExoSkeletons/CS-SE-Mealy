@@ -64,7 +64,7 @@ public class IngredientPreviewAdapter extends RecyclerView.Adapter<IngredientPre
 
             String[] candidates = new String[] {
                     (key == null ? null : "ic_" + key),
-                    (key == null ? null : key),
+		            key,
                     (key == null ? null : "ic_" + key.replace("ing_", ""))
             };
 
