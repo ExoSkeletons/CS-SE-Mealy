@@ -36,12 +36,4 @@ public class UserRecipesViewModel extends UserDataViewModel {
 		recipe.setId(null);
 		repo.insert(recipe);
 	}
-
-	public void set(Recipe recipe) {
-		if (getUserId() == null) return;
-		recipe.setChefId(getUserId());
-		if (Objects.requireNonNull(myRecipes.getValue()).stream()
-				.noneMatch(r -> r.getId().equals(recipe.getId()))) return;
-		repo.insert(recipe);
-	}
 }
