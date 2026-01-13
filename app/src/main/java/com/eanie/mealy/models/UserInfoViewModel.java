@@ -24,6 +24,11 @@ public class UserInfoViewModel extends UserDataViewModel {
 		super(application);
 	}
 
+	protected void updateData(UserData data) {
+		if (data == null) return;
+		repo.insert(getUserId(), data);
+	}
+
 	public LiveData<Boolean> isChef() {
 		return isChef;
 	}
@@ -34,6 +39,6 @@ public class UserInfoViewModel extends UserDataViewModel {
 		var data = userData.getValue();
 		if (data == null) return;
 		data.setIsChef(isChef);
-		repo.insert(getUserId(), data);
+		updateData(data);
 	}
 }
