@@ -1,43 +1,51 @@
 package com.eanie.mealy;
 
-import androidx.annotation.NonNull;
-
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+
 public final class Recipe implements Serializable {
-    @DocumentId
-    private String id;
-    private String name;
-    private String instructions;
-    private List<KitchenItem> ingredients;
-    private String chefId;
-    public Recipe() {
-        this.ingredients = new ArrayList<>();
-    }
-    public Recipe(
-            String id,
-            String name,
-            String instructions,
-            List<KitchenItem> ingredients,
-            String chefId
-    ) {
-        this.id = id;
-        this.name = name;
-        this.instructions = instructions;
-        this.ingredients = ingredients;
-        this.chefId = chefId;
-    }
+	@DocumentId
+	private String id;
+	private String name;
+	private String instructions;
+	private List<KitchenItem> ingredients;
+	private String chefId;
+
+	public Recipe() {
+		this.ingredients = new ArrayList<>();
+	}
+
+	public Recipe(
+			String id,
+			String name,
+			String instructions,
+			List<KitchenItem> ingredients,
+			String chefId
+	) {
+		this.id = id;
+		this.name = name;
+		this.instructions = instructions;
+		this.ingredients = ingredients;
+		this.chefId = chefId;
+	}
 
 	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
-        return new HashSet<>(ingredients).containsAll(this.ingredients);
-    }
+		for (KitchenItem ri : this.ingredients)
+			for (KitchenItem mi : ingredients)
+				if (Objects.equals(ri.getIngredientKey(), mi.getIngredientKey())) {
+					if (!(mi.getQuantity().getAmount() >= ri.getQuantity().getAmount()))
+						return false;
+					break;
+				}
+		return true;
+	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -50,9 +58,11 @@ public final class Recipe implements Serializable {
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
-    public void setIngredients(List<KitchenItem> ingredients) {
-        this.ingredients = ingredients;
-    }
+
+	public void setIngredients(List<KitchenItem> ingredients) {
+		this.ingredients = ingredients;
+	}
+
 	public void setChefId(String chefId) {
 		this.chefId = chefId;
 	}
