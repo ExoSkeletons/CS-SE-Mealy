@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.eanie.mealy.R;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class IngredientPreviewAdapter extends RecyclerView.Adapter<IngredientPreviewAdapter.VH> {
 
