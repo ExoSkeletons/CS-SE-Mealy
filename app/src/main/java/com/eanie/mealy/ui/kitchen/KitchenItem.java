@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 public class KitchenItem implements Cloneable, Serializable {
 	@DocumentId
+	private String documentId;
 	private String ingredientKey;
 	private Quantity quantity;
 
@@ -22,7 +23,11 @@ public class KitchenItem implements Cloneable, Serializable {
 	}
 
 	public String getIngredientKey() {
-		return ingredientKey;
+		return ingredientKey != null ? ingredientKey : documentId;
+	}
+
+	public String getDocumentId() {
+		return documentId != null ? documentId : ingredientKey;
 	}
 
 	public void setIngredientKey(String ingredientKey) {
