@@ -46,12 +46,9 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
         holder.titleTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
-        holder.favoriteCheckBox.setOnCheckedChangeListener(null);
-        holder.favoriteCheckBox.setChecked(FavoritesStore.isFavorite(recipe));
 
-        holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            FavoritesStore.setFavorite(recipe, isChecked);
-        });
+        holder.favoriteCheckBox.setChecked(FavoritesStore.isFavorite(recipe));
+	    holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> FavoritesStore.setFavorite(recipe, isChecked));
 
         List<KitchenItem> ingredients = recipe.getIngredients();
         if (ingredients == null || ingredients.isEmpty()) {
