@@ -82,9 +82,16 @@ public class KitchenFragment extends Fragment {
 						.commit());
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
-		if (user != null)
-			((TextView) view.findViewById(R.id.tv_username)).setText(user.getDisplayName());
-
+		if (user != null) {
+			var name = user.getDisplayName();
+			if (name != null) {
+				var firstName = name.split(" ")[0];
+				var capitalizedName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+				((TextView) view.findViewById(R.id.tv_username)).setText(
+						requireContext().getString(R.string.s_kitchen_title, capitalizedName)
+				);
+			}
+		}
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override

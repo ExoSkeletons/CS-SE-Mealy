@@ -32,4 +32,5 @@
     <string name="login_failed">"Login failed"</string>
     <string name="registration_failed">Registration Failed</string>
     <string name="web_client_id">549702177131-hob22c3grna2ckv6l0tgbqkmssn1od07.apps.googleusercontent.com</string>
+    <string name="s_kitchen_title">%s\'s Kitchen</string>
 </resources>
