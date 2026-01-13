@@ -5,8 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/s3"
-    app:cardCornerRadius="@dimen/r4"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="@android:color/darker_gray"
@@ -14,8 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/s4">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_recipe_name"
@@ -27,14 +24,12 @@
             tools:text="Chocolate Cake"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_favorite"
-            android:layout_marginEnd="@dimen/s3" />
+            app:layout_constraintEnd_toStartOf="@id/btn_favorite" />
 
         <TextView
             android:id="@+id/tv_recipe_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/s2"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:textColor="?attr/colorOnSurface"
             android:alpha="0.75"
@@ -43,13 +38,11 @@
             tools:text="Rich chocolate cake with ganache frosting"
             app:layout_constraintTop_toBottomOf="@id/tv_recipe_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_favorite"
-            android:layout_marginEnd="@dimen/s3"/>
+            app:layout_constraintEnd_toStartOf="@id/btn_favorite" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_ingredients_preview"
             android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginTop="@dimen/s3"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingEnd="48dp"
@@ -74,8 +67,5 @@
             android:contentDescription="Favorite"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
