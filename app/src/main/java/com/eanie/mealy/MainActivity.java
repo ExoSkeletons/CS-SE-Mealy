@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.eanie.mealy.models.UserDataViewModel.withUserId;
+
 public class MainActivity extends AppCompatActivity {
 	public static void start(Activity activity) {
 		Intent intent = new Intent(activity, MainActivity.class);
@@ -40,20 +42,19 @@ public class MainActivity extends AppCompatActivity {
 
 		if (savedInstanceState == null) showKitchenFragment();
 
-		// ליסטנרים ללשוניות
 		btnTabKitchen.setOnClickListener(v -> showKitchenFragment());
 		btnTabRecipes.setOnClickListener(v -> showRecipesFragment());
 	}
 
 	private void showKitchenFragment() {
 		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, KitchenFragment.newInstance(uuid))
+				.replace(R.id.container, withUserId(uuid, new KitchenFragment()))
 				.commit();
 	}
 
 	private void showRecipesFragment() {
 		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, RecipeBrowseFragment.newInstance(uuid))
+				.replace(R.id.container, withUserId(uuid, new RecipeBrowseFragment()))
 				.commit();
 	}
 }

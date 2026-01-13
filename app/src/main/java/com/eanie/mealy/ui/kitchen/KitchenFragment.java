@@ -27,19 +27,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserDataViewModel.withUserId;
 
 public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private UserInfoViewModel userInfoVM;
 	private DiscoveryViewModel discoveryVM;
-
-	public static KitchenFragment newInstance(String userId) {
-		var fragment = new KitchenFragment();
-		Bundle args = new Bundle();
-		args.putString(ARG_UUID, userId);
-		fragment.setArguments(args);
-		return fragment;
-	}
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +70,7 @@ public class KitchenFragment extends Fragment {
 		);
 		myRecipesBtn.setOnClickListener(v ->
 				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, new MyRecipesFragment())
+						.replace(R.id.container, withUserId(userItemsVM.getUserId(), new MyRecipesFragment()))
 						.addToBackStack("my-recipes")
 						.commit());
 

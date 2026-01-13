@@ -11,21 +11,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserDataViewModel.withUserId;
 
 public class RecipeBrowseFragment extends RecipeListFragment {
 	private DiscoveryViewModel discoveryVM;
-
-	public RecipeBrowseFragment() {
-	}
-
-	public static RecipeBrowseFragment newInstance(String userId) {
-		RecipeBrowseFragment fragment = new RecipeBrowseFragment();
-		Bundle args = new Bundle();
-		args.putString(ARG_UUID, userId);
-		fragment.setArguments(args);
-		return fragment;
-	}
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +35,7 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 		View btnFavorites = view.findViewById(R.id.btn_open_favorites);
 		btnFavorites.setOnClickListener(v ->
 				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, new FavoriteRecipesFragment())
+						.replace(R.id.container, withUserId(userId(), new FavoriteRecipesFragment()))
 						.addToBackStack("favorites")
 						.commit());
 	}
