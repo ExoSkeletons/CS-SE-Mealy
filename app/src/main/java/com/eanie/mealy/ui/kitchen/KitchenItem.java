@@ -9,6 +9,11 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 
 public class KitchenItem implements Cloneable, Serializable {
+	@NonNull
+	static String toKey(String name) {
+		return "ing_" + name.toLowerCase().replace(" ", "_");
+	}
+
 	@DocumentId
 	private String documentId;
 	private String ingredientKey;

@@ -1,18 +1,28 @@
 package com.eanie.mealy.ui.kitchen;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
+import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,9 +125,69 @@ public class KitchenFragment extends Fragment {
 		});
 	}
 
+	private static void showAddNewIngredientDialog(Context context, @Nullable List<KitchenItem> mItems, Consumer<KitchenItem> consumer) {
+		var iv = LayoutInflater.from(context).inflate(R.layout.dialog_kitchen_item_create, null);
+
+		var tvName = (TextView) iv.findViewById(R.id.tv_item_name);
+		var tvAmount = (TextView) iv.findViewById(R.id.tv_amount);
+		var spUnit = (Spinner) iv.findViewById(R.id.sp_unit_type);
+
+		var itemName = "";
+		if (mItems != null && !mItems.isEmpty()) {
+			var shuffled = new ArrayList<>(mItems);
+			Collections.shuffle(shuffled);
+			itemName = Resources.getString(context, shuffled.get(0).getIngredientKey(), itemName);
+		}
+		tvName.setHint(itemName);
+
+		tvAmount.setHint("" + 1.0);
+
+		var units = UnitType.values();
+		var uAdapter = new ArrayAdapter<>(
+				context,
+				android.R.layout.simple_spinner_dropdown_item,
+				units
+		);
+		spUnit.setAdapter(uAdapter);
+		spUnit.setSelection(UnitType.COUNT.ordinal());
+
+		new AlertDialog.Builder(context)
+				.setTitle("Add new ingredient")
+				.setView(iv)
+				.setPositiveButton("Add", (dialog, which) -> {
+					String name = tvName.getText().toString();
+					String amountText = tvAmount.getText().toString();
+					int unitPosition = spUnit.getSelectedItemPosition();
+
+					String key = KitchenItem.toKey(name);
+					double amount;
+					UnitType unitType;
+					try {
+						amount = Double.parseDouble(amountText);
+					} catch (RuntimeException e) {
+						Toast.makeText(context, "Invalid Amount", Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
+						return;
+					}
+					try {
+						unitType = UnitType.values()[unitPosition];
+					} catch (RuntimeException e) {
+						Toast.makeText(context, "Invalid Unit Type", Toast.LENGTH_SHORT).show();
+						unitType = UnitType.COUNT;
+					}
+
+					consumer.accept(new KitchenItem(key, new Quantity(amount, unitType)));
+				})
+				.setNegativeButton(android.R.string.cancel, null)
+				.show();
+	}
+
 	private void showAddIngredientsDialog() {
 		var mItems = userItemsVM.myItems().getValue();
-		var mIds = mItems == null ? null : mItems.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
+		var mIds = mItems == null ? null
+				: mItems.stream()
+				.map(KitchenItem::getIngredientKey)
+				.collect(Collectors.toList());
 		var items = Stream.of(
 						"ing_apple",
 						"ing_bread",
@@ -158,12 +228,13 @@ public class KitchenFragment extends Fragment {
 		new AlertDialog.Builder(requireContext())
 				.setTitle("Select ingredients to Add")
 				.setView(rv)
-				.setPositiveButton("Add Selected", (dialog, which) -> {
-					var selected = dialogAdapter.getSelectedKeys();
-					items.stream()
-							.filter(i -> selected.contains(i.getIngredientKey()))
-							.forEach(userItemsVM::addIngredient);
-				})
+				.setPositiveButton("Add Selected", (dialog, which) ->
+						items.stream()
+								.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
+								.forEach(userItemsVM::addIngredient))
+				.setNeutralButton("Create New Item", (dialog, which) ->
+						showAddNewIngredientDialog(requireContext(), mItems, userItemsVM::addIngredient)
+				)
 				.setNegativeButton(android.R.string.cancel, null)
 				.show();
 	}
