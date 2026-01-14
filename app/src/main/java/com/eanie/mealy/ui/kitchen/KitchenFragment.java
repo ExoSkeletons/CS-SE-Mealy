@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eanie.mealy.Quantifier;
 import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
@@ -130,6 +131,7 @@ public class KitchenFragment extends Fragment {
 
 		var tvName = (TextView) iv.findViewById(R.id.tv_item_name);
 		var tvAmount = (TextView) iv.findViewById(R.id.tv_amount);
+		var spQuant = (Spinner) iv.findViewById(R.id.sp_quant);
 		var spUnit = (Spinner) iv.findViewById(R.id.sp_unit_type);
 
 		var itemName = "";
@@ -141,6 +143,15 @@ public class KitchenFragment extends Fragment {
 		tvName.setHint(itemName);
 
 		tvAmount.setHint("" + 1.0);
+
+		var quants = Quantifier.values();
+		var qAdapter = new ArrayAdapter<>(
+				context,
+				android.R.layout.simple_spinner_dropdown_item,
+				quants
+		);
+		spQuant.setAdapter(qAdapter);
+		spQuant.setSelection(Quantifier.NONE.ordinal());
 
 		var units = UnitType.values();
 		var uAdapter = new ArrayAdapter<>(
@@ -157,10 +168,12 @@ public class KitchenFragment extends Fragment {
 				.setPositiveButton("Add", (dialog, which) -> {
 					String name = tvName.getText().toString();
 					String amountText = tvAmount.getText().toString();
+					int quantPosition = spQuant.getSelectedItemPosition();
 					int unitPosition = spUnit.getSelectedItemPosition();
 
 					String key = KitchenItem.toKey(name);
 					double amount;
+					Quantifier quant;
 					UnitType unitType;
 					try {
 						amount = Double.parseDouble(amountText);
@@ -175,8 +188,14 @@ public class KitchenFragment extends Fragment {
 						Toast.makeText(context, "Invalid Unit Type", Toast.LENGTH_SHORT).show();
 						unitType = UnitType.COUNT;
 					}
+					try {
+						quant = Quantifier.values()[quantPosition];
+					} catch (RuntimeException e) {
+						Toast.makeText(context, "Invalid Quantifier", Toast.LENGTH_SHORT).show();
+						quant = Quantifier.NONE;
+					}
 
-					consumer.accept(new KitchenItem(key, new Quantity(amount, unitType)));
+					consumer.accept(new KitchenItem(key, new Quantity(amount, unitType, quant)));
 				})
 				.setNegativeButton(android.R.string.cancel, null)
 				.show();
