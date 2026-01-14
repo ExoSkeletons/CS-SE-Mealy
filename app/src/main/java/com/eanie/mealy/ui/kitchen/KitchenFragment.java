@@ -234,6 +234,11 @@ public class KitchenFragment extends Fragment {
 					.setTitle("No ingredients left to buy")
 					.setMessage("You have everything!")
 					.setPositiveButton("Ok", null)
+					.setNeutralButton("Create New Item", (dialog, which) ->
+							showAddNewIngredientDialog(requireContext(), mItems, item -> {
+								itemsVM.add(item);
+								userItemsVM.addIngredient(item);
+							}))
 					.show();
 			return;
 		}
