@@ -15,6 +15,7 @@ import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
 import com.eanie.mealy.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
+import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
@@ -39,6 +40,7 @@ import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
 import static com.eanie.mealy.models.UserDataViewModel.withUserId;
 
 public class KitchenFragment extends Fragment {
+	private ItemsViewModel itemsVM;
 	private UserItemsViewModel userItemsVM;
 	private UserInfoViewModel userInfoVM;
 	private DiscoveryViewModel discoveryVM;
@@ -49,6 +51,7 @@ public class KitchenFragment extends Fragment {
 
 		// ViewModels
 		var provider = new ViewModelProvider(requireActivity());
+		itemsVM = provider.get(ItemsViewModel.class);
 		userItemsVM = provider.get(UserItemsViewModel.class);
 		discoveryVM = provider.get(DiscoveryViewModel.class);
 		userInfoVM = provider.get(UserInfoViewModel.class);
@@ -186,12 +189,14 @@ public class KitchenFragment extends Fragment {
 						unitType = UnitType.values()[unitPosition];
 					} catch (RuntimeException e) {
 						Toast.makeText(context, "Invalid Unit Type", Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
 						unitType = UnitType.COUNT;
 					}
 					try {
 						quant = Quantifier.values()[quantPosition];
 					} catch (RuntimeException e) {
 						Toast.makeText(context, "Invalid Quantifier", Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
 						quant = Quantifier.NONE;
 					}
 
@@ -207,7 +212,7 @@ public class KitchenFragment extends Fragment {
 				: mItems.stream()
 				.map(KitchenItem::getIngredientKey)
 				.collect(Collectors.toList());
-		var items = Stream.of(
+		var items = Stream.of( // todo: replace with itemsVM.ingredients()
 						"ing_apple",
 						"ing_bread",
 						"ing_butter",
@@ -252,7 +257,10 @@ public class KitchenFragment extends Fragment {
 								.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
 								.forEach(userItemsVM::addIngredient))
 				.setNeutralButton("Create New Item", (dialog, which) ->
-						showAddNewIngredientDialog(requireContext(), mItems, userItemsVM::addIngredient)
+						showAddNewIngredientDialog(requireContext(), mItems, item -> {
+							itemsVM.add(item);
+							userItemsVM.addIngredient(item);
+						})
 				)
 				.setNegativeButton(android.R.string.cancel, null)
 				.show();
