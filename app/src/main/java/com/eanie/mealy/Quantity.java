@@ -5,31 +5,39 @@ import java.io.Serializable;
 import androidx.annotation.NonNull;
 
 public class Quantity implements Cloneable, Serializable {
-	private double amount;
-	private UnitType unitType;
+	private double amount = 1.0;
+	private UnitType unitType = UnitType.COUNT;
+	private Quantifier quantifier = Quantifier.NONE;
 
 	public Quantity() {
 	}
 
 	public Quantity(double amount) {
-		this(amount, UnitType.COUNT);
+		this(amount, UnitType.COUNT, Quantifier.NONE);
 	}
 
 	public Quantity(UnitType unitType) {
-		this(1, unitType);
+		this(1, unitType, Quantifier.NONE);
 	}
 
 	public Quantity(double amount, UnitType unitType) {
-		this.amount = amount;
-		this.unitType = unitType;
+		this(amount, unitType, Quantifier.NONE);
 	}
+
+	public Quantity(double amount, UnitType unitType, Quantifier quantifier) {
+		this.unitType = unitType;
+		setAmount(quantifier.apply(amount));
+	}
+
 
 	public double getAmount() {
 		return amount;
 	}
 
 	public void setAmount(double amount) {
-		this.amount = amount;
+		var r = Quantifier.reduce(amount);
+		this.amount = r.second;
+		this.quantifier = r.first;
 	}
 
 	public UnitType getUnitType() {
@@ -44,21 +52,14 @@ public class Quantity implements Cloneable, Serializable {
 	@Override
 	public String toString() {
 		var amount = this.amount;
-		var quant = "";
-
-		if (amount < 1) {
-			quant = "m";
-			amount *= 100;
-		} else if (amount > 1000) {
-			quant = "K";
-			amount /= 1000;
-		}
+		var unitType = this.unitType;
+		var modifier = this.quantifier;
 
 		return
 				((long) amount == amount
 						? (long) amount
 						: String.format("%s", amount)
-				) + " " + quant + unitType.postfix;
+				) + " " + modifier.symbol + unitType.postfix;
 	}
 
 	@Override
