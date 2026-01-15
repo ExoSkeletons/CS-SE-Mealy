@@ -77,15 +77,23 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		View myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
-		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef ->
-				myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE)
-		);
+		var myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
+		var btnAddRecipe = view.findViewById(R.id.btn_add_recipe);
+		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef ->{
+				myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
+				btnAddRecipe.setVisibility(isChef? View.VISIBLE : View.GONE);
+		});
 		myRecipesBtn.setOnClickListener(v ->
 				getParentFragmentManager().beginTransaction()
 						.replace(R.id.container, withUserId(userItemsVM.getUserId(), new MyRecipesFragment()))
 						.addToBackStack("my-recipes")
 						.commit());
+		btnAddRecipe.setOnClickListener(v -> {
+			getParentFragmentManager().beginTransaction()
+					.replace(R.id.container, AddRecipeFragment.newInstance())
+					.addToBackStack("add-recipe")
+					.commit();
+		});
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
 		if (user != null) {
@@ -120,7 +128,7 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
-		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog());
+		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog(requireContext(), userItemsVM.myItems().getValue(), userItemsVM, itemsVM, userItemsVM::addIngredient));
 
 		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
 			if (items == null) return;
@@ -206,13 +214,9 @@ public class KitchenFragment extends Fragment {
 				.show();
 	}
 
-	private void showAddIngredientsDialog() {
-		var mItems = userItemsVM.myItems().getValue();
-		var mIds = mItems == null ? null
-				: mItems.stream()
-				.map(KitchenItem::getIngredientKey)
-				.collect(Collectors.toList());
-		var items = Stream.of( // todo: replace with itemsVM.ingredients()
+	private static void showAddIngredientsDialog(Context context, List<KitchenItem> excluded, UserItemsViewModel userItemsVM, ItemsViewModel itemsVM, Consumer<KitchenItem> consume) {
+		var exIds = excluded == null ? null : excluded.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
+		var items = Stream.of(
 						"ing_apple",
 						"ing_bread",
 						"ing_butter",
@@ -225,19 +229,21 @@ public class KitchenFragment extends Fragment {
 						"ing_onion",
 						"ing_tomato",
 						"ing_yogurt"
-				).map(k -> userItemsVM.buy(k))
-				.filter(newItem -> mIds == null || !mIds.contains(newItem.getIngredientKey()))
+				).map(userItemsVM::buy)
+				.filter(newItem -> exIds == null || !exIds.contains(newItem.getIngredientKey()))
 				.collect(Collectors.toList());
 
+		var uItems = userItemsVM.myItems().getValue();
+		var mItems = uItems != null ? uItems : List.of();
 		if (items.isEmpty()) {
-			new AlertDialog.Builder(requireContext())
+			new AlertDialog.Builder(context)
 					.setTitle("No ingredients left to buy")
 					.setMessage("You have everything!")
 					.setPositiveButton("Ok", null)
 					.setNeutralButton("Create New Item", (dialog, which) ->
-							showAddNewIngredientDialog(requireContext(), mItems, item -> {
+							showAddNewIngredientDialog(context, mItems, item -> {
 								itemsVM.add(item);
-								userItemsVM.addIngredient(item);
+								consume.accept(item);
 							}))
 					.show();
 			return;
@@ -249,22 +255,22 @@ public class KitchenFragment extends Fragment {
 		dialogAdapter.setShowIcon(true);
 		dialogAdapter.setMinimalStyle(false);
 		dialogAdapter.setSelectionMode(true);
-		RecyclerView rv = new RecyclerView(requireContext());
-		rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+		RecyclerView rv = new RecyclerView(context);
+		rv.setLayoutManager(new GridLayoutManager(context, 3));
 		rv.setAdapter(dialogAdapter);
 		dialogAdapter.submitList(items);
 
-		new AlertDialog.Builder(requireContext())
+		new AlertDialog.Builder(context)
 				.setTitle("Select ingredients to Add")
 				.setView(rv)
 				.setPositiveButton("Add Selected", (dialog, which) ->
 						items.stream()
 								.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
-								.forEach(userItemsVM::addIngredient))
+								.forEach(consume))
 				.setNeutralButton("Create New Item", (dialog, which) ->
-						showAddNewIngredientDialog(requireContext(), mItems, item -> {
+						showAddNewIngredientDialog(context, mItems, item -> {
 							itemsVM.add(item);
-							userItemsVM.addIngredient(item);
+							consume.accept(item);
 						})
 				)
 				.setNegativeButton(android.R.string.cancel, null)
