@@ -1,14 +1,10 @@
 package com.eanie.mealy.models;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.eanie.mealy.Quantity;
 import com.eanie.mealy.Recipe;
-import com.eanie.mealy.UnitType;
 import com.eanie.mealy.data.ItemsRepo;
 import com.eanie.mealy.ui.kitchen.KitchenItem;
-import com.eanie.mealy.ui.kitchen.Resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+
+import static com.eanie.mealy.ui.kitchen.KitchenItem.match;
 
 public class UserItemsViewModel extends UserDataViewModel {
 	private final ItemsRepo repo = new ItemsRepo();
@@ -57,11 +55,7 @@ public class UserItemsViewModel extends UserDataViewModel {
 		if (itemKey == null) return;
 		if (getUserId() == null) return;
 
-		var item = Objects.requireNonNull(myItems().getValue()).stream()
-				.filter(Objects::nonNull)
-				.filter(i -> i.getIngredientKey().equals(itemKey))
-				.findFirst()
-				.orElse(null);
+		var item = match(itemKey, Objects.requireNonNull(myItems().getValue()));
 		if (item == null) return;
 		item = item.clone();
 
@@ -82,71 +76,5 @@ public class UserItemsViewModel extends UserDataViewModel {
 
 	public void increaseAmount(String itemKey, double amount) {
 		updateAmount(itemKey, amount, true);
-	}
-
-	public double stepSize(String itemKey) {
-		if (itemKey == null) return 0;
-
-		// try get step size from resources
-		Context context = getApplication();
-		int stepFromResources = Resources.getInteger(context, "step_" + itemKey, -1);
-		if (stepFromResources >= 0) return stepFromResources;
-
-		// try get step size from matching existing ingredient
-		var item = Objects.requireNonNull(myItems().getValue()).stream()
-				.filter(Objects::nonNull)
-				.filter(i -> i.getIngredientKey().equals(itemKey))
-				.findFirst()
-				.orElse(null);
-		if (item != null)
-			return item.getQuantity().getUnitType().stepAmountBy;
-
-		return 1.0;
-	}
-
-	public UnitType unitType(String itemKey) {
-		if (itemKey == null) return UnitType.COUNT;
-
-		// try get unit type from existing matching ingredient
-		var item = Objects.requireNonNull(myItems().getValue()).stream()
-				.filter(Objects::nonNull)
-				.filter(i -> i.getIngredientKey().equals(itemKey))
-				.findFirst()
-				.orElse(null);
-		if (item != null)
-			return item.getQuantity().getUnitType();
-
-		// todo: try get unit type from repo
-
-		// try get unit type from resources
-		Context context = getApplication();
-		String stepFromResources = Resources.getString(context, "unit_" + itemKey, null);
-		if (stepFromResources != null) {
-			try {
-				return UnitType.valueOf(stepFromResources);
-			} catch (IllegalArgumentException ignored) {
-			}
-		}
-
-		return UnitType.COUNT;
-	}
-
-
-	public void plusAmount(String itemKey) {
-		updateAmount(itemKey, stepSize(itemKey), true);
-	}
-
-	public void minusAmount(String itemKey) {
-		updateAmount(itemKey, -stepSize(itemKey), true);
-	}
-
-	public KitchenItem buy(String itemKey) {
-		return new KitchenItem(
-				itemKey,
-				new Quantity(
-						stepSize(itemKey),
-						unitType(itemKey)
-				)
-		);
 	}
 }

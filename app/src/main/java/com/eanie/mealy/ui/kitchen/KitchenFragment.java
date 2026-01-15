@@ -18,6 +18,7 @@ import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.ui.kitchen.recipe.AddRecipeFragment;
 import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,12 +88,11 @@ public class KitchenFragment extends Fragment {
 						.replace(R.id.container, withUserId(userItemsVM.getUserId(), new MyRecipesFragment()))
 						.addToBackStack("my-recipes")
 						.commit());
-		btnAddRecipe.setOnClickListener(v -> {
-			getParentFragmentManager().beginTransaction()
-					.replace(R.id.container, AddRecipeFragment.newInstance())
-					.addToBackStack("add-recipe")
-					.commit();
-		});
+		btnAddRecipe.setOnClickListener(v ->
+				getParentFragmentManager().beginTransaction()
+						.replace(R.id.container, AddRecipeFragment.newInstance())
+						.addToBackStack("add-recipe")
+						.commit());
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
 		if (user != null) {
@@ -110,12 +109,12 @@ public class KitchenFragment extends Fragment {
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
-						userItemsVM.plusAmount(ingredientKey);
+						userItemsVM.increaseAmount(ingredientKey, itemsVM.stepSize(ingredientKey));
 					}
 
 					@Override
 					public void onMinus(String ingredientKey) {
-						userItemsVM.minusAmount(ingredientKey);
+						userItemsVM.increaseAmount(ingredientKey, -itemsVM.stepSize(ingredientKey));
 					}
 				}
 		);
@@ -128,7 +127,12 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
-		view.findViewById(R.id.imageButton).setOnClickListener(v -> showAddIngredientsDialog(requireContext(), userItemsVM.myItems().getValue(), userItemsVM, itemsVM, userItemsVM::addIngredient));
+		view.findViewById(R.id.imageButton).setOnClickListener(v ->
+				showAddIngredientsDialog(requireContext(),
+						userItemsVM.myItems().getValue(), itemsVM.ingredients().getValue(),
+						userItemsVM::addIngredient, itemsVM::add
+				)
+		);
 
 		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
 			if (items == null) return;
@@ -214,66 +218,58 @@ public class KitchenFragment extends Fragment {
 				.show();
 	}
 
-	private static void showAddIngredientsDialog(Context context, List<KitchenItem> excluded, UserItemsViewModel userItemsVM, ItemsViewModel itemsVM, Consumer<KitchenItem> consume) {
-		var exIds = excluded == null ? null : excluded.stream().map(KitchenItem::getIngredientKey).collect(Collectors.toList());
-		var items = Stream.of(
-						"ing_apple",
-						"ing_bread",
-						"ing_butter",
-						"ing_cheese",
-						"ing_cucumber",
-						"ing_eggs",
-						"ing_flour",
-						"ing_milk",
-						"ing_mushrooms",
-						"ing_onion",
-						"ing_tomato",
-						"ing_yogurt"
-				).map(userItemsVM::buy)
-				.filter(newItem -> exIds == null || !exIds.contains(newItem.getIngredientKey()))
+	public static void showAddIngredientsDialog(
+			Context context,
+			@Nullable List<KitchenItem> existingItems, @Nullable List<KitchenItem> availableItems,
+			Consumer<KitchenItem> addItem, @Nullable Consumer<KitchenItem> createItem
+	) {
+		if (existingItems == null) existingItems = List.of();
+		var existingKeys = existingItems.stream()
+				.map(KitchenItem::getIngredientKey)
+				.collect(Collectors.toList());
+		if (availableItems == null) availableItems = List.of();
+		var newItems = availableItems.stream()
+				.filter(i -> !existingKeys.contains(i.getIngredientKey()))
 				.collect(Collectors.toList());
 
-		var uItems = userItemsVM.myItems().getValue();
-		var mItems = uItems != null ? uItems : List.of();
-		if (items.isEmpty()) {
-			new AlertDialog.Builder(context)
-					.setTitle("No ingredients left to buy")
+		var dialogBuilder = new AlertDialog.Builder(context)
+				.setNegativeButton(android.R.string.cancel, null);
+
+		if (!newItems.isEmpty()) {
+			KitchenItemAdapter dialogAdapter = new KitchenItemAdapter();
+			dialogAdapter.setShowQuantity(false);
+			dialogAdapter.setShowName(true);
+			dialogAdapter.setShowIcon(true);
+			dialogAdapter.setMinimalStyle(false);
+			dialogAdapter.setSelectionMode(true);
+			RecyclerView rv = new RecyclerView(context);
+			rv.setLayoutManager(new GridLayoutManager(context, 3));
+			rv.setAdapter(dialogAdapter);
+			dialogAdapter.submitList(newItems);
+
+			dialogBuilder
+					.setTitle("Select ingredients to Add")
+					.setView(rv)
+					.setPositiveButton("Add Selected", (dialog, which) ->
+							newItems.stream()
+									.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
+									.forEach(addItem)
+					);
+		} else {
+			dialogBuilder.setTitle("No ingredients left to buy")
 					.setMessage("You have everything!")
-					.setPositiveButton("Ok", null)
-					.setNeutralButton("Create New Item", (dialog, which) ->
-							showAddNewIngredientDialog(context, mItems, item -> {
-								itemsVM.add(item);
-								consume.accept(item);
-							}))
-					.show();
-			return;
+					.setPositiveButton("Ok", null);
 		}
 
-		KitchenItemAdapter dialogAdapter = new KitchenItemAdapter();
-		dialogAdapter.setShowQuantity(false);
-		dialogAdapter.setShowName(true);
-		dialogAdapter.setShowIcon(true);
-		dialogAdapter.setMinimalStyle(false);
-		dialogAdapter.setSelectionMode(true);
-		RecyclerView rv = new RecyclerView(context);
-		rv.setLayoutManager(new GridLayoutManager(context, 3));
-		rv.setAdapter(dialogAdapter);
-		dialogAdapter.submitList(items);
+		if (createItem != null) {
+			List<KitchenItem> existing = existingItems;
+			dialogBuilder.setNeutralButton("Create New Item", (dialog, which) ->
+					showAddNewIngredientDialog(context, existing, item -> {
+						createItem.accept(item);
+						addItem.accept(item);
+					}));
+		}
 
-		new AlertDialog.Builder(context)
-				.setTitle("Select ingredients to Add")
-				.setView(rv)
-				.setPositiveButton("Add Selected", (dialog, which) ->
-						items.stream()
-								.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
-								.forEach(consume))
-				.setNeutralButton("Create New Item", (dialog, which) ->
-						showAddNewIngredientDialog(context, mItems, item -> {
-							itemsVM.add(item);
-							consume.accept(item);
-						})
-				)
-				.setNegativeButton(android.R.string.cancel, null)
-				.show();
+		dialogBuilder.show();
 	}
 }

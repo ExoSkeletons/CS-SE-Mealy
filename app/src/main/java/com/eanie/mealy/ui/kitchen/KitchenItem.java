@@ -1,12 +1,15 @@
 package com.eanie.mealy.ui.kitchen;
 
 import com.eanie.mealy.Quantity;
+import com.eanie.mealy.UnitType;
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class KitchenItem implements Cloneable, Serializable {
 	@NonNull
@@ -20,6 +23,14 @@ public class KitchenItem implements Cloneable, Serializable {
 	private Quantity quantity;
 
 	public KitchenItem() {
+	}
+
+	public KitchenItem(String ingredientKey) {
+		this(ingredientKey, new Quantity(1.0));
+	}
+
+	public KitchenItem(String ingredientKey, int amount) {
+		this(ingredientKey, new Quantity(amount, UnitType.COUNT));
 	}
 
 	public KitchenItem(String ingredientKey, Quantity quantity) {
@@ -70,5 +81,15 @@ public class KitchenItem implements Cloneable, Serializable {
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError();
 		}
+	}
+
+	@Nullable
+	public static KitchenItem match(@NonNull String itemKey, @Nullable List<KitchenItem> items) {
+		if (items == null) return null;
+		return items.stream()
+				.filter(Objects::nonNull)
+				.filter(i -> i.getIngredientKey().equals(itemKey))
+				.findFirst()
+				.orElse(null);
 	}
 }
