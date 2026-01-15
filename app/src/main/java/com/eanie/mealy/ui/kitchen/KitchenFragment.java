@@ -79,9 +79,9 @@ public class KitchenFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		var myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
 		var btnAddRecipe = view.findViewById(R.id.btn_add_recipe);
-		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef ->{
-				myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
-				btnAddRecipe.setVisibility(isChef? View.VISIBLE : View.GONE);
+		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef -> {
+			myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
+			btnAddRecipe.setVisibility(isChef ? View.VISIBLE : View.GONE);
 		});
 		myRecipesBtn.setOnClickListener(v ->
 				getParentFragmentManager().beginTransaction()
