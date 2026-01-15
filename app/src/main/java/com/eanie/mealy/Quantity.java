@@ -35,7 +35,7 @@ public class Quantity implements Cloneable, Serializable {
 	}
 
 	public void setAmount(double amount) {
-		var r = Quantifier.reduce(amount);
+		var r = quantifier.normalize(amount);
 		this.amount = r.second;
 		this.quantifier = r.first;
 	}
