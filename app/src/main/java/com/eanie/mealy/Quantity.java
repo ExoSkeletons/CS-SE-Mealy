@@ -76,6 +76,7 @@ public class Quantity implements Cloneable, Serializable {
 			var clone = (Quantity) super.clone();
 			clone.amount = amount;
 			clone.unitType = unitType;
+			clone.quantifier = quantifier;
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError();
