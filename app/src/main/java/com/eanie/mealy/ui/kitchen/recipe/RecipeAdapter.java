@@ -114,12 +114,13 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			ingredientsAdapter.setShowQuantity(false);
 			ingredientsAdapter.setShowName(false);
 			ingredientsAdapter.setShowIcon(true);
-			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
-
+			ingredientsAdapter.setSmallIcons(true);
+			ingredientsAdapter.setMinimalStyle(true);
 			ingredientsRv.setLayoutManager(
 					new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
 			);
 			ingredientsRv.setAdapter(ingredientsAdapter);
+			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
 		}
 	}
 

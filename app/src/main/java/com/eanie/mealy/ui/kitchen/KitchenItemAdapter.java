@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 	private boolean minimalStyle = false;
 	private boolean showIcon = true;
+	private boolean smallIcons = false;
 	private boolean showQuantity = true;
 	private boolean showName = true;
 
@@ -64,6 +66,11 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 	public void setShowIcon(boolean showIcon) {
 		this.showIcon = showIcon;
+		notifyDataSetChanged();
+	}
+
+	public void setSmallIcons(boolean smallIcons) {
+		this.smallIcons = smallIcons;
 		notifyDataSetChanged();
 	}
 
@@ -106,11 +113,13 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			card.setCardBackgroundColor(android.graphics.Color.TRANSPARENT);
 			card.setCardElevation(0);
 			card.setStrokeWidth(0);
+			((ViewGroup.MarginLayoutParams) card.getLayoutParams()).setMargins(0, 0, 0, 0);
 			holder.iconImageView.setElevation(10f);
 		} else {
 			card.setCardElevation(8f);
 			holder.iconImageView.setElevation(0f);
 		}
+		if (smallIcons) holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
 
 		// selection and clicking
 		if (isSelectionEnabled) {
@@ -123,7 +132,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 				else selectedKeys.remove(itemKey);
 			});
 
-			// Make whole card clickable for easier selection AND fire listener if present
+			// Make whole card clickable for easier selection
 			holder.itemView.setOnClickListener(v -> {
 				holder.checkBox.performClick();
 				if (itemClickListener != null)
