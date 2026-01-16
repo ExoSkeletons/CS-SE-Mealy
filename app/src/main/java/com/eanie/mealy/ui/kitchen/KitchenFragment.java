@@ -188,7 +188,7 @@ public class KitchenFragment extends Fragment {
 		} else {
 			// Edit mode
 			var imgIcon = (ImageView) layout.findViewById(R.id.img_icon);
-			imgIcon.setImageDrawable(Resources.getDrawable(context, item.getIngredientKey(), R.drawable.ic_launcher_foreground));
+			imgIcon.setImageDrawable(Resources.getItemIcon(context, item.getIngredientKey()));
 			tvName.setText(Resources.getString(context, item.getIngredientKey(), item.getIngredientKey()));
 			tvAmount.setText(String.valueOf(item.getQuantity().getAmount()));
 			spQuant.setSelection(item.getQuantity().getQuantifier().ordinal());
