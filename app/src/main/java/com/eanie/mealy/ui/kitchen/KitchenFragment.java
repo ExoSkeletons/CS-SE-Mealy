@@ -144,16 +144,18 @@ public class KitchenFragment extends Fragment {
 	}
 
 	public static void showEditIngredientDialog(Context context, KitchenItem item, Consumer<KitchenItem> onEdit) {
-		showIngredientDialog(context, "Edit ingredient", "Save", item, null, onEdit);
+		ingredientDialog(context, "Save", item, null, onEdit).show();
 	}
 
 	private static void showCreateIngredientDialog(Context context, @Nullable List<KitchenItem> suggestions, Consumer<KitchenItem> onCreate) {
-		showIngredientDialog(context, "Add new ingredient", "Add", null, suggestions, onCreate);
+		ingredientDialog(context, "Add", null, suggestions, onCreate)
+				.setTitle("Add New Item")
+				.setNegativeButton("Cancel", null)
+				.show();
 	}
 
-	private static void showIngredientDialog(
+	private static AlertDialog.Builder ingredientDialog(
 			Context context,
-			String title,
 			String positiveButton,
 			@Nullable KitchenItem item,
 			@Nullable List<KitchenItem> suggestions,
@@ -161,8 +163,12 @@ public class KitchenFragment extends Fragment {
 	) {
 		boolean creatingItem = item == null;
 
-		int layoutRes = creatingItem ? R.layout.dialog_kitchen_item_create : R.layout.dialog_kitchen_item_edit;
-		var layout = LayoutInflater.from(context).inflate(layoutRes, null);
+		var layout = LayoutInflater.from(context).inflate(
+				creatingItem
+						? R.layout.dialog_kitchen_item_create
+						: R.layout.dialog_kitchen_item_edit
+				, null
+		);
 
 		var tvName = (TextView) layout.findViewById(R.id.tv_item_name);
 		var tvAmount = (TextView) layout.findViewById(R.id.tv_amount);
@@ -195,8 +201,7 @@ public class KitchenFragment extends Fragment {
 			spUnit.setSelection(item.getQuantity().getUnitType().ordinal());
 		}
 
-		new AlertDialog.Builder(context)
-				.setTitle(title)
+		return new AlertDialog.Builder(context)
 				.setView(layout)
 				.setPositiveButton(positiveButton, (dialog, which) -> {
 					String nameInput = tvName.getText().toString();
@@ -215,9 +220,7 @@ public class KitchenFragment extends Fragment {
 
 					String key = (item != null) ? item.getIngredientKey() : KitchenItem.toKey(nameInput);
 					consumer.accept(new KitchenItem(key, new Quantity(amount, unitType, quant)));
-				})
-				.setNegativeButton(android.R.string.cancel, null)
-				.show();
+				});
 	}
 
 	public static void showAddIngredientsDialog(
