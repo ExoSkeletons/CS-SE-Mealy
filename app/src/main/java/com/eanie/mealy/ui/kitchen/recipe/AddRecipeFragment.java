@@ -67,6 +67,7 @@ public class AddRecipeFragment extends Fragment {
 
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
 		KitchenItemAdapter ingredientAdapter = new KitchenItemAdapter(
+				clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddViewModel::updateIngredient),
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
@@ -133,8 +134,6 @@ public class AddRecipeFragment extends Fragment {
 
 	private void saveRecipe() {
 		recipeAddViewModel.saveRecipe();
-
-		Toast.makeText(getContext(), "Recipe saved!", Toast.LENGTH_SHORT).show();
 
 		getParentFragmentManager().popBackStack();
 	}

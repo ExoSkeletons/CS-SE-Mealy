@@ -21,6 +21,10 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
+	public interface OnItemClickListener {
+		void onItemClick(KitchenItem item);
+	}
+
 	public interface OnQuantityChangeListener {
 		void onPlus(String ingredientKey);
 
@@ -36,10 +40,17 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	private final Set<String> selectedKeys = new HashSet<>();
 
 	private final OnQuantityChangeListener quantityListener;
+	private final OnItemClickListener itemClickListener;
+
+
+	public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
+		super(new KitchenItemItemCallback());
+		this.itemClickListener = itemClickListener;
+		this.quantityListener = quantityListener;
+	}
 
 	public KitchenItemAdapter(OnQuantityChangeListener quantityListener) {
-		super(new KitchenItemItemCallback());
-		this.quantityListener = quantityListener;
+		this(null, quantityListener);
 	}
 
 	public KitchenItemAdapter() {
@@ -85,7 +96,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		KitchenItem item = getItem(position);
+		var context = holder.itemView.getContext();
+		var item = getItem(position);
 		var itemKey = item.getIngredientKey();
 
 		// style
@@ -100,8 +112,9 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			holder.iconImageView.setElevation(0f);
 		}
 
-		// selection
+		// selection and clicking
 		if (isSelectionEnabled) {
+			holder.checkBox.setVisibility(View.VISIBLE);
 			holder.checkBox.setOnCheckedChangeListener(null);
 			holder.checkBox.setChecked(selectedKeys.contains(itemKey));
 
@@ -110,15 +123,24 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 				else selectedKeys.remove(itemKey);
 			});
 
-			// Make whole card clickable for easier selection
-			holder.itemView.setOnClickListener(v -> holder.checkBox.performClick());
+			// Make whole card clickable for easier selection AND fire listener if present
+			holder.itemView.setOnClickListener(v -> {
+				holder.checkBox.performClick();
+				if (itemClickListener != null)
+					itemClickListener.onItemClick(item);
+			});
+			holder.itemView.setClickable(true);
 		} else {
 			holder.checkBox.setVisibility(View.GONE);
-			holder.itemView.setOnClickListener(null);
+			holder.itemView.setOnClickListener(itemClickListener != null
+					? v -> itemClickListener.onItemClick(item)
+					: null
+			);
+			holder.itemView.setClickable(itemClickListener != null);
 		}
 
 		// data binding
-		holder.nameTextView.setText(Resources.getString(holder.itemView.getContext(), itemKey, itemKey));
+		holder.nameTextView.setText(Resources.getString(context, itemKey, itemKey));
 		holder.quantityTextView.setText(item.getQuantity().toString());
 
 		// visibility
@@ -126,33 +148,15 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		holder.quantityTextView.setVisibility(showQuantity ? View.VISIBLE : View.GONE);
 		holder.quantityContainer.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
 		if (showIcon) {
-			holder.iconImageView.setImageDrawable(
-					Resources.getDrawable(
-							holder.itemView.getContext(),
-							item.getIngredientKey(),
-							R.drawable.ic_launcher_foreground
-					)
-			);
+			holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
 			holder.iconImageView.setVisibility(View.VISIBLE);
 		} else
 			holder.iconImageView.setVisibility(View.GONE);
 
 		// quantity controls
 		if (quantityListener != null) {
-			holder.btnIncrease.setOnClickListener(v -> {
-				int pos = holder.getBindingAdapterPosition();
-				if (pos == RecyclerView.NO_POSITION) return;
-
-				KitchenItem current = getItem(pos);
-				quantityListener.onPlus(current.getIngredientKey());
-			});
-			holder.btnDecrease.setOnClickListener(v -> {
-				int pos = holder.getBindingAdapterPosition();
-				if (pos == RecyclerView.NO_POSITION) return;
-
-				KitchenItem current = getItem(pos);
-				quantityListener.onMinus(current.getIngredientKey());
-			});
+			holder.btnIncrease.setOnClickListener(v -> quantityListener.onPlus(itemKey));
+			holder.btnDecrease.setOnClickListener(v -> quantityListener.onMinus(itemKey));
 		}
 	}
 

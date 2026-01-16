@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,6 +107,7 @@ public class KitchenFragment extends Fragment {
 			}
 		}
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
+				clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient),
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
@@ -141,77 +143,77 @@ public class KitchenFragment extends Fragment {
 		});
 	}
 
-	private static void showAddNewIngredientDialog(Context context, @Nullable List<KitchenItem> mItems, Consumer<KitchenItem> consumer) {
-		var iv = LayoutInflater.from(context).inflate(R.layout.dialog_kitchen_item_create, null);
+	public static void showEditIngredientDialog(Context context, KitchenItem item, Consumer<KitchenItem> onEdit) {
+		showIngredientDialog(context, "Edit ingredient", "Save", item, null, onEdit);
+	}
 
-		var tvName = (TextView) iv.findViewById(R.id.tv_item_name);
-		var tvAmount = (TextView) iv.findViewById(R.id.tv_amount);
-		var spQuant = (Spinner) iv.findViewById(R.id.sp_quant);
-		var spUnit = (Spinner) iv.findViewById(R.id.sp_unit_type);
+	private static void showCreateIngredientDialog(Context context, @Nullable List<KitchenItem> suggestions, Consumer<KitchenItem> onCreate) {
+		showIngredientDialog(context, "Add new ingredient", "Add", null, suggestions, onCreate);
+	}
 
-		var itemName = "";
-		if (mItems != null && !mItems.isEmpty()) {
-			var shuffled = new ArrayList<>(mItems);
-			Collections.shuffle(shuffled);
-			itemName = Resources.getString(context, shuffled.get(0).getIngredientKey(), itemName);
+	private static void showIngredientDialog(
+			Context context,
+			String title,
+			String positiveButton,
+			@Nullable KitchenItem item,
+			@Nullable List<KitchenItem> suggestions,
+			Consumer<KitchenItem> consumer
+	) {
+		boolean creatingItem = item == null;
+
+		int layoutRes = creatingItem ? R.layout.dialog_kitchen_item_create : R.layout.dialog_kitchen_item_edit;
+		var layout = LayoutInflater.from(context).inflate(layoutRes, null);
+
+		var tvName = (TextView) layout.findViewById(R.id.tv_item_name);
+		var tvAmount = (TextView) layout.findViewById(R.id.tv_amount);
+		var spQuant = (Spinner) layout.findViewById(R.id.sp_quant);
+		var spUnit = (Spinner) layout.findViewById(R.id.sp_unit_type);
+
+		// Setup spinners
+		spQuant.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, Quantifier.values()));
+		spUnit.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, UnitType.values()));
+
+		if (creatingItem) {
+			// Create mode
+			var itemNameHint = "";
+			if (suggestions != null && !suggestions.isEmpty()) {
+				var shuffled = new ArrayList<>(suggestions);
+				Collections.shuffle(shuffled);
+				itemNameHint = Resources.getString(context, shuffled.get(0).getIngredientKey(), "");
+			}
+			tvName.setHint(itemNameHint);
+			tvAmount.setHint("1.0");
+			spQuant.setSelection(Quantifier.NONE.ordinal());
+			spUnit.setSelection(UnitType.COUNT.ordinal());
+		} else {
+			// Edit mode
+			var imgIcon = (ImageView) layout.findViewById(R.id.img_icon);
+			imgIcon.setImageDrawable(Resources.getDrawable(context, item.getIngredientKey(), R.drawable.ic_launcher_foreground));
+			tvName.setText(Resources.getString(context, item.getIngredientKey(), item.getIngredientKey()));
+			tvAmount.setText(String.valueOf(item.getQuantity().getAmount()));
+			spQuant.setSelection(item.getQuantity().getQuantifier().ordinal());
+			spUnit.setSelection(item.getQuantity().getUnitType().ordinal());
 		}
-		tvName.setHint(itemName);
-
-		tvAmount.setHint("" + 1.0);
-
-		var quants = Quantifier.values();
-		var qAdapter = new ArrayAdapter<>(
-				context,
-				android.R.layout.simple_spinner_dropdown_item,
-				quants
-		);
-		spQuant.setAdapter(qAdapter);
-		spQuant.setSelection(Quantifier.NONE.ordinal());
-
-		var units = UnitType.values();
-		var uAdapter = new ArrayAdapter<>(
-				context,
-				android.R.layout.simple_spinner_dropdown_item,
-				units
-		);
-		spUnit.setAdapter(uAdapter);
-		spUnit.setSelection(UnitType.COUNT.ordinal());
 
 		new AlertDialog.Builder(context)
-				.setTitle("Add new ingredient")
-				.setView(iv)
-				.setPositiveButton("Add", (dialog, which) -> {
-					String name = tvName.getText().toString();
+				.setTitle(title)
+				.setView(layout)
+				.setPositiveButton(positiveButton, (dialog, which) -> {
+					String nameInput = tvName.getText().toString();
 					String amountText = tvAmount.getText().toString();
-					int quantPosition = spQuant.getSelectedItemPosition();
-					int unitPosition = spUnit.getSelectedItemPosition();
 
-					String key = KitchenItem.toKey(name);
 					double amount;
-					Quantifier quant;
-					UnitType unitType;
 					try {
 						amount = Double.parseDouble(amountText);
 					} catch (RuntimeException e) {
 						Toast.makeText(context, "Invalid Amount", Toast.LENGTH_SHORT).show();
-						e.printStackTrace();
 						return;
 					}
-					try {
-						unitType = UnitType.values()[unitPosition];
-					} catch (RuntimeException e) {
-						Toast.makeText(context, "Invalid Unit Type", Toast.LENGTH_SHORT).show();
-						e.printStackTrace();
-						unitType = UnitType.COUNT;
-					}
-					try {
-						quant = Quantifier.values()[quantPosition];
-					} catch (RuntimeException e) {
-						Toast.makeText(context, "Invalid Quantifier", Toast.LENGTH_SHORT).show();
-						e.printStackTrace();
-						quant = Quantifier.NONE;
-					}
 
+					Quantifier quant = Quantifier.values()[spQuant.getSelectedItemPosition()];
+					UnitType unitType = UnitType.values()[spUnit.getSelectedItemPosition()];
+
+					String key = (item != null) ? item.getIngredientKey() : KitchenItem.toKey(nameInput);
 					consumer.accept(new KitchenItem(key, new Quantity(amount, unitType, quant)));
 				})
 				.setNegativeButton(android.R.string.cancel, null)
@@ -264,7 +266,7 @@ public class KitchenFragment extends Fragment {
 		if (createItem != null) {
 			List<KitchenItem> existing = existingItems;
 			dialogBuilder.setNeutralButton("Create New Item", (dialog, which) ->
-					showAddNewIngredientDialog(context, existing, item -> {
+					showCreateIngredientDialog(context, existing, item -> {
 						createItem.accept(item);
 						addItem.accept(item);
 					}));

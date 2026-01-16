@@ -48,6 +48,14 @@ public class Quantity implements Cloneable, Serializable {
 		this.unitType = unitType;
 	}
 
+	public Quantifier getQuantifier() {
+		return quantifier;
+	}
+
+	public void setQuantifier(Quantifier quantifier) {
+		this.quantifier = quantifier;
+	}
+
 	@NonNull
 	@Override
 	public String toString() {

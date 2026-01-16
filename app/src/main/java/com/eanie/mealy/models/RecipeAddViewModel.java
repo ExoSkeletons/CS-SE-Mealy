@@ -49,6 +49,26 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		ingredients.setValue(newList);
 	}
 
+	public void updateIngredient(KitchenItem updatedItem) {
+		var items = ingredients.getValue();
+		if (items == null) return;
+
+		var oldItem = match(updatedItem.getIngredientKey(), items);
+		if (oldItem == null) return;
+
+		var updatedItems = new ArrayList<>(items);
+		if (Collections.replaceAll(updatedItems, oldItem, updatedItem))
+			ingredients.postValue(updatedItems);
+	}
+
+	public void removeIngredient(KitchenItem item) {
+		var items = ingredients.getValue();
+		if (items == null) return;
+		var updated = new ArrayList<>(items);
+		if (updated.remove(item))
+			ingredients.postValue(updated);
+	}
+
 	private void updateAmount(String itemKey, double amount, boolean additive) {
 		if (itemKey == null) return;
 		if (getUserId() == null) return;
@@ -59,20 +79,16 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		var item = match(itemKey, items);
 		if (item == null) return;
 
-		var updated = new ArrayList<>(items);
-
 		double newAmount = additive
 				? amount + item.getQuantity().getAmount()
 				: amount;
 		if (newAmount <= 0)
-			updated.remove(item);
+			removeIngredient(item);
 		else {
 			var updatedItem = item.clone();
 			updatedItem.getQuantity().setAmount(newAmount);
-			Collections.replaceAll(updated, item, updatedItem);
+			updateIngredient(updatedItem);
 		}
-
-		ingredients.postValue(updated);
 	}
 
 	public void setAmount(String itemKey, double amount) {

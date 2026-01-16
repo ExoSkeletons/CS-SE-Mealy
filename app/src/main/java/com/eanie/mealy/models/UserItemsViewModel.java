@@ -38,6 +38,11 @@ public class UserItemsViewModel extends UserDataViewModel {
 		repo.insert(getUserId(), item);
 	}
 
+	public void updateIngredient(KitchenItem item) {
+		if (getUserId() == null) return;
+		repo.insert(getUserId(), item);
+	}
+
 	public void consumeFrom(Recipe recipe) {
 		if (getUserId() == null) throw new RuntimeException("No user id");
 
