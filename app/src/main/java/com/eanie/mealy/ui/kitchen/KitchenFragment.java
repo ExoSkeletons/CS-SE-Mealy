@@ -104,7 +104,7 @@ public class KitchenFragment extends Fragment {
 				var firstName = name.split(" ")[0];
 				var capitalizedName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
 				((TextView) view.findViewById(R.id.tv_username)).setText(
-						requireContext().getString(R.string.s_kitchen_title, capitalizedName)
+						requireContext().getString(R.string.kitchen_title, capitalizedName)
 				);
 			}
 		}

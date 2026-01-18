@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="8dp">
@@ -17,8 +18,8 @@
         android:id="@+id/tv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Tomato"
-        android:inputType="text"
+        android:inputType="none"
+        tools:text="@string/ing_butter"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="italic" />
@@ -36,14 +37,14 @@
 
             <TextView
                 android:layout_height="wrap_content"
-                android:text="Amount"
+                android:text="@string/amount"
                 android:textAlignment="center" />
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_span="2"
                 android:layout_weight="1"
-                android:text="Units"
+                android:text="@string/units"
                 android:textAlignment="center" />
 
         </TableRow>

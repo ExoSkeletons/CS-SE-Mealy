@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Recipe"
+        android:text="@string/create_recipe"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/scvRecipe"
@@ -51,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recipe Name" />
+                android:text="@string/name" />
 
             <EditText
                 android:id="@+id/et_recipe_name"
@@ -64,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Ingredients"
+                android:text="@string/ingredients"
                 android:textStyle="bold" />
 
             <!-- רשימת מצרכים -->
@@ -79,15 +77,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="+ Add Ingredient"
+                android:text="@string/add_ingredient"
                 android:textAllCaps="false" />
 
-            <!-- הוראות -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Preparation"
+                android:text="@string/recipe_instructions"
                 android:textStyle="bold" />
 
             <EditText
@@ -98,8 +95,6 @@
                 android:hint="Write preparation steps..."
                 android:inputType="textMultiLine" />
 
-            <!-- שמירה -->
-
         </LinearLayout>
     </ScrollView>
 
@@ -107,10 +102,10 @@
         android:id="@+id/btn_save_recipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="@string/save"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView4"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

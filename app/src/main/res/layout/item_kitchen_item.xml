@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -31,8 +32,8 @@
 
             <CheckBox
                 android:id="@+id/item_checkbox"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="bottom|end"
                 android:layout_marginBottom="-2dp"
                 android:layout_marginEnd="-2dp"
@@ -80,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Item Name"
+            tools:text="@string/ing_butter"
             android:textSize="12sp"
             android:textStyle="bold" />
     </LinearLayout>

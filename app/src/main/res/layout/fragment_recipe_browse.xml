@@ -21,10 +21,10 @@
         android:id="@+id/btn_open_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Open favorites"
-        app:srcCompat="@drawable/selector_heart"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/favorites"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
+        app:srcCompat="@drawable/selector_heart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
