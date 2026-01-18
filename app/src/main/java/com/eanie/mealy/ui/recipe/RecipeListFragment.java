@@ -10,7 +10,7 @@ import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.UnitType;
-import com.eanie.mealy.models.UserInfoViewModel;
+import com.eanie.mealy.models.UserDataViewModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public abstract class RecipeListFragment extends Fragment {
-	private UserInfoViewModel userInfoVM;
+	private UserDataViewModel userInfoVM;
 
 	private RecipeAdapter adapter;
 	private String userId;
@@ -62,7 +62,7 @@ public abstract class RecipeListFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		userInfoVM = new ViewModelProvider(requireActivity()).get(UserInfoViewModel.class);
+		userInfoVM = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
 		if (getArguments() != null) {
 			userId = getArguments().getString(ARG_UUID);
 			userInfoVM.setUserId(userId);

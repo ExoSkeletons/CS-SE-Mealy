@@ -17,7 +17,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-public class UserInfoViewModel extends UserViewModel {
+public class UserDataViewModel extends UserViewModel {
 	private final UserRepo userRepo = new UserRepo();
 	private final RecipeRepo recipeRepo = new RecipeRepo();
 
@@ -34,7 +34,7 @@ public class UserInfoViewModel extends UserViewModel {
 
 	public final MediatorLiveData<List<Recipe>> favoriteRecipes = new MediatorLiveData<>();
 
-	public UserInfoViewModel(@NonNull Application application) {
+	public UserDataViewModel(@NonNull Application application) {
 		super(application);
 
 		favoriteRecipes.addSource(recipes, recipes -> updateFavoriteRecipes(recipes, userData.getValue()));

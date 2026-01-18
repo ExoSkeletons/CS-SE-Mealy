@@ -18,7 +18,7 @@ import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.ItemsViewModel;
-import com.eanie.mealy.models.UserInfoViewModel;
+import com.eanie.mealy.models.UserDataViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
 import com.eanie.mealy.ui.recipe.AddRecipeFragment;
@@ -45,7 +45,7 @@ import static com.eanie.mealy.models.UserViewModel.withUserId;
 public class KitchenFragment extends Fragment {
 	private ItemsViewModel itemsVM;
 	private UserItemsViewModel userItemsVM;
-	private UserInfoViewModel userInfoVM;
+	private UserDataViewModel userInfoVM;
 	private DiscoveryViewModel discoveryVM;
 
 	@Override
@@ -57,7 +57,7 @@ public class KitchenFragment extends Fragment {
 		itemsVM = provider.get(ItemsViewModel.class);
 		userItemsVM = provider.get(UserItemsViewModel.class);
 		discoveryVM = provider.get(DiscoveryViewModel.class);
-		userInfoVM = provider.get(UserInfoViewModel.class);
+		userInfoVM = provider.get(UserDataViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {
