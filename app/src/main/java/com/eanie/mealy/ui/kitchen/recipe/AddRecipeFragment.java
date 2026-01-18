@@ -53,7 +53,7 @@ public class AddRecipeFragment extends Fragment {
 		if (user != null)
 			recipeAddViewModel.setUserId(user.getUid());
 
-		return inflater.inflate(R.layout.fragment_add_recipe, container, false);
+		return inflater.inflate(R.layout.fragment_recipe_add, container, false);
 	}
 
 	@Override

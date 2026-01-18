@@ -25,7 +25,7 @@ public class MyRecipesFragment extends RecipeListFragment {
 
 	@Override
 	protected int getLayoutId() {
-		return R.layout.fragment_my_recipes;
+		return R.layout.fragment_recipes_my;
 	}
 
 	@Override

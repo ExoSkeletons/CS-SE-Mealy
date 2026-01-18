@@ -97,7 +97,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.kitchen_item, parent, false);
+				.inflate(R.layout.item_kitchen_item, parent, false);
 		return new ViewHolder(view);
 	}
 

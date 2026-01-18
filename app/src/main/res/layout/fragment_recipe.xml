@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         tools:itemCount="2"
-        tools:listitem="@layout/kitchen_item" />
+        tools:listitem="@layout/item_kitchen_item" />
 
     <TextView
         android:id="@+id/tv_preparation_title"

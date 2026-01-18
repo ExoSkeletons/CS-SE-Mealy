@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_my_recipes"
-        tools:listitem="@layout/kitchen_item" />
+        tools:listitem="@layout/item_kitchen_item" />
 
     <Button
         android:id="@+id/btn_add_recipe"
