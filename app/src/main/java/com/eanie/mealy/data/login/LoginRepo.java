@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class LoginRepository {
+public class LoginRepo {
 
 	private final LoginDataSource<EmailCredentials> emailDataSource;
 	private final LoginDataSource<GAuthCredentials> googleDataSource;
@@ -19,7 +19,7 @@ public class LoginRepository {
 	// @see https://developer.android.com/training/articles/keystore
 	private LoggedInUser user = null;
 
-	public LoginRepository(LoginDataSource<EmailCredentials> emailDataSource, LoginDataSource<GAuthCredentials> googleDataSource) {
+	public LoginRepo(LoginDataSource<EmailCredentials> emailDataSource, LoginDataSource<GAuthCredentials> googleDataSource) {
 		this.emailDataSource = emailDataSource;
 		this.googleDataSource = googleDataSource;
 	}

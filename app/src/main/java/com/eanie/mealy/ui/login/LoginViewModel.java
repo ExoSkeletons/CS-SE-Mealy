@@ -5,7 +5,7 @@ import android.app.Application;
 import android.util.Patterns;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.login.LoginRepository;
+import com.eanie.mealy.data.login.LoginRepo;
 import com.eanie.mealy.data.login.sources.FirebaseEmailLoginDataSource;
 import com.eanie.mealy.data.login.sources.FirebaseGoogleLoginDataSource;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
@@ -26,7 +26,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 	private final MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 	private final MutableLiveData<AuthResult> authResult = new MutableLiveData<>();
-	private final LoginRepository loginRepository = new LoginRepository(
+	private final LoginRepo loginRepo = new LoginRepo(
 			new FirebaseEmailLoginDataSource(),
 			new FirebaseGoogleLoginDataSource()
 	);
@@ -44,7 +44,7 @@ public class LoginViewModel extends AndroidViewModel {
 	}
 
 	public void login(String username, String password) {
-		loginRepository.login(
+		loginRepo.login(
 				username, password,
 				result -> authResult.setValue(new AuthResult(result)),
 				e -> authResult.setValue(new AuthResult(R.string.login_failed))
@@ -52,9 +52,9 @@ public class LoginViewModel extends AndroidViewModel {
 	}
 
 	public void register(String username, String password) {
-		loginRepository.register(
+		loginRepo.register(
 				username, password,
-				registeredUser -> loginRepository.login(
+				registeredUser -> loginRepo.login(
 						username, password,
 						loggedInUser ->
 								authResult.setValue(new AuthResult(loggedInUser)),
@@ -96,7 +96,7 @@ public class LoginViewModel extends AndroidViewModel {
 				GoogleIdTokenCredential credential = GoogleIdTokenCredential.createFrom(result.getCredential().getData());
 				// Pass the token to the Repository
 				String idToken = credential.getIdToken();
-				loginRepository.signInWithGoogle(idToken,
+				loginRepo.signInWithGoogle(idToken,
 						user -> authResult.setValue(new AuthResult(user)),
 						e -> authResult.setValue(new AuthResult(R.string.login_failed))
 				);
@@ -116,14 +116,14 @@ public class LoginViewModel extends AndroidViewModel {
 			loginFormState.setValue(new LoginFormState(true));
 	}
 
-	// A placeholder username validation check
+	// username validation check
 	private boolean isUserNameValid(String username) {
 		if (username == null) return false;
 		if (username.contains("@")) return Patterns.EMAIL_ADDRESS.matcher(username).matches();
 		else return !username.trim().isEmpty();
 	}
 
-	// A placeholder password validation check
+	// password validation check
 	private boolean isPasswordValid(String password) {
 		return password != null && !password.isBlank() && password.trim().length() > 5;
 	}
