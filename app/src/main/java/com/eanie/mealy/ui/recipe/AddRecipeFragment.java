@@ -35,7 +35,7 @@ public class AddRecipeFragment extends Fragment {
 		return new AddRecipeFragment();
 	}
 
-	private RecipeAddViewModel recipeAddViewModel;
+	private RecipeAddViewModel recipeAddVM;
 	private ItemsViewModel itemsVM;
 
 
@@ -45,13 +45,13 @@ public class AddRecipeFragment extends Fragment {
 	                         @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState) {
 		var provider = new ViewModelProvider(requireActivity());
-		recipeAddViewModel = provider.get(RecipeAddViewModel.class);
+		recipeAddVM = provider.get(RecipeAddViewModel.class);
 		itemsVM = provider.get(ItemsViewModel.class);
 
 
 		var user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user != null)
-			recipeAddViewModel.setUserId(user.getUid());
+			recipeAddVM.setUserId(user.getUid());
 
 		return inflater.inflate(R.layout.fragment_recipe_add, container, false);
 	}
@@ -67,16 +67,16 @@ public class AddRecipeFragment extends Fragment {
 
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
 		KitchenItemAdapter ingredientAdapter = new KitchenItemAdapter(
-				clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddViewModel::updateIngredient),
+				clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddVM::updateIngredient),
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
-						recipeAddViewModel.increaseAmount(ingredientKey, itemsVM.stepSize(ingredientKey));
+						recipeAddVM.increaseAmount(ingredientKey, itemsVM.stepSize(ingredientKey));
 					}
 
 					@Override
 					public void onMinus(String ingredientKey) {
-						recipeAddViewModel.increaseAmount(ingredientKey, -itemsVM.stepSize(ingredientKey));
+						recipeAddVM.increaseAmount(ingredientKey, -itemsVM.stepSize(ingredientKey));
 					}
 				}
 		);
@@ -84,21 +84,21 @@ public class AddRecipeFragment extends Fragment {
 		rvIngredients.setAdapter(ingredientAdapter);
 		rvIngredients.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
-		recipeAddViewModel.ingredients.observe(getViewLifecycleOwner(), ingredientAdapter::submitList);
+		recipeAddVM.ingredients.observe(getViewLifecycleOwner(), ingredientAdapter::submitList);
 
 		Button btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
 		btnAddIngredient.setOnClickListener(v -> {
 			Toast.makeText(getContext(), "Add ingredient", Toast.LENGTH_SHORT).show();
 			KitchenFragment.showAddIngredientsDialog(getContext(),
-					recipeAddViewModel.ingredients.getValue(), itemsVM.ingredients().getValue(),
-					recipeAddViewModel::addIngredient, itemsVM::add
+					recipeAddVM.ingredients.getValue(), itemsVM.ingredients().getValue(),
+					recipeAddVM::addIngredient, itemsVM::add
 			);
 		});
 
 		etName.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				recipeAddViewModel.name.postValue(s.toString());
+				recipeAddVM.name.postValue(s.toString());
 			}
 
 			@Override
@@ -112,7 +112,7 @@ public class AddRecipeFragment extends Fragment {
 		etInstructions.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				recipeAddViewModel.instructions.postValue(s.toString());
+				recipeAddVM.instructions.postValue(s.toString());
 			}
 
 			@Override
@@ -133,7 +133,7 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void saveRecipe() {
-		recipeAddViewModel.saveRecipe();
+		recipeAddVM.saveRecipe();
 
 		getParentFragmentManager().popBackStack();
 	}

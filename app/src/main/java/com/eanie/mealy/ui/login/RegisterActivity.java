@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 public class RegisterActivity extends AppCompatActivity {
-	private LoginViewModel loginViewModel;
+	private LoginViewModel loginVM;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
 		com.eanie.mealy.databinding.ActivityRegisterBinding binding = ActivityRegisterBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+		loginVM = new ViewModelProvider(this).get(LoginViewModel.class);
 
 		// reuse validation logic
 		TextWatcher watcher = new TextWatcher() {
@@ -35,25 +35,25 @@ public class RegisterActivity extends AppCompatActivity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				loginViewModel.loginDataChanged(binding.username.getText().toString(), binding.password.getText().toString());
+				loginVM.loginDataChanged(binding.username.getText().toString(), binding.password.getText().toString());
 			}
 		};
 		binding.username.addTextChangedListener(watcher);
 		binding.password.addTextChangedListener(watcher);
 
-		loginViewModel.getLoginFormState().observe(this, state -> {
+		loginVM.getLoginFormState().observe(this, state -> {
 			binding.register.setEnabled(state.isDataValid());
 		});
 
 		binding.register.setOnClickListener(v -> {
 			binding.loading.setVisibility(View.VISIBLE);
-			loginViewModel.register(binding.username.getText().toString(), binding.password.getText().toString());
+			loginVM.register(binding.username.getText().toString(), binding.password.getText().toString());
 		});
 
 		// "Return to Login" Navigation
 		binding.loginLink.setOnClickListener(v -> finish());
 
-		loginViewModel.getAuthResult().observe(this, result -> {
+		loginVM.getAuthResult().observe(this, result -> {
 			if (result == null) return;
 			if (result.getSuccess() != null)
 				MainActivity.start(this);

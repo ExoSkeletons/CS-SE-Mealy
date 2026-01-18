@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 public class LoginActivity extends AppCompatActivity {
-	private LoginViewModel loginViewModel;
+	private LoginViewModel loginVM;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
 		setContentView(binding.getRoot());
 
 
-		loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+		loginVM = new ViewModelProvider(this).get(LoginViewModel.class);
 
 		final EditText usernameEditText = binding.username;
 		final EditText passwordEditText = binding.password;
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 		final Button loginGoogle = binding.googleLogin;
 		final ProgressBar loadingProgressBar = binding.loading;
 
-		loginViewModel.getLoginFormState().observe(this, loginFormState -> {
+		loginVM.getLoginFormState().observe(this, loginFormState -> {
 			if (loginFormState == null)
 				return;
 			loginEmail.setEnabled(loginFormState.isDataValid());
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 				passwordEditText.setError(getString(loginFormState.getPasswordError()));
 		});
 
-		loginViewModel.getAuthResult().observe(this, result -> {
+		loginVM.getAuthResult().observe(this, result -> {
 			if (result == null) return;
 			loadingProgressBar.setVisibility(View.GONE);
 			if (result.getError() != null) {
@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
+				loginVM.loginDataChanged(usernameEditText.getText().toString(),
 						passwordEditText.getText().toString());
 			}
 		};
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 		passwordEditText.addTextChangedListener(afterTextChangedListener);
 		passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
 			if (actionId == EditorInfo.IME_ACTION_DONE) {
-				loginViewModel.login(usernameEditText.getText().toString(),
+				loginVM.login(usernameEditText.getText().toString(),
 						passwordEditText.getText().toString());
 			}
 			return false;
@@ -87,12 +87,12 @@ public class LoginActivity extends AppCompatActivity {
 
 		loginEmail.setOnClickListener(v -> {
 			loadingProgressBar.setVisibility(View.VISIBLE);
-			loginViewModel.login(usernameEditText.getText().toString(),
+			loginVM.login(usernameEditText.getText().toString(),
 					passwordEditText.getText().toString());
 		});
 		loginGoogle.setOnClickListener(v -> {
 			loadingProgressBar.setVisibility(View.VISIBLE);
-			loginViewModel.signInWithGoogle(this);
+			loginVM.signInWithGoogle(this);
 		});
 	}
 
