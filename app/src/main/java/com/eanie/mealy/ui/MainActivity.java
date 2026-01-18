@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.eanie.mealy.models.UserDataViewModel.withUserId;
+import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class MainActivity extends AppCompatActivity {
 	public static void start(Activity activity) {

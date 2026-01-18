@@ -17,7 +17,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-public class UserInfoViewModel extends UserDataViewModel {
+public class UserInfoViewModel extends UserViewModel {
 	private final UserRepo userRepo = new UserRepo();
 	private final RecipeRepo recipeRepo = new RecipeRepo();
 

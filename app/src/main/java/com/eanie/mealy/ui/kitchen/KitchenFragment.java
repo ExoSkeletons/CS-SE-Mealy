@@ -39,8 +39,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
-import static com.eanie.mealy.models.UserDataViewModel.withUserId;
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class KitchenFragment extends Fragment {
 	private ItemsViewModel itemsVM;

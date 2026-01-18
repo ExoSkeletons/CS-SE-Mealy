@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-public class UserRecipesViewModel extends UserDataViewModel {
+public class UserRecipesViewModel extends UserViewModel {
 	private final RecipeRepo repo = new RecipeRepo();
 
 	private final LiveData<List<Recipe>> myRecipes = Transformations.switchMap(userId, id -> {

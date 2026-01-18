@@ -8,7 +8,7 @@ import com.eanie.mealy.models.UserRecipesViewModel;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
 
 public class MyRecipesFragment extends RecipeListFragment {
 	UserRecipesViewModel userRecipesVM;

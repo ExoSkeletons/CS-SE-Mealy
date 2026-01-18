@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import static com.eanie.mealy.models.UserDataViewModel.ARG_UUID;
-import static com.eanie.mealy.models.UserDataViewModel.withUserId;
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
+import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class RecipeBrowseFragment extends RecipeListFragment {
 	private DiscoveryViewModel discoveryVM;

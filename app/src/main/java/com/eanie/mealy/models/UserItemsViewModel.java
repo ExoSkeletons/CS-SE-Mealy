@@ -17,7 +17,7 @@ import androidx.lifecycle.Transformations;
 
 import static com.eanie.mealy.data.KitchenItem.match;
 
-public class UserItemsViewModel extends UserDataViewModel {
+public class UserItemsViewModel extends UserViewModel {
 	private final ItemsRepo repo = new ItemsRepo();
 
 	private final LiveData<List<KitchenItem>> ingredients = Transformations.switchMap(userId, id -> {
