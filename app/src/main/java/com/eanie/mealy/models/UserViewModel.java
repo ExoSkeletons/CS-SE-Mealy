@@ -11,7 +11,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class UserViewModel extends AndroidViewModel {
+public abstract class UserViewModel extends AndroidViewModel {
 	public static final String ARG_UUID = "uuid";
 
 	protected final MutableLiveData<String> userId = new MutableLiveData<>();
