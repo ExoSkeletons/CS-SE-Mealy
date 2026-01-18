@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
 		uuid = user.getUid();
 
-		if (savedInstanceState == null) showKitchenFragment();
-
 		BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 		bottomNav.setOnItemSelectedListener(item -> {
 			int id = item.getItemId();
@@ -49,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
 			}
 			return false;
 		});
+
+		if (savedInstanceState == null)
+			bottomNav.setSelectedItemId(R.id.nav_kitchen);
 	}
 
 	private void showKitchenFragment() {
