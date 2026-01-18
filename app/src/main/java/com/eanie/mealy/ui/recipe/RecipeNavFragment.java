@@ -28,7 +28,7 @@ public class RecipeNavFragment extends Fragment {
 	private UserDataViewModel userInfoVM;
 
 	private enum RecipeTab {
-		BROWSE(R.string.browse_recipes, RecipeBrowseFragment::new),
+		BROWSE(R.string.available_recipes, RecipeBrowseFragment::new),
 		MY_RECIPES(R.string.my_recipes, MyRecipesFragment::new),
 		FAVORITES(R.string.favorites, FavoriteRecipesFragment::new);
 

@@ -47,7 +47,8 @@
 
     <string name="kitchen_title">%s\'s Kitchen</string>
     <string name="kitchen">Kitchen</string>
-    <string name="browse_recipes">Recipes</string>
+    <string name="browse_recipes">Browse Recipes</string>
+    <string name="available_recipes">Available Recipes</string>
     <string name="my_recipes">My Recipes</string>
     <string name="favorites">Favorites</string>
     <string name="create_recipe">Create Recipe</string>
@@ -62,4 +63,5 @@
     <string name="add">Add</string>
     <string name="create">Create New</string>
     <string name="action_make_recipe">Start Cooking</string>
+    <string name="app_name_desc">Meal Choice Made Simple</string>
 </resources>
