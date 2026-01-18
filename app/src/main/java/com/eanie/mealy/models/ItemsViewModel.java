@@ -31,7 +31,7 @@ public class ItemsViewModel extends AndroidViewModel {
 			new KitchenItem("ing_eggs", 12),
 			new KitchenItem("ing_flour", new Quantity(1, UnitType.GRAMS, Quantifier.KILO)),
 			new KitchenItem("ing_milk", new Quantity(250, UnitType.LITERS, Quantifier.MILLI)),
-			new KitchenItem("ing_mushrooms", new Quantity(200, UnitType.GRAMS)),
+			new KitchenItem("ing_mushroom", new Quantity(200, UnitType.GRAMS)),
 			new KitchenItem("ing_onion", 5),
 			new KitchenItem("ing_tomato", 2),
 			new KitchenItem("ing_yogurt"),
