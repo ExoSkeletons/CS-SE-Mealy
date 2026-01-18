@@ -10,8 +10,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.eanie.mealy.MainActivity;
 import com.eanie.mealy.databinding.ActivityLoginBinding;
+import com.eanie.mealy.models.LoginViewModel;
+import com.eanie.mealy.ui.MainActivity;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;

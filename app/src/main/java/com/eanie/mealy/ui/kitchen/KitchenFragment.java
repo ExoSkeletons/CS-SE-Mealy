@@ -11,16 +11,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eanie.mealy.Quantifier;
-import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
-import com.eanie.mealy.UnitType;
+import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.Quantifier;
+import com.eanie.mealy.data.Quantity;
+import com.eanie.mealy.data.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.UserInfoViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
-import com.eanie.mealy.ui.kitchen.recipe.AddRecipeFragment;
-import com.eanie.mealy.ui.kitchen.recipe.MyRecipesFragment;
+import com.eanie.mealy.ui.Resources;
+import com.eanie.mealy.ui.recipe.AddRecipeFragment;
+import com.eanie.mealy.ui.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;

@@ -1,7 +1,5 @@
-package com.eanie.mealy.ui.kitchen;
+package com.eanie.mealy.data;
 
-import com.eanie.mealy.Quantity;
-import com.eanie.mealy.UnitType;
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
@@ -13,7 +11,7 @@ import androidx.annotation.Nullable;
 
 public class KitchenItem implements Cloneable, Serializable {
 	@NonNull
-	static String toKey(String name) {
+	public static String toKey(String name) {
 		return "ing_" + name.toLowerCase().replace(" ", "_");
 	}
 

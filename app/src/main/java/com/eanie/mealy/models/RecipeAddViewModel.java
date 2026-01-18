@@ -3,8 +3,8 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.net.Uri;
 
-import com.eanie.mealy.Recipe;
-import com.eanie.mealy.ui.kitchen.KitchenItem;
+import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.Recipe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import static com.eanie.mealy.ui.kitchen.KitchenItem.match;
+import static com.eanie.mealy.data.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
 	public RecipeAddViewModel(@NonNull Application application) {

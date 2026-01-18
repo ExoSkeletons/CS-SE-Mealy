@@ -1,4 +1,4 @@
-package com.eanie.mealy;
+package com.eanie.mealy.data;
 
 import android.util.Pair;
 

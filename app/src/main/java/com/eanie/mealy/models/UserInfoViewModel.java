@@ -2,7 +2,7 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
-import com.eanie.mealy.Recipe;
+import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 import com.eanie.mealy.data.UserData;
 import com.eanie.mealy.data.UserRepo;

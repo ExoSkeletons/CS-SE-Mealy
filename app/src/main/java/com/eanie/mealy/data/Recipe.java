@@ -1,6 +1,5 @@
-package com.eanie.mealy;
+package com.eanie.mealy.data;
 
-import com.eanie.mealy.ui.kitchen.KitchenItem;
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;

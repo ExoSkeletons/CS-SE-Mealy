@@ -1,5 +1,6 @@
 package com.eanie.mealy.data;
 
+import com.eanie.mealy.data.firestore.FirestoreDocumentLiveData;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.LiveData;

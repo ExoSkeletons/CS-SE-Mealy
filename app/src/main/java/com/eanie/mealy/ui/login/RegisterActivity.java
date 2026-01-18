@@ -5,8 +5,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 
-import com.eanie.mealy.MainActivity;
 import com.eanie.mealy.databinding.ActivityRegisterBinding;
+import com.eanie.mealy.models.LoginViewModel;
+import com.eanie.mealy.ui.MainActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;

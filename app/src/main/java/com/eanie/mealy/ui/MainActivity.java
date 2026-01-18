@@ -1,12 +1,13 @@
-package com.eanie.mealy;
+package com.eanie.mealy.ui;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.eanie.mealy.R;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
-import com.eanie.mealy.ui.kitchen.recipe.RecipeBrowseFragment;
+import com.eanie.mealy.ui.recipe.RecipeBrowseFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;

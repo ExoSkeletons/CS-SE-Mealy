@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.kitchen;
+package com.eanie.mealy.models;
 
 import androidx.lifecycle.ViewModel;
 

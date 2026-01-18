@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.kitchen.recipe;
+package com.eanie.mealy.ui.recipe;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.Recipe;
-import com.eanie.mealy.ui.kitchen.KitchenItem;
+import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;

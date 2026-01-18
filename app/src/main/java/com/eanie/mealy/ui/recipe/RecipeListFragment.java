@@ -1,16 +1,16 @@
-package com.eanie.mealy.ui.kitchen.recipe;
+package com.eanie.mealy.ui.recipe;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eanie.mealy.Quantity;
 import com.eanie.mealy.R;
-import com.eanie.mealy.Recipe;
-import com.eanie.mealy.UnitType;
+import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.Quantity;
+import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.UnitType;
 import com.eanie.mealy.models.UserInfoViewModel;
-import com.eanie.mealy.ui.kitchen.KitchenItem;
 
 import java.util.List;
 import java.util.stream.Collectors;

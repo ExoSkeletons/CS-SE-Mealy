@@ -1,4 +1,4 @@
-package com.eanie.mealy.data;
+package com.eanie.mealy.data.firestore;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;

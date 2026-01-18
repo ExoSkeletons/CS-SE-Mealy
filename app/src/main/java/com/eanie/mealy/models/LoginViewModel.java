@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.login;
+package com.eanie.mealy.models;
 
 import android.app.Activity;
 import android.app.Application;
@@ -8,6 +8,8 @@ import com.eanie.mealy.R;
 import com.eanie.mealy.data.login.LoginRepo;
 import com.eanie.mealy.data.login.sources.FirebaseEmailLoginDataSource;
 import com.eanie.mealy.data.login.sources.FirebaseGoogleLoginDataSource;
+import com.eanie.mealy.ui.login.AuthResult;
+import com.eanie.mealy.ui.login.LoginFormState;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
@@ -35,11 +37,11 @@ public class LoginViewModel extends AndroidViewModel {
 		super(application);
 	}
 
-	LiveData<LoginFormState> getLoginFormState() {
+	public LiveData<LoginFormState> getLoginFormState() {
 		return loginFormState;
 	}
 
-	LiveData<AuthResult> getAuthResult() {
+	public LiveData<AuthResult> getAuthResult() {
 		return authResult;
 	}
 

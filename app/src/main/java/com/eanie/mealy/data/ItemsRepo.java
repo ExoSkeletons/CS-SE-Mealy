@@ -1,6 +1,6 @@
 package com.eanie.mealy.data;
 
-import com.eanie.mealy.ui.kitchen.KitchenItem;
+import com.eanie.mealy.data.firestore.FirestoreQueryLiveData;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.widget.Toast;
 
-import com.eanie.mealy.Recipe;
+import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;

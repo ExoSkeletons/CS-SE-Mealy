@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.kitchen;
+package com.eanie.mealy.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

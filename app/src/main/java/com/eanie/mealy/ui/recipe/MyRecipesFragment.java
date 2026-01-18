@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.kitchen.recipe;
+package com.eanie.mealy.ui.recipe;
 
 import android.os.Bundle;
 

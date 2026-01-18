@@ -1,4 +1,4 @@
-package com.eanie.mealy.ui.kitchen.recipe;
+package com.eanie.mealy.ui.recipe;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.Recipe;
+import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.models.SingleRecipeViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
