@@ -21,8 +21,6 @@ import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.UserDataViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
-import com.eanie.mealy.ui.recipe.AddRecipeFragment;
-import com.eanie.mealy.ui.recipe.MyRecipesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -40,7 +38,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class KitchenFragment extends Fragment {
 	private ItemsViewModel itemsVM;
@@ -80,22 +77,7 @@ public class KitchenFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		var myRecipesBtn = view.findViewById(R.id.btn_my_recipes);
-		var btnAddRecipe = view.findViewById(R.id.btn_add_recipe);
-		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef -> {
-			myRecipesBtn.setVisibility(isChef ? View.VISIBLE : View.GONE);
-			btnAddRecipe.setVisibility(isChef ? View.VISIBLE : View.GONE);
-		});
-		myRecipesBtn.setOnClickListener(v ->
-				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, withUserId(userItemsVM.getUserId(), new MyRecipesFragment()))
-						.addToBackStack("my-recipes")
-						.commit());
-		btnAddRecipe.setOnClickListener(v ->
-				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, AddRecipeFragment.newInstance())
-						.addToBackStack("add-recipe")
-						.commit());
+		var btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
 
 		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
 		if (user != null) {
@@ -131,7 +113,7 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
-		view.findViewById(R.id.imageButton).setOnClickListener(v ->
+		btnAddIngredient.setOnClickListener(v ->
 				showAddIngredientsDialog(requireContext(),
 						userItemsVM.myItems().getValue(), itemsVM.ingredients().getValue(),
 						userItemsVM::addIngredient, itemsVM::add

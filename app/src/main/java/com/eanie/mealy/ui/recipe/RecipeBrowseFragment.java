@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class RecipeBrowseFragment extends RecipeListFragment {
 	private DiscoveryViewModel discoveryVM;
@@ -43,13 +42,6 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 	public void onViewCreated(@NonNull View view,
 	                          @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		View btnFavorites = view.findViewById(R.id.btn_open_favorites);
-		btnFavorites.setOnClickListener(v ->
-				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, withUserId(userId(), new FavoriteRecipesFragment()))
-						.addToBackStack("favorites")
-						.commit());
 	}
 
 	@Override
