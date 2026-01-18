@@ -128,19 +128,19 @@ public class KitchenFragment extends Fragment {
 	}
 
 	public static void showEditIngredientDialog(Context context, KitchenItem item, Consumer<KitchenItem> onEdit) {
-		ingredientDialog(context, "Save", item, null, onEdit).show();
+		ingredientDialog(context, R.string.save, item, null, onEdit).show();
 	}
 
 	private static void showCreateIngredientDialog(Context context, @Nullable List<KitchenItem> suggestions, Consumer<KitchenItem> onCreate) {
-		ingredientDialog(context, "Add", null, suggestions, onCreate)
-				.setTitle("Add New Item")
-				.setNegativeButton("Cancel", null)
+		ingredientDialog(context, R.string.create, null, suggestions, onCreate)
+				// .setTitle("Create New Item")
+				.setNegativeButton(android.R.string.cancel, null)
 				.show();
 	}
 
 	private static AlertDialog.Builder ingredientDialog(
 			Context context,
-			String positiveButton,
+			int positiveButton,
 			@Nullable KitchenItem item,
 			@Nullable List<KitchenItem> suggestions,
 			Consumer<KitchenItem> consumer
@@ -231,15 +231,18 @@ public class KitchenFragment extends Fragment {
 			dialogAdapter.setShowIcon(true);
 			dialogAdapter.setMinimalStyle(false);
 			dialogAdapter.setSelectionMode(true);
-			RecyclerView rv = new RecyclerView(context);
+
+			View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_ingredients, null);
+			RecyclerView rv = dialogView.findViewById(R.id.rv_ingredients);
+
 			rv.setLayoutManager(new GridLayoutManager(context, 3));
 			rv.setAdapter(dialogAdapter);
 			dialogAdapter.submitList(newItems);
 
 			dialogBuilder
-					// .setTitle("Select ingredients to Add")
-					.setView(rv)
-					.setPositiveButton("Add", (dialog, which) ->
+					//.setTitle("Select ingredients to Add")
+					.setView(dialogView)
+					.setPositiveButton(R.string.add, (dialog, which) ->
 							newItems.stream()
 									.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
 									.forEach(addItem)
@@ -247,16 +250,20 @@ public class KitchenFragment extends Fragment {
 		} else {
 			dialogBuilder.setTitle("No ingredients left to buy")
 					.setMessage("You have everything!")
-					.setPositiveButton("Ok", null);
+					.setPositiveButton(android.R.string.ok, null);
 		}
 
 		if (createItem != null) {
 			List<KitchenItem> existing = existingItems;
-			dialogBuilder.setNeutralButton("Create New", (dialog, which) ->
-					showCreateIngredientDialog(context, existing, item -> {
-						createItem.accept(item);
-						addItem.accept(item);
-					}));
+			dialogBuilder.setNeutralButton(R.string.create,
+					(dialog, which) -> showCreateIngredientDialog(
+							context, existing,
+							item -> {
+								createItem.accept(item);
+								addItem.accept(item);
+							}
+					)
+			);
 		}
 
 		dialogBuilder.show();

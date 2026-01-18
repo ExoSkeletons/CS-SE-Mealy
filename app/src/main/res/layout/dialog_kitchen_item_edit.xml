@@ -1,95 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
-    <ImageView
-        android:id="@+id/img_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        app:srcCompat="@drawable/ic_ing_butter" />
-
-    <TextView
-        android:id="@+id/tv_item_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="none"
-        tools:text="@string/ing_butter"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="italic" />
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/img_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            app:srcCompat="@drawable/ic_ing_butter" />
 
-        <TableRow
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:divider="?attr/dividerHorizontal"
-            android:dividerPadding="8dp"
-            android:showDividers="middle">
+            android:inputType="none"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="italic"
+            tools:text="@string/ing_butter" />
 
-            <TextView
-                android:layout_height="wrap_content"
-                android:text="@string/amount"
-                android:textAlignment="center" />
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_span="2"
-                android:layout_weight="1"
-                android:text="@string/units"
-                android:textAlignment="center" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="?attr/dividerHorizontal"
-            android:dividerPadding="8dp"
-            android:showDividers="middle">
-
-            <EditText
-                android:id="@+id/tv_amount"
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="5"
-                android:hint="1.0"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
+                android:divider="?attr/dividerHorizontal"
+                android:dividerPadding="8dp"
+                android:showDividers="middle">
 
-            <LinearLayout
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:text="@string/amount"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:text="@string/units"
+                    android:textAlignment="center" />
+
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:divider="?attr/dividerHorizontal"
+                android:dividerPadding="8dp"
+                android:showDividers="middle">
 
-                <Spinner
-                    android:id="@+id/sp_quant"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:foregroundGravity="center_vertical"
+                <EditText
+                    android:id="@+id/tv_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="5"
+                    android:hint="1.0"
+                    android:inputType="numberDecimal"
                     android:textAlignment="center" />
 
-                <Spinner
-                    android:id="@+id/sp_unit_type"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:foregroundGravity="center_vertical"
-                    android:textAlignment="center" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
-        </TableRow>
+                    <Spinner
+                        android:id="@+id/sp_quant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:foregroundGravity="center_vertical"
+                        android:textAlignment="center" />
 
-    </TableLayout>
+                    <Spinner
+                        android:id="@+id/sp_unit_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:foregroundGravity="center_vertical"
+                        android:textAlignment="center" />
+                </LinearLayout>
 
-</LinearLayout>
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
