@@ -237,9 +237,9 @@ public class KitchenFragment extends Fragment {
 			dialogAdapter.submitList(newItems);
 
 			dialogBuilder
-					.setTitle("Select ingredients to Add")
+					// .setTitle("Select ingredients to Add")
 					.setView(rv)
-					.setPositiveButton("Add Selected", (dialog, which) ->
+					.setPositiveButton("Add", (dialog, which) ->
 							newItems.stream()
 									.filter(i -> dialogAdapter.getSelectedKeys().contains(i.getIngredientKey()))
 									.forEach(addItem)
@@ -252,7 +252,7 @@ public class KitchenFragment extends Fragment {
 
 		if (createItem != null) {
 			List<KitchenItem> existing = existingItems;
-			dialogBuilder.setNeutralButton("Create New Item", (dialog, which) ->
+			dialogBuilder.setNeutralButton("Create New", (dialog, which) ->
 					showCreateIngredientDialog(context, existing, item -> {
 						createItem.accept(item);
 						addItem.accept(item);
