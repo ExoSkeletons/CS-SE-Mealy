@@ -34,11 +34,11 @@ public class RecipeNavFragment extends Fragment {
 
 		@StringRes
 		final int titleRes;
-		final Supplier<Fragment> fragmentSupplier;
+		final Supplier<Fragment> supplier;
 
-		RecipeTab(@StringRes int titleRes, Supplier<Fragment> fragmentSupplier) {
+		RecipeTab(@StringRes int titleRes, Supplier<Fragment> supplier) {
 			this.titleRes = titleRes;
-			this.fragmentSupplier = fragmentSupplier;
+			this.supplier = supplier;
 		}
 	}
 
@@ -97,7 +97,7 @@ public class RecipeNavFragment extends Fragment {
 		@Override
 		public Fragment createFragment(int position) {
 			RecipeTab tab = RecipeTab.values()[position];
-			return withUserId(uuid, tab.fragmentSupplier.get());
+			return withUserId(uuid, tab.supplier.get());
 		}
 
 		@Override
