@@ -1,0 +1,84 @@
+package com.eanie.mealy.data;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentId;
+
+import androidx.annotation.NonNull;
+
+public class Notification {
+	@DocumentId
+	String id;
+	String receiverUuid;
+	String senderUuid;
+	String text;
+	Timestamp timestamp;
+	boolean read;
+
+	public Notification() {
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getReceiverUuid() {
+		return receiverUuid;
+	}
+
+	public void setReceiverUuid(String receiverUuid) {
+		this.receiverUuid = receiverUuid;
+	}
+
+	public String getSenderUuid() {
+		return senderUuid;
+	}
+
+	public void setSenderUuid(String senderUuid) {
+		this.senderUuid = senderUuid;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public boolean getRead() {
+		return read;
+	}
+
+	public void setRead(boolean read) {
+		this.read = read;
+	}
+
+	public boolean isRead() {
+		return getRead();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "Notification{" +
+				"@" + id + ',' +
+				'\'' + senderUuid + '\'' + " -> " +
+				'\'' + receiverUuid + '\'' + ',' +
+				timestamp.toDate() + ',' +
+				'\"' + text.substring(0, Math.min(text.length(), 10)) + '\"' +
+				'}';
+	}
+}

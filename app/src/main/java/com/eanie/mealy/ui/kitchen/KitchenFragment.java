@@ -2,10 +2,13 @@ package com.eanie.mealy.ui.kitchen;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,7 +21,7 @@ import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.UnitType;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.ItemsViewModel;
-import com.eanie.mealy.models.UserDataViewModel;
+import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +45,7 @@ import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
 public class KitchenFragment extends Fragment {
 	private ItemsViewModel itemsVM;
 	private UserItemsViewModel userItemsVM;
-	private UserDataViewModel userInfoVM;
+	private NotificationViewModel notificationVM;
 	private DiscoveryViewModel discoveryVM;
 
 	@Override
@@ -53,24 +56,26 @@ public class KitchenFragment extends Fragment {
 		var provider = new ViewModelProvider(requireActivity());
 		itemsVM = provider.get(ItemsViewModel.class);
 		userItemsVM = provider.get(UserItemsViewModel.class);
+		notificationVM = provider.get(NotificationViewModel.class);
 		discoveryVM = provider.get(DiscoveryViewModel.class);
-		userInfoVM = provider.get(UserDataViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {
 			var userId = args.getString(ARG_UUID, null);
 			if (userId != null) {
 				userItemsVM.setUserId(userId);
-				userInfoVM.setUserId(userId);
+				notificationVM.setUserId(userId);
 			}
 		}
 	}
 
 	@Nullable
 	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater,
-	                         @Nullable ViewGroup container,
-	                         @Nullable Bundle savedInstanceState) {
+	public View onCreateView(
+			@NonNull LayoutInflater inflater,
+			@Nullable ViewGroup container,
+			@Nullable Bundle savedInstanceState
+	) {
 		return inflater.inflate(R.layout.fragment_kitchen, container, false);
 	}
 
@@ -90,6 +95,16 @@ public class KitchenFragment extends Fragment {
 				);
 			}
 		}
+		notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
+			if (notifications == null) return;
+			Log.d("Notifications", notifications.toString());
+		});
+
+
+		Button btnSendNotif = view.findViewById(R.id.btn_send_notif);
+		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
+
+		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		KitchenItemAdapter adapter = new KitchenItemAdapter(
 				clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient),
 				new KitchenItemAdapter.OnQuantityChangeListener() {
@@ -108,7 +123,6 @@ public class KitchenFragment extends Fragment {
 		adapter.setShowName(true);
 		adapter.setShowIcon(true);
 		adapter.setMinimalStyle(true);
-		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
 		stock_list.setAdapter(adapter);
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
