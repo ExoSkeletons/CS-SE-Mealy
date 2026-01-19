@@ -10,7 +10,12 @@ import com.eanie.mealy.ui.recipe.RecipeNavFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.function.Supplier;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
@@ -23,7 +28,22 @@ public class MainActivity extends AppCompatActivity {
 		caller.finish();
 	}
 
+	private enum NavOption {
+		RECIPES(R.id.nav_recipes, RecipeNavFragment::new),
+		KITCHEN(R.id.nav_kitchen, KitchenFragment::new);
+
+		@IdRes
+		final int navId;
+		final Supplier<Fragment> supplier;
+
+		NavOption(@IdRes int navId, Supplier<Fragment> supplier) {
+			this.navId = navId;
+			this.supplier = supplier;
+		}
+	}
+
 	private String uuid = null;
+	BottomNavigationView bottomNav = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +52,18 @@ public class MainActivity extends AppCompatActivity {
 
 		var user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user == null) return;
-
 		uuid = user.getUid();
 
-		BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+		bottomNav = findViewById(R.id.bottom_navigation);
 		bottomNav.setOnItemSelectedListener(item -> {
 			int id = item.getItemId();
-			if (id == R.id.nav_kitchen) {
-				showKitchenFragment();
-				return true;
-			} else if (id == R.id.nav_recipes) {
-				showRecipesFragment();
-				return true;
-			}
+			for (NavOption option : NavOption.values())
+				if (option.navId == id) {
+					getSupportFragmentManager().beginTransaction()
+							.replace(R.id.container, withUserId(uuid, option.supplier.get()))
+							.commit();
+					return true;
+				}
 			return false;
 		});
 
