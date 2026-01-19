@@ -86,7 +86,7 @@ public abstract class RecipeListFragment extends Fragment {
 		RecyclerView rv = view.findViewById(getRecyclerViewId());
 		adapter = new RecipeAdapter(
 				recipe ->
-						getParentFragmentManager().beginTransaction()
+						requireActivity().getSupportFragmentManager().beginTransaction()
 								.replace(R.id.container, withUserId(userId, RecipeFragment.newInstance(recipe)))
 								.addToBackStack("recipe-full")
 								.commit(),
