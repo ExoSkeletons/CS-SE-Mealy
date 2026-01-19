@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.function.Supplier;
 
 import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -67,19 +66,11 @@ public class MainActivity extends AppCompatActivity {
 			return false;
 		});
 
-		if (savedInstanceState == null)
-			bottomNav.setSelectedItemId(R.id.nav_kitchen);
+		selectFragment(NavOption.KITCHEN);
 	}
 
-	private void showKitchenFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, withUserId(uuid, new KitchenFragment()))
-				.commit();
-	}
-
-	private void showRecipesFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, withUserId(uuid, new RecipeNavFragment()))
-				.commit();
+	private void selectFragment(NavOption option) {
+		if (bottomNav == null) return;
+		bottomNav.setSelectedItemId(option.navId);
 	}
 }
