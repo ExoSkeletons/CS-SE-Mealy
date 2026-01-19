@@ -155,7 +155,9 @@ public class KitchenFragment extends Fragment {
 		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
 		RecyclerView rv = dialogView.findViewById(R.id.rv_notifications);
 
-		NotificationAdapter adapter = new NotificationAdapter();
+		NotificationAdapter adapter = new NotificationAdapter(
+				n -> notificationVM.markAsRead(n)
+		);
 		rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 		rv.setAdapter(adapter);
 

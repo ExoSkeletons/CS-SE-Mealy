@@ -40,6 +40,11 @@ public class NotificationViewModel extends UserViewModel {
 		repo.insert(notification);
 	}
 
+	public void markAsRead(Notification notification) {
+		if (notification == null || userId.getValue() == null) return;
+		repo.setStatusFor(userId.getValue(), List.of(notification), true);
+	}
+
 	public void markAllAsRead() {
 		List<Notification> all = notifications.getValue();
 		if (all == null || userId.getValue() == null) return;
