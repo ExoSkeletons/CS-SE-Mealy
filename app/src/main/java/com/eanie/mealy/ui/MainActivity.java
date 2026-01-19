@@ -15,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class MainActivity extends AppCompatActivity {
-	public static void start(Activity activity) {
-		Intent intent = new Intent(activity, MainActivity.class);
+	public static void start(Activity caller) {
+		Intent intent = new Intent(caller, MainActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		activity.startActivity(intent);
-		activity.setResult(RESULT_OK);
-		activity.finish();
+		caller.startActivity(intent);
+		caller.setResult(RESULT_OK);
+		caller.finish();
 	}
 
 	private String uuid = null;
