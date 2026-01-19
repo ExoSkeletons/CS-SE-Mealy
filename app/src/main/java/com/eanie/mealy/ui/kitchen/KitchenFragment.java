@@ -38,6 +38,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
@@ -95,11 +96,20 @@ public class KitchenFragment extends Fragment {
 				);
 			}
 		}
+
+		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
+		View notificationBadge = view.findViewById(R.id.notification_badge);
+
 		notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
 			if (notifications == null) return;
-			Log.d("Notifications", notifications.toString());
+
+			boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
+			notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+
+			Log.d("Notifications", "Count: " + notifications.size() + ", Unread: " + hasUnread);
 		});
 
+		btnNotifications.setOnClickListener(v -> showNotificationsDialog());
 
 		Button btnSendNotif = view.findViewById(R.id.btn_send_notif);
 		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
@@ -139,6 +149,24 @@ public class KitchenFragment extends Fragment {
 			adapter.submitList(items);
 			discoveryVM.updateIngredients(items);
 		});
+	}
+
+	private void showNotificationsDialog() {
+		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
+		RecyclerView rv = dialogView.findViewById(R.id.rv_notifications);
+
+		NotificationAdapter adapter = new NotificationAdapter();
+		rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+		rv.setAdapter(adapter);
+
+		notificationVM.notifications().observe(getViewLifecycleOwner(), adapter::submitList);
+
+		new AlertDialog.Builder(requireContext())
+				.setTitle(R.string.notifications)
+				.setView(dialogView)
+				.setPositiveButton(android.R.string.ok, (dialog, which) -> notificationVM.markAllAsRead())
+				.setOnDismissListener(dialog -> notificationVM.markAllAsRead())
+				.show();
 	}
 
 	public static void showEditIngredientDialog(Context context, KitchenItem item, Consumer<KitchenItem> onEdit) {

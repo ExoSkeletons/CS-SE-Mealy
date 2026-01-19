@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Mealy</string>
+    <string name="app_name_desc">Meal Choice Made Simple</string>
 
     <string name="ing_apple">Apple</string>
     <string name="ing_carrot">Carrot</string>
@@ -26,7 +27,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">"Welcome!"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
@@ -47,6 +48,7 @@
 
     <string name="kitchen_title">%s\'s Kitchen</string>
     <string name="kitchen">Kitchen</string>
+    <string name="notifications">Notifications</string>
     <string name="browse_recipes">Browse Recipes</string>
     <string name="available_recipes">Available Recipes</string>
     <string name="my_recipes">My Recipes</string>
@@ -63,5 +65,4 @@
     <string name="add">Add</string>
     <string name="create">Create New</string>
     <string name="action_make_recipe">Start Cooking</string>
-    <string name="app_name_desc">Meal Choice Made Simple</string>
 </resources>
