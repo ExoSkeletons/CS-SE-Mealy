@@ -57,16 +57,12 @@ public class Notification {
 		this.timestamp = timestamp;
 	}
 
-	public boolean getRead() {
-		return read;
-	}
-
 	public void setRead(boolean read) {
 		this.read = read;
 	}
 
 	public boolean isRead() {
-		return getRead();
+		return read;
 	}
 
 
