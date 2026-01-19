@@ -3,6 +3,7 @@ package com.eanie.mealy.data;
 import com.eanie.mealy.data.firestore.FirestoreQueryLiveData;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 
@@ -41,5 +42,19 @@ public class NotificationRepo {
 						.collection("notifications")
 						.orderBy("timestamp", Query.Direction.DESCENDING)
 		);
+	}
+
+	public void setStatusFor(String uid, List<Notification> list, boolean isRead) {
+		WriteBatch batch = db.batch();
+		for (Notification n : list)
+			batch.update(
+					db
+							.collection("users")
+							.document(uid)
+							.collection("notifications")
+							.document(n.getId()),
+					"read", isRead
+			);
+		batch.commit();
 	}
 }

@@ -7,6 +7,7 @@ import com.eanie.mealy.data.NotificationRepo;
 import com.google.firebase.Timestamp;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -37,5 +38,16 @@ public class NotificationViewModel extends UserViewModel {
 		notification.setTimestamp(Timestamp.now());
 
 		repo.insert(notification);
+	}
+
+	public void markAllAsRead() {
+		List<Notification> all = notifications.getValue();
+		if (all == null || userId.getValue() == null) return;
+
+		List<Notification> unread = all.stream()
+				.filter(n -> !n.isRead())
+				.collect(Collectors.toList());
+		if (!unread.isEmpty())
+			repo.setStatusFor(userId.getValue(), unread, true);
 	}
 }
