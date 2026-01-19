@@ -7,16 +7,15 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +37,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 	private boolean showFavored = false;
 
 	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
-		super(new RecipeItemItemCallback());
+		super(new ItemKeyCallback<>(Recipe::getId));
 		this.clickListener = clickListener;
 		this.favoriteListener = favoriteListener;
 	}
@@ -121,18 +120,6 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			);
 			ingredientsRv.setAdapter(ingredientsAdapter);
 			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
-		}
-	}
-
-	private static class RecipeItemItemCallback extends DiffUtil.ItemCallback<Recipe> {
-		@Override
-		public boolean areItemsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-			return oldItem == newItem;
-		}
-
-		@Override
-		public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-			return Objects.equals(oldItem.getId(), newItem.getId());
 		}
 	}
 }

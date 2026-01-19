@@ -8,13 +8,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.Notification;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,19 +28,7 @@ public class NotificationAdapter extends ListAdapter<Notification, NotificationA
 	private final OnMarkReadListener markAsRead;
 
 	protected NotificationAdapter(OnMarkReadListener markAsRead) {
-		super(new DiffUtil.ItemCallback<Notification>() {
-			@Override
-			public boolean areItemsTheSame(@NonNull Notification oldItem, @NonNull Notification newItem) {
-				return oldItem.getId().equals(newItem.getId());
-			}
-
-			@Override
-			public boolean areContentsTheSame(@NonNull Notification oldItem, @NonNull Notification newItem) {
-				return oldItem.getText().equals(newItem.getText()) &&
-						oldItem.getTimestamp().equals(newItem.getTimestamp()) &&
-						oldItem.isRead() == newItem.isRead();
-			}
-		});
+		super(new ItemKeyCallback<>(Notification::getId));
 		this.markAsRead = markAsRead;
 	}
 

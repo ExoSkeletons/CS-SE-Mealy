@@ -3,6 +3,8 @@ package com.eanie.mealy.data;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 
 public class Notification {
@@ -65,6 +67,15 @@ public class Notification {
 		return read;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Notification that)) return false;
+		return read == that.read
+				&& Objects.equals(receiverUuid, that.receiverUuid)
+				&& Objects.equals(senderUuid, that.senderUuid)
+				&& Objects.equals(text, that.text)
+				&& Objects.equals(timestamp, that.timestamp);
+	}
 
 	@NonNull
 	@Override

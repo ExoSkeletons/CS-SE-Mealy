@@ -10,16 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,7 +47,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 
 	public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
-		super(new KitchenItemItemCallback());
+		super(new ItemKeyCallback<>(KitchenItem::getIngredientKey));
 		this.itemClickListener = itemClickListener;
 		this.quantityListener = quantityListener;
 	}
@@ -169,19 +168,6 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			holder.btnIncrease.setOnClickListener(v -> quantityListener.onPlus(itemKey));
 			holder.btnDecrease.setOnClickListener(v -> quantityListener.onMinus(itemKey));
 		}
-	}
-
-	private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
-		@Override
-		public boolean areItemsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-			return Objects.equals(oldItem.getIngredientKey(), newItem.getIngredientKey());
-		}
-
-		@Override
-		public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-			return oldItem.equals(newItem);
-		}
-
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
