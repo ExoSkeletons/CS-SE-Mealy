@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.SingleRecipeViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
@@ -28,6 +29,7 @@ public class RecipeFragment extends Fragment {
 
 	private UserItemsViewModel userItemsVM;
 	private SingleRecipeViewModel recipeVM;
+	private NotificationViewModel notificationVM;
 
 	public static RecipeFragment newInstance(Recipe recipe) {
 		RecipeFragment fragment = new RecipeFragment();
@@ -44,6 +46,7 @@ public class RecipeFragment extends Fragment {
 		var provider = new ViewModelProvider(requireActivity());
 		userItemsVM = provider.get(UserItemsViewModel.class);
 		recipeVM = provider.get(SingleRecipeViewModel.class);
+		notificationVM = provider.get(NotificationViewModel.class);
 
 		var args = getArguments();
 		if (args != null) {
@@ -51,7 +54,10 @@ public class RecipeFragment extends Fragment {
 			if (recipe != null) recipeVM.set(recipe);
 
 			var chefId = args.getString(ARG_UUID, null);
-			if (chefId != null) userItemsVM.setUserId(chefId);
+			if (chefId != null) {
+				userItemsVM.setUserId(chefId);
+				notificationVM.setUserId(chefId);
+			}
 		}
 	}
 
@@ -83,7 +89,9 @@ public class RecipeFragment extends Fragment {
 
 		view.findViewById(R.id.btn_make).setOnClickListener(v -> {
 			try {
-				userItemsVM.consumeFrom(recipeVM.build());
+				Recipe recipe = recipeVM.build();
+				userItemsVM.consumeFrom(recipe);
+				notificationVM.sendRecipeUsed(recipe);
 				Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
 			} catch (Exception e) {
 				Toast.makeText(getContext(), "Failed to make recipe\n" + e.getMessage(), Toast.LENGTH_SHORT).show();

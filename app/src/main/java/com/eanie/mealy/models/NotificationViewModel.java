@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.eanie.mealy.data.Notification;
 import com.eanie.mealy.data.NotificationRepo;
+import com.eanie.mealy.data.Recipe;
 import com.google.firebase.Timestamp;
 
 import java.util.List;
@@ -27,17 +28,43 @@ public class NotificationViewModel extends UserViewModel {
 		return notifications;
 	}
 
+	private void send(String toUserId, Notification notification) {
+		notification.setReceiverUuid(toUserId);
+		notification.setSenderUuid(userId.getValue());
+		notification.setTimestamp(Timestamp.now());
+		repo.insert(notification);
+	}
+
 	public void send(String text, String toUserId) {
 		if (text == null || text.isEmpty()) return;
 		if (userId.getValue() == null) return;
 
 		var notification = new Notification();
-		notification.setReceiverUuid(toUserId);
-		notification.setSenderUuid(userId.getValue());
 		notification.setText(text);
-		notification.setTimestamp(Timestamp.now());
 
-		repo.insert(notification);
+		send(toUserId, notification);
+	}
+
+	public void sendRecipeLiked(Recipe recipe) {
+		if (userId.getValue() == null) return;
+		if (recipe == null || recipe.getChefId() == null) return;
+
+		var notification = new Notification();
+		String displayName = "A user"; // todo: replace with displayName
+		notification.setText(displayName + " liked your " + recipe.getName() + " recipe!");
+
+		send(recipe.getChefId(), notification);
+	}
+
+	public void sendRecipeUsed(Recipe recipe) {
+		if (userId.getValue() == null) return;
+		if (recipe == null || recipe.getChefId() == null) return;
+
+		String displayName = "A user"; // todo: replace with displayName when we change userId to firebase User class
+		var notification = new Notification();
+		notification.setText(displayName + " used your " + recipe.getName() + " recipe!");
+
+		send(recipe.getChefId(), notification);
 	}
 
 	public void markAsRead(Notification notification) {
