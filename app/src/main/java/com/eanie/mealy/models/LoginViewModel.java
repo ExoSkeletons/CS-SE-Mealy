@@ -25,7 +25,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class LoginViewModel extends AndroidViewModel {
-
 	private final MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 	private final MutableLiveData<AuthResult> authResult = new MutableLiveData<>();
 	private final LoginRepo loginRepo = new LoginRepo(
@@ -48,8 +47,8 @@ public class LoginViewModel extends AndroidViewModel {
 	public void login(String username, String password) {
 		loginRepo.login(
 				username, password,
-				result -> authResult.setValue(new AuthResult(result)),
-				e -> authResult.setValue(new AuthResult(R.string.login_failed))
+				result -> authResult.postValue(new AuthResult(result)),
+				e -> authResult.postValue(new AuthResult(R.string.login_failed, e))
 		);
 	}
 
@@ -59,10 +58,10 @@ public class LoginViewModel extends AndroidViewModel {
 				registeredUser -> loginRepo.login(
 						username, password,
 						loggedInUser ->
-								authResult.setValue(new AuthResult(loggedInUser)),
-						e -> authResult.setValue(new AuthResult(R.string.login_failed))
+								authResult.postValue(new AuthResult(loggedInUser)),
+						e -> authResult.postValue(new AuthResult(R.string.registration_failed, e))
 				),
-				e -> authResult.setValue(new AuthResult(R.string.registration_failed))
+				e -> authResult.postValue(new AuthResult(R.string.registration_failed, e))
 		);
 	}
 
@@ -84,8 +83,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 					@Override
 					public void onError(@NonNull GetCredentialException e) {
-						e.printStackTrace();
-						authResult.setValue(new AuthResult(R.string.login_failed));
+						authResult.postValue(new AuthResult(R.string.login_failed, e));
 					}
 				});
 	}
@@ -99,23 +97,22 @@ public class LoginViewModel extends AndroidViewModel {
 				// Pass the token to the Repository
 				String idToken = credential.getIdToken();
 				loginRepo.signInWithGoogle(idToken,
-						user -> authResult.setValue(new AuthResult(user)),
-						e -> authResult.setValue(new AuthResult(R.string.login_failed))
+						user -> authResult.postValue(new AuthResult(user)),
+						e -> authResult.postValue(new AuthResult(R.string.login_failed, e))
 				);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			authResult.setValue(new AuthResult(R.string.login_failed));
+			authResult.postValue(new AuthResult(R.string.login_failed, e));
 		}
 	}
 
 	public void loginDataChanged(String username, String password) {
 		if (!isUserNameValid(username))
-			loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
+			loginFormState.postValue(new LoginFormState(R.string.invalid_username, null));
 		else if (!isPasswordValid(password))
-			loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
+			loginFormState.postValue(new LoginFormState(null, R.string.invalid_password));
 		else
-			loginFormState.setValue(new LoginFormState(true));
+			loginFormState.postValue(new LoginFormState(true));
 	}
 
 	// username validation check
