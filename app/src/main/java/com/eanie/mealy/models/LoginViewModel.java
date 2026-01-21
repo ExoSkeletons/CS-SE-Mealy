@@ -83,7 +83,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 					@Override
 					public void onError(@NonNull GetCredentialException e) {
-						authResult.postValue(new AuthResult(R.string.login_failed, e));
+						authResult.postValue(new AuthResult(R.string.google_sign_in_failed, e));
 					}
 				});
 	}
@@ -98,11 +98,11 @@ public class LoginViewModel extends AndroidViewModel {
 				String idToken = credential.getIdToken();
 				loginRepo.signInWithGoogle(idToken,
 						user -> authResult.postValue(new AuthResult(user)),
-						e -> authResult.postValue(new AuthResult(R.string.login_failed, e))
+						e -> authResult.postValue(new AuthResult(R.string.google_sign_in_failed, e))
 				);
 			}
 		} catch (Exception e) {
-			authResult.postValue(new AuthResult(R.string.login_failed, e));
+			authResult.postValue(new AuthResult(R.string.google_sign_in_failed, e));
 		}
 	}
 
