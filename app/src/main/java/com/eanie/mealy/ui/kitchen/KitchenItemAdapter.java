@@ -10,16 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,7 +47,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 
 	public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
-		super(new KitchenItemItemCallback());
+		super(new ItemKeyCallback<>(KitchenItem::getIngredientKey));
 		this.itemClickListener = itemClickListener;
 		this.quantityListener = quantityListener;
 	}
@@ -157,7 +156,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		// visibility
 		holder.nameTextView.setVisibility(showName ? View.VISIBLE : View.GONE);
 		holder.quantityTextView.setVisibility(showQuantity ? View.VISIBLE : View.GONE);
-		holder.quantityContainer.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
+		holder.btnIncrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
+		holder.btnDecrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
 		if (showIcon) {
 			holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
 			holder.iconImageView.setVisibility(View.VISIBLE);
@@ -171,25 +171,11 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		}
 	}
 
-	private static class KitchenItemItemCallback extends DiffUtil.ItemCallback<KitchenItem> {
-		@Override
-		public boolean areItemsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-			return Objects.equals(oldItem.getIngredientKey(), newItem.getIngredientKey());
-		}
-
-		@Override
-		public boolean areContentsTheSame(@NonNull KitchenItem oldItem, @NonNull KitchenItem newItem) {
-			return oldItem.equals(newItem);
-		}
-
-	}
-
 	public static class ViewHolder extends RecyclerView.ViewHolder {
 
 		ImageView iconImageView;
 		TextView nameTextView;
 		TextView quantityTextView;
-		View quantityContainer;
 		ImageButton btnIncrease;
 		ImageButton btnDecrease;
 		CheckBox checkBox;
@@ -198,7 +184,6 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			super(itemView);
 			iconImageView = itemView.findViewById(R.id.item_icon);
 			nameTextView = itemView.findViewById(R.id.item_name);
-			quantityContainer = itemView.findViewById(R.id.quantity_container);
 			quantityTextView = itemView.findViewById(R.id.item_quantity);
 			btnIncrease = itemView.findViewById(R.id.btn_increase);
 			btnDecrease = itemView.findViewById(R.id.btn_decrease);

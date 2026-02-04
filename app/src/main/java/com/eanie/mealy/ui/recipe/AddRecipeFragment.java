@@ -16,6 +16,7 @@ import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.RecipeAddViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class AddRecipeFragment extends Fragment {
 
 		EditText etName = view.findViewById(R.id.et_recipe_name);
 		EditText etInstructions = view.findViewById(R.id.et_instructions);
-		Button btnSave = view.findViewById(R.id.btn_save_recipe);
+		FloatingActionButton btnSave = view.findViewById(R.id.btn_save_recipe);
 		ImageButton btnCancel = view.findViewById(R.id.btn_close);
 
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);

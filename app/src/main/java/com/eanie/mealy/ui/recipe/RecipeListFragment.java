@@ -10,6 +10,7 @@ import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.UnitType;
+import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserDataViewModel;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public abstract class RecipeListFragment extends Fragment {
 	private UserDataViewModel userInfoVM;
+	private NotificationViewModel notificationVM;
 
 	private RecipeAdapter adapter;
 	private String userId;
@@ -62,10 +64,14 @@ public abstract class RecipeListFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		userInfoVM = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
+		var provider = new ViewModelProvider(requireActivity());
+		userInfoVM = provider.get(UserDataViewModel.class);
+		notificationVM = provider.get(NotificationViewModel.class);
+
 		if (getArguments() != null) {
 			userId = getArguments().getString(ARG_UUID);
 			userInfoVM.setUserId(userId);
+			notificationVM.setUserId(userId);
 		}
 	}
 
@@ -80,11 +86,14 @@ public abstract class RecipeListFragment extends Fragment {
 		RecyclerView rv = view.findViewById(getRecyclerViewId());
 		adapter = new RecipeAdapter(
 				recipe ->
-						getParentFragmentManager().beginTransaction()
+						requireActivity().getSupportFragmentManager().beginTransaction()
 								.replace(R.id.container, withUserId(userId, RecipeFragment.newInstance(recipe)))
 								.addToBackStack("recipe-full")
 								.commit(),
-				(recipe, isFavorite) -> userInfoVM.setFavorite(recipe.getId(), isFavorite)
+				(recipe, isFavorite) -> {
+					userInfoVM.setFavorite(recipe.getId(), isFavorite);
+					if (isFavorite) notificationVM.sendRecipeLiked(recipe);
+				}
 		);
 		adapter.favoritesEnabled(true);
 

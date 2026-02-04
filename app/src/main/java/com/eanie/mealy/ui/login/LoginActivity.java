@@ -14,6 +14,8 @@ import com.eanie.mealy.databinding.ActivityLoginBinding;
 import com.eanie.mealy.models.LoginViewModel;
 import com.eanie.mealy.ui.MainActivity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -51,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 			if (result == null) return;
 			loadingProgressBar.setVisibility(View.GONE);
 			if (result.getError() != null) {
-				showLoginFailed(result.getError());
+				showLoginFailed(result.getError(), result.getException());
 				return;
 			}
 			if (result.getSuccess() != null)
@@ -96,7 +98,14 @@ public class LoginActivity extends AppCompatActivity {
 		});
 	}
 
-	private void showLoginFailed(@StringRes Integer errorString) {
-		Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+	private void showLoginFailed(@NonNull @StringRes Integer errorString, @Nullable Exception e) {
+		var context = getApplicationContext();
+		var errorMessage = context.getString(errorString);
+		if (e != null) {
+			errorMessage += "\n" + e.getMessage();
+			e.printStackTrace();
+		}
+
+		Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
 	}
 }

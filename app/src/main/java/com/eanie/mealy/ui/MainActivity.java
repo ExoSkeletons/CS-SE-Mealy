@@ -3,59 +3,74 @@ package com.eanie.mealy.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
-import com.eanie.mealy.ui.recipe.RecipeBrowseFragment;
+import com.eanie.mealy.ui.recipe.RecipeNavFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.function.Supplier;
+
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class MainActivity extends AppCompatActivity {
-	public static void start(Activity activity) {
-		Intent intent = new Intent(activity, MainActivity.class);
+	public static void start(Activity caller) {
+		Intent intent = new Intent(caller, MainActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		activity.startActivity(intent);
-		activity.setResult(RESULT_OK);
-		activity.finish();
+		caller.startActivity(intent);
+		caller.setResult(RESULT_OK);
+		caller.finish();
 	}
 
-	private TextView btnTabKitchen;
-	private TextView btnTabRecipes;
+	private enum NavOption {
+		RECIPES(R.id.nav_recipes, RecipeNavFragment::new),
+		KITCHEN(R.id.nav_kitchen, KitchenFragment::new);
+
+		@IdRes
+		final int navId;
+		final Supplier<Fragment> supplier;
+
+		NavOption(@IdRes int navId, Supplier<Fragment> supplier) {
+			this.navId = navId;
+			this.supplier = supplier;
+		}
+	}
 
 	private String uuid = null;
+	BottomNavigationView bottomNav = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		btnTabKitchen = findViewById(R.id.btn_tab_kitchen);
-		btnTabRecipes = findViewById(R.id.btn_tab_recipes);
-
 		var user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user == null) return;
-
 		uuid = user.getUid();
 
-		if (savedInstanceState == null) showKitchenFragment();
+		bottomNav = findViewById(R.id.bottom_navigation);
+		bottomNav.setOnItemSelectedListener(item -> {
+			int id = item.getItemId();
+			for (NavOption option : NavOption.values())
+				if (option.navId == id) {
+					getSupportFragmentManager().beginTransaction()
+							.replace(R.id.container, withUserId(uuid, option.supplier.get()))
+							.commit();
+					return true;
+				}
+			return false;
+		});
 
-		btnTabKitchen.setOnClickListener(v -> showKitchenFragment());
-		btnTabRecipes.setOnClickListener(v -> showRecipesFragment());
+		selectFragment(NavOption.KITCHEN);
 	}
 
-	private void showKitchenFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, withUserId(uuid, new KitchenFragment()))
-				.commit();
-	}
-
-	private void showRecipesFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, withUserId(uuid, new RecipeBrowseFragment()))
-				.commit();
+	private void selectFragment(NavOption option) {
+		if (bottomNav == null) return;
+		bottomNav.setSelectedItemId(option.navId);
 	}
 }
