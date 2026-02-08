@@ -36,14 +36,26 @@ public final class Recipe implements Serializable {
 	}
 
 	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
-		for (KitchenItem ri : this.ingredients)
-			for (KitchenItem mi : ingredients)
-				if (Objects.equals(ri.getIngredientKey(), mi.getIngredientKey())) {
-					if (!(mi.getQuantity().getAmount() >= ri.getQuantity().getAmount()))
-						return false;
-					break;
-				}
-		return true;
+		// check each item in this recipe's ingredients list
+		for (KitchenItem ri : this.ingredients) {
+			// find the matching item in the ingredients list
+			KitchenItem mi = ingredients.stream()
+					.filter(i -> i.getIngredientKey().equals(ri.getIngredientKey()))
+					.findFirst()
+					.orElse(null);
+			if (mi == null)
+				return false; // no match, ingredients doesn't contain an item required by this recipe
+			// check quantity
+			try {
+				var compare = mi.getQuantity().compareTo(ri.getQuantity());
+				if (compare < 0)
+					return false; // ingredients is not enough to make this recipe
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+				return false; // comparison failed
+			}
+		}
+		return true; // all ingredients are available
 	}
 
 	public void setId(String id) {
