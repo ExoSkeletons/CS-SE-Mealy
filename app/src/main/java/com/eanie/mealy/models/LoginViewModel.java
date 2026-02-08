@@ -14,6 +14,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.CustomCredential;
@@ -27,6 +28,7 @@ import androidx.lifecycle.MutableLiveData;
 public class LoginViewModel extends AndroidViewModel {
 	private final MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 	private final MutableLiveData<AuthResult> authResult = new MutableLiveData<>();
+	private final MutableLiveData<Boolean> loginMode = new MutableLiveData<>(true);
 	private final LoginRepo loginRepo = new LoginRepo(
 			new FirebaseEmailLoginDataSource(),
 			new FirebaseGoogleLoginDataSource()
@@ -42,6 +44,21 @@ public class LoginViewModel extends AndroidViewModel {
 
 	public LiveData<AuthResult> getAuthResult() {
 		return authResult;
+	}
+
+	public LiveData<Boolean> loginMode() {
+		return loginMode;
+	}
+
+	public void toggleLoginMode() {
+		loginMode.setValue(!Boolean.TRUE.equals(loginMode.getValue()));
+	}
+
+	public void signIn(@Nullable String username, @Nullable String password) {
+		if (username == null || password == null) return;
+		boolean isLoginMode = Boolean.TRUE.equals(loginMode.getValue());
+		if (isLoginMode) login(username, password);
+		else register(username, password);
 	}
 
 	public void login(String username, String password) {
