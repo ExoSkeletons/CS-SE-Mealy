@@ -137,6 +137,8 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
+		itemsVM.ingredients().observe(getViewLifecycleOwner(), items -> {
+		});
 		btnAddIngredient.setOnClickListener(v ->
 				showAddIngredientsDialog(requireContext(),
 						userItemsVM.myItems().getValue(), itemsVM.ingredients().getValue(),
