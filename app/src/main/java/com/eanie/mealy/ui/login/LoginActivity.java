@@ -100,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
 			loadingProgressBar.setVisibility(View.VISIBLE);
 			loginVM.signInWithGoogle(this);
 		});
+
+		loginVM.restoreSession();
 	}
 
 	private void showLoginFailed(@NonNull @StringRes Integer errorString, @Nullable Exception e) {

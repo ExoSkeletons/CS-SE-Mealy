@@ -5,6 +5,7 @@ import android.app.Application;
 import android.util.Patterns;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.login.FirebaseLoggedInUser;
 import com.eanie.mealy.data.login.LoginRepo;
 import com.eanie.mealy.data.login.sources.FirebaseEmailLoginDataSource;
 import com.eanie.mealy.data.login.sources.FirebaseGoogleLoginDataSource;
@@ -12,6 +13,7 @@ import com.eanie.mealy.ui.login.AuthResult;
 import com.eanie.mealy.ui.login.LoginFormState;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,8 +36,16 @@ public class LoginViewModel extends AndroidViewModel {
 			new FirebaseGoogleLoginDataSource()
 	);
 
+	private final FirebaseAuth auth = FirebaseAuth.getInstance();
+
 	public LoginViewModel(@NonNull Application application) {
 		super(application);
+	}
+
+	public void restoreSession() {
+		var fbCachedUser = auth.getCurrentUser();
+		if (fbCachedUser != null)
+			authResult.postValue(new AuthResult(new FirebaseLoggedInUser(fbCachedUser)));
 	}
 
 	public LiveData<LoginFormState> getLoginFormState() {
