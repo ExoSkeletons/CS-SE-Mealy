@@ -1,6 +1,7 @@
 package com.eanie.mealy.ui.kitchen;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
+import com.eanie.mealy.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -96,6 +98,16 @@ public class KitchenFragment extends Fragment {
 				);
 			}
 		}
+
+		ImageButton btnLogout = view.findViewById(R.id.btn_logout);
+		btnLogout.setOnClickListener(v -> {
+			FirebaseAuth.getInstance().signOut();
+
+			Intent intent = new Intent(requireActivity(), LoginActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(intent);
+			requireActivity().finish();
+		});
 
 		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
 		View notificationBadge = view.findViewById(R.id.notification_badge);
