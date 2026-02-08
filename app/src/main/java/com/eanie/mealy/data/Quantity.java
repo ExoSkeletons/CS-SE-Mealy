@@ -74,7 +74,7 @@ public class Quantity implements Cloneable, Serializable {
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
 		Quantity oq = (Quantity) o;
-		return Double.compare(amount, oq.amount) == 0 && unitType == oq.unitType;
+		return Double.compare(amount, oq.amount) == 0 && quantifier == oq.quantifier && unitType == oq.unitType;
 	}
 
 	@NonNull
