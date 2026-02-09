@@ -51,13 +51,78 @@
                 android:layout_height="wrap_content"
                 android:text="@string/name" />
 
-            <EditText
-                android:id="@+id/et_recipe_name"
+            <!-- שורה: שם מתכון + תמונה (גדולה) + 2 כפתורים -->
+            <LinearLayout
+                android:id="@+id/row_recipe_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter recipe name" />
+                android:orientation="horizontal"
+                android:gravity="top">
 
-            <!-- מצרכים -->
+                <EditText
+                    android:id="@+id/et_recipe_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Enter recipe name"
+                    android:inputType="textPersonName" />
+
+                <!-- עמודה ימנית: תמונה + כפתורים -->
+                <LinearLayout
+                    android:id="@+id/col_recipe_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_recipe_photo"
+                        android:layout_width="78dp"
+                        android:layout_height="78dp"
+                        android:background="@android:color/darker_gray"
+                        android:padding="6dp"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_camera"
+                        android:contentDescription="Recipe photo" />
+
+                    <!-- שני כפתורים -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_camera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minWidth="0dp"
+                            android:minHeight="0dp"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="6dp"
+                            android:text="Camera"
+                            android:textAllCaps="false"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/btn_gallery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:minWidth="0dp"
+                            android:minHeight="0dp"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="6dp"
+                            android:text="Gallery"
+                            android:textAllCaps="false"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ingredients -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +130,6 @@
                 android:text="@string/ingredients"
                 android:textStyle="bold" />
 
-            <!-- רשימת מצרכים -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_ingredients"
                 android:layout_width="match_parent"

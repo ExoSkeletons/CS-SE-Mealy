@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import static com.eanie.mealy.data.KitchenItem.match;
@@ -28,19 +29,30 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
 	public Recipe buildRecipe() {
-		return new Recipe(
-				owner.getValue(),
-				name.getValue(),
-				instructions.getValue(),
-				ingredients.getValue(),
-				owner.getValue()
-		);
+        String imageUriStr = (image.getValue() == null) ? null : image.getValue().toString();
+
+        var r = new Recipe(
+                owner.getValue(),
+                name.getValue(),
+                instructions.getValue(),
+                ingredients.getValue(),
+                owner.getValue()
+        );
+        r.setImageUri(imageUriStr);
+        return r;
 	}
 
 	public void saveRecipe() {
-		// todo: submit image to firebase storage
-		add(buildRecipe()); // save recipe to firebase
+		var recipe = buildRecipe();
+		//var newUri = ...
+		//recipe.setImageUri(netUri);
+		// todo: submit image to firebase storage, then update recipe uri to storage uri or cash..?
+		add(recipe); // save recipe to firebase
 	}
+    public void setImage(@Nullable Uri uri) {
+        if (uri == null) return;
+        image.postValue(uri);
+    }
 
 	public void addIngredient(KitchenItem kitchenItem) {
 		var items = ingredients.getValue();
