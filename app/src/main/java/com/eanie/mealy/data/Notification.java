@@ -1,11 +1,11 @@
 package com.eanie.mealy.data;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.Objects;
-
-import androidx.annotation.NonNull;
 
 public class Notification {
 	@DocumentId
@@ -14,7 +14,9 @@ public class Notification {
 	String senderUuid;
 	String text;
 	Timestamp timestamp;
-	boolean read;
+    String senderName;
+
+    boolean read;
 
 	public Notification() {
 	}
@@ -63,7 +65,16 @@ public class Notification {
 		this.read = read;
 	}
 
-	public boolean isRead() {
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+
+    public boolean isRead() {
 		return read;
 	}
 
