@@ -182,7 +182,10 @@ public class AddRecipeFragment extends Fragment {
 	private void openCamera() {
 		try {
 			File dir = new File(requireContext().getCacheDir(), "images");
-			if (!dir.exists()) dir.mkdirs();
+			if (!dir.exists()) {
+				var success = dir.mkdirs();
+				if (!success) throw new IOException("Failed to create directory");
+			}
 
 			File imageFile = File.createTempFile("recipe_", ".jpg", dir);
 
