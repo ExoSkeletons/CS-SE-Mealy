@@ -127,8 +127,9 @@ public class KitchenFragment extends Fragment {
 		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
 
 		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
-		KitchenItemAdapter adapter = new KitchenItemAdapter(
-				clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient),
+		KitchenItemAdapter adapter = new KitchenItemAdapter();
+		adapter.setItemClickListener(clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient));
+		adapter.setQuantityListener(
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
