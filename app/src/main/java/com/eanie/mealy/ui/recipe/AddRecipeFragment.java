@@ -43,10 +43,6 @@ public class AddRecipeFragment extends Fragment {
 	private RecipeAddViewModel recipeAddVM;
 	private ItemsViewModel itemsVM;
 
-	private ImageView ivRecipePhoto;
-	private Button btnGallery;
-	private Button btnCamera;
-
 	private ActivityResultLauncher<String> chooseImageLauncher;
 	private ActivityResultLauncher<Uri> takePictureLauncher;
 	private ActivityResultLauncher<String> requestCameraPermissionLauncher;
@@ -109,10 +105,9 @@ public class AddRecipeFragment extends Fragment {
 		FloatingActionButton btnSave = view.findViewById(R.id.btn_save_recipe);
 		ImageButton btnCancel = view.findViewById(R.id.btn_close);
 
-		// NEW UI elements from XML
-		ivRecipePhoto = view.findViewById(R.id.iv_recipe_photo);
-		btnGallery = view.findViewById(R.id.btn_gallery);
-		btnCamera = view.findViewById(R.id.btn_camera);
+		ImageView ivRecipePhoto = view.findViewById(R.id.iv_recipe_photo);
+		View btnGallery = view.findViewById(R.id.btn_gallery);
+		View btnCamera = view.findViewById(R.id.btn_camera);
 
 		// Observer: רק הוא מעדכן UI
 		recipeAddVM.image.observe(getViewLifecycleOwner(), uri -> {
