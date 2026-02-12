@@ -70,7 +70,6 @@ public class AddRecipeFragment extends Fragment {
 					recipeAddVM.setImage(uri);
 				}
 		);
-
 		// Camera: מצלם לתוך Uri שיצרנו מראש
 		takePictureLauncher = registerForActivityResult(
 				new ActivityResultContracts.TakePicture(),
@@ -106,21 +105,17 @@ public class AddRecipeFragment extends Fragment {
 		ImageButton btnCancel = view.findViewById(R.id.btn_close);
 
 		ImageView ivRecipePhoto = view.findViewById(R.id.iv_recipe_photo);
-		View btnGallery = view.findViewById(R.id.btn_gallery);
+		View btnRemoveImg = view.findViewById(R.id.btn_remove_img);
+		View btnChoose = view.findViewById(R.id.btn_gallery);
 		View btnCamera = view.findViewById(R.id.btn_camera);
 
-		// Observer: רק הוא מעדכן UI
 		recipeAddVM.image.observe(getViewLifecycleOwner(), uri -> {
-			if (uri != null) {
-				ivRecipePhoto.setImageURI(uri);
-			} else {
-				ivRecipePhoto.setImageResource(android.R.drawable.ic_menu_camera);
-			}
+			if (uri != null) ivRecipePhoto.setImageURI(uri);
+			else ivRecipePhoto.setImageDrawable(null);
+			btnRemoveImg.setVisibility(uri != null ? View.VISIBLE : View.GONE);
 		});
 
 		// Buttons
-		btnGallery.setOnClickListener(v -> chooseImageLauncher.launch("image/*"));
-
 		btnCamera.setOnClickListener(v -> {
 			if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
 					== android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -129,6 +124,8 @@ public class AddRecipeFragment extends Fragment {
 				requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
 			}
 		});
+		btnRemoveImg.setOnClickListener(v -> recipeAddVM.setImage(null));
+		btnChoose.setOnClickListener(v -> chooseImageLauncher.launch("image/*"));
 
 		// Ingredients list
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);

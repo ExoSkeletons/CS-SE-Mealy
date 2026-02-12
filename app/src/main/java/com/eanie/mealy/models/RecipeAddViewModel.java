@@ -50,7 +50,6 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		add(recipe); // save recipe to firebase
 	}
     public void setImage(@Nullable Uri uri) {
-        if (uri == null) return;
         image.postValue(uri);
     }
 
