@@ -144,13 +144,10 @@ public class AddRecipeFragment extends Fragment {
 		recipeAddVM.ingredients.observe(getViewLifecycleOwner(), ingredientAdapter::submitList);
 
 		Button btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
-		btnAddIngredient.setOnClickListener(v -> {
-			Toast.makeText(getContext(), "Add ingredient", Toast.LENGTH_SHORT).show();
-			KitchenFragment.showAddIngredientsDialog(getContext(),
-					recipeAddVM.ingredients.getValue(), itemsVM.ingredients().getValue(),
-					recipeAddVM::addIngredient, itemsVM::add
-			);
-		});
+		btnAddIngredient.setOnClickListener(v -> KitchenFragment.showAddIngredientsDialog(getContext(),
+				recipeAddVM.ingredients.getValue(), itemsVM.ingredients().getValue(),
+				recipeAddVM::addIngredient, itemsVM::add
+		));
 
 		etName.addTextChangedListener(new TextWatcher() {
 			@Override public void afterTextChanged(Editable s) { recipeAddVM.name.postValue(s.toString()); }
