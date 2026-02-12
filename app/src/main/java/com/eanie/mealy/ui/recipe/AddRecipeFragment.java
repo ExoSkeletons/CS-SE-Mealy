@@ -33,7 +33,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class AddRecipeFragment extends Fragment {
-	public AddRecipeFragment() {}
+	public AddRecipeFragment() {
+	}
 
 	public static AddRecipeFragment newInstance() {
 		return new AddRecipeFragment();
@@ -136,8 +137,9 @@ public class AddRecipeFragment extends Fragment {
 
 		// Ingredients list
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
-		KitchenItemAdapter ingredientAdapter = new KitchenItemAdapter(
-				clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddVM::updateIngredient),
+		KitchenItemAdapter ingredientAdapter = new KitchenItemAdapter(true);
+		ingredientAdapter.setItemClickListener(clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddVM::updateIngredient));
+		ingredientAdapter.setQuantityListener(
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {

@@ -42,22 +42,28 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	private boolean isSelectionEnabled = false;
 	private final Set<String> selectedKeys = new HashSet<>();
 
-	private final OnQuantityChangeListener quantityListener;
-	private final OnItemClickListener itemClickListener;
+	private OnQuantityChangeListener quantityListener;
+	private OnItemClickListener itemClickListener;
+	private final boolean compact;
 
 
-	public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
+	public KitchenItemAdapter(boolean compact) {
 		super(new ItemKeyCallback<>(KitchenItem::getIngredientKey));
-		this.itemClickListener = itemClickListener;
-		this.quantityListener = quantityListener;
-	}
-
-	public KitchenItemAdapter(OnQuantityChangeListener quantityListener) {
-		this(null, quantityListener);
+		this.compact = compact;
 	}
 
 	public KitchenItemAdapter() {
-		this(null);
+		this(false);
+	}
+
+	public void setQuantityListener(OnQuantityChangeListener quantityListener) {
+		this.quantityListener = quantityListener;
+		notifyDataSetChanged();
+	}
+
+	public void setItemClickListener(OnItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+		notifyDataSetChanged();
 	}
 
 	public void setMinimalStyle(boolean minimalStyle) {
@@ -97,8 +103,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.item_kitchen_item, parent, false);
+		View view = LayoutInflater.from(parent.getContext()).inflate(
+				compact ? R.layout.item_kitchen_item_compact : R.layout.item_kitchen_item,
+				parent, false
+		);
 		return new ViewHolder(view);
 	}
 
