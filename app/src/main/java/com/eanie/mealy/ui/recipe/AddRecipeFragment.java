@@ -84,11 +84,11 @@ public class AddRecipeFragment extends Fragment {
 		requestCameraPermissionLauncher = registerForActivityResult(
 				new ActivityResultContracts.RequestPermission(),
 				granted -> {
-					if (granted) {
-						openCamera();
-					} else {
+					if (!granted) {
 						Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+						return;
 					}
+					openCamera();
 				}
 		);
 
@@ -116,16 +116,9 @@ public class AddRecipeFragment extends Fragment {
 		});
 
 		// Buttons
-		btnCamera.setOnClickListener(v -> {
-			if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-					== android.content.pm.PackageManager.PERMISSION_GRANTED) {
-				openCamera();
-			} else {
-				requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
-			}
-		});
 		btnRemoveImg.setOnClickListener(v -> recipeAddVM.setImage(null));
 		btnChoose.setOnClickListener(v -> chooseImageLauncher.launch("image/*"));
+		btnCamera.setOnClickListener(v -> openCamera());
 
 		// Ingredients list
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
@@ -177,6 +170,10 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void openCamera() {
+		if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+			requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+			return;
+		}
 		try {
 			File dir = new File(requireContext().getCacheDir(), "images");
 			if (!dir.exists()) {
@@ -193,7 +190,6 @@ public class AddRecipeFragment extends Fragment {
 			);
 
 			takePictureLauncher.launch(pendingCameraUri);
-
 		} catch (Exception e) {
 			Toast.makeText(requireContext(), "Failed to open camera", Toast.LENGTH_SHORT).show();
 		}
