@@ -6,6 +6,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
@@ -14,11 +19,6 @@ import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
@@ -120,6 +120,25 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			);
 			ingredientsRv.setAdapter(ingredientsAdapter);
 			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
-		}
+            ingredientsRv.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+
+                private final android.view.GestureDetector detector =
+                        new android.view.GestureDetector(itemView.getContext(),
+                                new android.view.GestureDetector.SimpleOnGestureListener() {
+                                    @Override
+                                    public boolean onSingleTapUp(android.view.MotionEvent e) {
+                                        itemView.performClick();
+                                        return true;
+                                    }
+                                });
+
+                @Override
+                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv,
+                                                     @NonNull android.view.MotionEvent e) {
+                    return detector.onTouchEvent(e);
+                }
+            });
+
+        }
 	}
 }
