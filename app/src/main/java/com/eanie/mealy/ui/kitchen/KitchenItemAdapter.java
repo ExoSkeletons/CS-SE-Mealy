@@ -9,18 +9,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
+
+
 
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
 	public interface OnItemClickListener {
@@ -44,9 +49,11 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 	private final OnQuantityChangeListener quantityListener;
 	private final OnItemClickListener itemClickListener;
+    private Map<String, IngredientStatus> statusMap = Map.of();
 
 
-	public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
+
+    public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
 		super(new ItemKeyCallback<>(KitchenItem::getIngredientKey));
 		this.itemClickListener = itemClickListener;
 		this.quantityListener = quantityListener;
@@ -89,8 +96,13 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		this.isSelectionEnabled = enabled;
 		notifyDataSetChanged();
 	}
+    public void setStatusMap(Map<String, IngredientStatus> statusMap) {
+        this.statusMap = (statusMap != null) ? statusMap : Map.of();
+        notifyDataSetChanged();
+    }
 
-	public Set<String> getSelectedKeys() {
+
+    public Set<String> getSelectedKeys() {
 		return selectedKeys;
 	}
 
@@ -120,7 +132,6 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			card.setCardElevation(8f);
 			holder.iconImageView.setElevation(0f);
 		}
-		if (smallIcons) holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
 
 		// selection and clicking
 		if (isSelectionEnabled) {
@@ -158,13 +169,43 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		holder.quantityTextView.setVisibility(showQuantity ? View.VISIBLE : View.GONE);
 		holder.btnIncrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
 		holder.btnDecrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
-		if (showIcon) {
-			holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
-			holder.iconImageView.setVisibility(View.VISIBLE);
-		} else
-			holder.iconImageView.setVisibility(View.GONE);
+        if (showIcon) {
+            if (holder.iconBadge != null) holder.iconBadge.setVisibility(View.VISIBLE);
+            holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
+            holder.iconImageView.setVisibility(View.VISIBLE);
 
-		// quantity controls
+            // ---- status badge background ----
+            var status = statusMap.getOrDefault(itemKey, IngredientStatus.ENOUGH);
+
+            holder.iconImageView.clearColorFilter();
+            holder.iconImageView.setAlpha(1f);
+
+            int bgRes;
+            switch (status) {
+                case PARTIAL:
+                    bgRes = R.drawable.bg_icon_badge_partial;
+                    break;
+                case MISSING:
+                    bgRes = R.drawable.bg_icon_badge_missing;
+                    break;
+                case ENOUGH:
+                default:
+                    bgRes = R.drawable.bg_icon_badge_enough;
+                    break;
+            }
+
+            if (holder.iconBadge != null) {
+                holder.iconBadge.setBackgroundResource(bgRes);
+            }
+
+        } else {
+            holder.iconImageView.setVisibility(View.GONE);
+            if (holder.iconBadge != null) holder.iconBadge.setVisibility(View.GONE);
+
+        }
+
+
+        // quantity controls
 		if (quantityListener != null) {
 			holder.btnIncrease.setOnClickListener(v -> quantityListener.onPlus(itemKey));
 			holder.btnDecrease.setOnClickListener(v -> quantityListener.onMinus(itemKey));
@@ -179,8 +220,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		ImageButton btnIncrease;
 		ImageButton btnDecrease;
 		CheckBox checkBox;
+        FrameLayout iconBadge;
 
-		public ViewHolder(@NonNull View itemView) {
+
+        public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			iconImageView = itemView.findViewById(R.id.item_icon);
 			nameTextView = itemView.findViewById(R.id.item_name);
@@ -188,6 +231,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			btnIncrease = itemView.findViewById(R.id.btn_increase);
 			btnDecrease = itemView.findViewById(R.id.btn_decrease);
 			checkBox = itemView.findViewById(R.id.item_checkbox);
-		}
+            iconBadge = itemView.findViewById(R.id.icon_badge);
+
+        }
 	}
 }

@@ -1,7 +1,13 @@
 package com.eanie.mealy.ui.recipe;
 
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
+
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.models.DiscoveryViewModel;
@@ -9,17 +15,14 @@ import com.eanie.mealy.models.UserItemsViewModel;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-
-import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-
 public class RecipeBrowseFragment extends RecipeListFragment {
 	private DiscoveryViewModel discoveryVM;
 	private UserItemsViewModel userItemsVM;
+    private List<com.eanie.mealy.data.KitchenItem> lastItems = List.of();
+    private List<com.eanie.mealy.data.Recipe> lastRecipes = List.of();
 
-	@Override
+
+    @Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -45,13 +48,21 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 	}
 
 	@Override
-	protected void observeData() {
-		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
-			if (items != null) discoveryVM.updateIngredients(items);
-		});
-		discoveryVM.makeableRecipes().observe(getViewLifecycleOwner(), recipes -> {
-			if (recipes == null) adapter().submitList(List.of());
-			else adapter().submitList(recipes);
-		});
-	}
+    protected void observeData() {
+        userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
+            lastItems = (items != null) ? items : List.of();
+            discoveryVM.updateIngredients(lastItems);
+
+            adapter().submitUserItems(lastItems);
+
+            adapter().submitList(lastRecipes);
+        });
+
+        discoveryVM.allRecipes().observe(getViewLifecycleOwner(), recipes -> {
+            if (recipes == null) adapter().submitList(List.of());
+            else adapter().submitList(recipes);
+        });
+
+    }
+
 }

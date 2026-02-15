@@ -1,16 +1,16 @@
 package com.eanie.mealy.models;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 public class DiscoveryViewModel extends ViewModel {
 	private final RecipeRepo recipeRepo = new RecipeRepo();
@@ -45,4 +45,8 @@ public class DiscoveryViewModel extends ViewModel {
 	public LiveData<List<Recipe>> makeableRecipes() {
 		return makeableRecipes;
 	}
+    public LiveData<List<Recipe>> allRecipes() {
+        return recipes;
+    }
+
 }

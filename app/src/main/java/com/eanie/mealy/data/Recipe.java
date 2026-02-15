@@ -1,13 +1,13 @@
 package com.eanie.mealy.data;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import androidx.annotation.NonNull;
 
 public final class Recipe implements Serializable {
 	@DocumentId
@@ -93,4 +93,27 @@ public final class Recipe implements Serializable {
 		var that = (Recipe) obj;
 		return Objects.equals(this.id, that.id);
 	}
+    public java.util.List<KitchenItem> missingIngredients(java.util.List<KitchenItem> items) {
+        var missing = new java.util.ArrayList<KitchenItem>();
+        if (getIngredients() == null) return missing;
+
+        for (KitchenItem req : getIngredients()) {
+            if (req == null) continue;
+
+            var have = KitchenItem.match(req.getIngredientKey(), items);
+
+            double needAmount = (req.getQuantity() != null) ? req.getQuantity().getAmount() : 0.0;
+            double haveAmount = (have != null && have.getQuantity() != null)
+                    ? have.getQuantity().getAmount()
+                    : 0.0;
+
+            if (haveAmount < needAmount) {
+                var clone = req.clone();
+                clone.getQuantity().setAmount(needAmount - haveAmount);
+                missing.add(clone);
+            }
+        }
+        return missing;
+    }
+
 }

@@ -20,15 +20,23 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/icon_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            android:background="@drawable/bg_icon_badge_enough">
 
             <ImageView
                 android:id="@+id/item_icon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:padding="6dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
                 app:srcCompat="@drawable/ic_ing_butter" />
+        </FrameLayout>
 
             <CheckBox
                 android:id="@+id/item_checkbox"

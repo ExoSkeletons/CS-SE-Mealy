@@ -12,13 +12,16 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
@@ -35,8 +38,10 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
 	private final List<String> favorites = new ArrayList<>();
 	private boolean showFavored = false;
+    private List<KitchenItem> userItems = List.of();
 
-	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
+
+    public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
 		super(new ItemKeyCallback<>(Recipe::getId));
 		this.clickListener = clickListener;
 		this.favoriteListener = favoriteListener;
@@ -52,6 +57,10 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		this.showFavored = enable;
 		notifyDataSetChanged();
 	}
+    public void submitUserItems(List<KitchenItem> items) {
+        this.userItems = (items != null) ? items : List.of();
+        notifyDataSetChanged();
+    }
 
 	@NonNull
 	@Override
@@ -80,12 +89,18 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		List<KitchenItem> ingredients = recipe.getIngredients();
 		if (ingredients == null || ingredients.isEmpty()) {
 			holder.ingredientsRv.setVisibility(View.GONE);
-		} else {
-			holder.ingredientsRv.setVisibility(View.VISIBLE);
-			holder.ingredientsAdapter.submitList(limit(ingredients, 8));
-		}
+        } else {
+            holder.ingredientsRv.setVisibility(View.VISIBLE);
 
-		holder.itemView.setOnClickListener(v -> {
+            var preview = limit(ingredients, 8);
+            holder.ingredientsAdapter.submitList(preview);
+            holder.ingredientsAdapter.setStatusMap(calcStatusMap(preview, recipe));
+
+
+        }
+
+
+        holder.itemView.setOnClickListener(v -> {
 			if (clickListener != null) clickListener.onRecipeClick(recipe);
 		});
 
@@ -95,6 +110,47 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		if (list == null) return List.of();
 		return list.size() <= max ? list : list.subList(0, max);
 	}
+    private Map<String, IngredientStatus> calcStatusMap(List<KitchenItem> recipeIngredients, Recipe recipe) {
+        var missing = recipe.missingIngredients(userItems);
+
+        Map<String, IngredientStatus> map = new HashMap<>();
+        if (recipeIngredients == null) return map;
+
+        for (KitchenItem req : recipeIngredients) {
+            if (req == null) continue;
+
+            String key = req.getIngredientKey();
+            if (key == null) continue;
+
+            double need = (req.getQuantity() != null) ? req.getQuantity().getAmount() : 0.0;
+            var needUnit = (req.getQuantity() != null) ? req.getQuantity().getUnitType() : null;
+
+            KitchenItem haveItem = KitchenItem.match(key, userItems);
+            if (haveItem == null || haveItem.getQuantity() == null) {
+                map.put(key, IngredientStatus.MISSING);
+                continue;
+            }
+
+            double have = haveItem.getQuantity().getAmount();
+            var haveUnit = haveItem.getQuantity().getUnitType();
+
+            if (need <= 0) {
+                map.put(key, IngredientStatus.ENOUGH);
+                continue;
+            }
+
+            if (needUnit != null && haveUnit != null && needUnit != haveUnit) {
+                map.put(key, IngredientStatus.PARTIAL);
+                continue;
+            }
+
+            if (have >= need) map.put(key, IngredientStatus.ENOUGH);
+            else if (have > 0) map.put(key, IngredientStatus.PARTIAL);
+            else map.put(key, IngredientStatus.MISSING);
+        }
+
+        return map;
+    }
 
 
 	public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
