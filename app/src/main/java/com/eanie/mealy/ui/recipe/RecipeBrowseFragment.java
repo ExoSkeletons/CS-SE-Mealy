@@ -45,12 +45,11 @@ public class RecipeBrowseFragment extends RecipeListFragment {
 	}
 
 	@Override
-    protected void observeData() {
-        userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
-            lastItems = (items != null) ? items : List.of();
-            discoveryVM.updateIngredients(lastItems);
-
-        });
+	protected void observeData() {
+		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
+			if (items == null) return;
+			discoveryVM.updateIngredients(items);
+		});
 
 		discoveryVM.allRecipes().observe(getViewLifecycleOwner(), recipes -> {
 			if (recipes == null) adapter().submitList(List.of());
