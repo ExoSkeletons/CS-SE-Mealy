@@ -1,16 +1,20 @@
 package com.eanie.mealy.models;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 public class DiscoveryViewModel extends ViewModel {
 	private final RecipeRepo recipeRepo = new RecipeRepo();
@@ -18,6 +22,7 @@ public class DiscoveryViewModel extends ViewModel {
 	private final MutableLiveData<List<KitchenItem>> items = new MutableLiveData<>();
 
 	private final MediatorLiveData<List<Recipe>> makeableRecipes = new MediatorLiveData<>(new ArrayList<>());
+	private final MediatorLiveData<List<Recipe>> partiallyMakeableRecipes = new MediatorLiveData<>(new ArrayList<>());
 
 	private final MediatorLiveData<Map<Recipe, Map<String, IngredientStatus>>> makeabilityStatus = new MediatorLiveData<>(new HashMap<>());
 
@@ -30,6 +35,27 @@ public class DiscoveryViewModel extends ViewModel {
 			if (recipes.getValue() != null)
 				makeableRecipes.postValue(filterMakeable(recipes.getValue(), i));
 		});
+		partiallyMakeableRecipes.addSource(recipes, r -> {
+			if (items.getValue() != null)
+				partiallyMakeableRecipes.postValue(filterPartiallyMakeable(r, items.getValue()));
+		});
+		partiallyMakeableRecipes.addSource(items, i -> {
+			if (recipes.getValue() != null)
+				partiallyMakeableRecipes.postValue(filterPartiallyMakeable(recipes.getValue(), i));
+		});
+
+		makeabilityStatus.addSource(recipes, r -> {
+			if (items.getValue() != null) {
+				var statuses = mapRecipesMakeability(r, items.getValue());
+				makeabilityStatus.postValue(statuses);
+			}
+		});
+		makeabilityStatus.addSource(items, i -> {
+			if (recipes.getValue() != null) {
+				var status = mapRecipesMakeability(recipes.getValue(), i);
+				makeabilityStatus.postValue(status);
+			}
+		});
 	}
 
 	@NonNull
@@ -41,11 +67,15 @@ public class DiscoveryViewModel extends ViewModel {
 	}
 
 	private static List<Recipe> filterMakeable(List<Recipe> recipes, List<KitchenItem> i) {
-		var makeable = new ArrayList<Recipe>();
-		for (var recipe : recipes)
-			if (recipe.canBeMadeWith(i))
-				makeable.add(recipe);
-		return makeable;
+		return recipes.stream()
+				.filter(r -> r.canBeMadeWith(i, true))
+				.toList();
+	}
+
+	private static List<Recipe> filterPartiallyMakeable(List<Recipe> recipes, List<KitchenItem> i) {
+		return recipes.stream()
+				.filter(r -> r.canBeMadeWith(i, false))
+				.toList();
 	}
 
 	public void updateIngredients(List<KitchenItem> ingredients) {
@@ -55,8 +85,16 @@ public class DiscoveryViewModel extends ViewModel {
 	public LiveData<List<Recipe>> makeableRecipes() {
 		return makeableRecipes;
 	}
-    public LiveData<List<Recipe>> allRecipes() {
-        return recipes;
-    }
 
+	public LiveData<List<Recipe>> partiallyMakeableRecipes() {
+		return partiallyMakeableRecipes;
+	}
+
+	public LiveData<List<Recipe>> allRecipes() {
+		return recipes;
+	}
+
+	public LiveData<Map<Recipe, Map<String, IngredientStatus>>> makeStatus() {
+		return makeabilityStatus;
+	}
 }

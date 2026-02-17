@@ -40,25 +40,27 @@ public final class Recipe implements Serializable {
 		this.chefId = chefId;
 	}
 
-	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
+	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients, boolean matchQuantity) {
 		// check each item in this recipe's ingredients list
-		for (KitchenItem ri : this.ingredients) {
+		for (KitchenItem req : this.ingredients) {
 			// find the matching item in the ingredients list
-			KitchenItem mi = ingredients.stream()
-					.filter(i -> i.getIngredientKey().equals(ri.getIngredientKey()))
+			KitchenItem item = ingredients.stream()
+					.filter(i -> i.getIngredientKey().equals(req.getIngredientKey()))
 					.findFirst()
 					.orElse(null);
-			if (mi == null)
+			if (item == null)
 				return false; // no match, ingredients doesn't contain an item required by this recipe
 			// check quantity
-			try {
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-				return false; // comparison failed
-			}
+			if (matchQuantity)
+				try {
 					var deficit = req.getQuantity().subtract(item.getQuantity());
 					if (deficit > 0)
 						return false; // ingredient quantity is not enough to make this recipe
+				} catch (IllegalStateException e) {
+					Log.w("Recipe.canBeMadeWith", "Comparison failed between " + item + " and " + req + ".");
+					e.printStackTrace();
+					return false; // comparison failed
+				}
 		}
 		return true; // all ingredients are available
 	}
