@@ -1,19 +1,19 @@
 package com.eanie.mealy.ui.recipe;
 
-import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-
 import android.os.Bundle;
 import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
 
 public class RecipeBrowseFragment extends RecipeListFragment {
 	private DiscoveryViewModel discoveryVM;
@@ -53,7 +53,7 @@ public class RecipeBrowseFragment extends RecipeListFragment {
             lastItems = (items != null) ? items : List.of();
             discoveryVM.updateIngredients(lastItems);
 
-            adapter().submitUserItems(lastItems);
+	        adapter().submitExistingItems(lastItems);
 
             adapter().submitList(lastRecipes);
         });

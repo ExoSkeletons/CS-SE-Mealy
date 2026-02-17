@@ -1,5 +1,6 @@
 package com.eanie.mealy.ui.kitchen;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.IngredientStatus;
@@ -23,6 +20,11 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 
@@ -50,7 +52,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	private OnQuantityChangeListener quantityListener;
 	private OnItemClickListener itemClickListener;
 	private final boolean compact;
-	private Map<String, IngredientStatus> statusMap = Map.of();
+	@Nullable
+	private Map<String, IngredientStatus> statusMap = null;
 
 
 	public KitchenItemAdapter(boolean compact) {
@@ -101,8 +104,9 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		this.isSelectionEnabled = enabled;
 		notifyDataSetChanged();
 	}
-    public void setStatusMap(Map<String, IngredientStatus> statusMap) {
-        this.statusMap = (statusMap != null) ? statusMap : Map.of();
+
+	public void setStatusMap(@Nullable Map<String, IngredientStatus> statusMap) {
+		this.statusMap = statusMap;
         notifyDataSetChanged();
     }
 
@@ -130,7 +134,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		// style
 		var card = (MaterialCardView) holder.itemView;
 		if (minimalStyle) {
-			card.setCardBackgroundColor(android.graphics.Color.TRANSPARENT);
+			card.setCardBackgroundColor(Color.TRANSPARENT);
 			card.setCardElevation(0);
 			card.setStrokeWidth(0);
 			((ViewGroup.MarginLayoutParams) card.getLayoutParams()).setMargins(0, 0, 0, 0);
@@ -178,40 +182,21 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		holder.btnIncrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
 		holder.btnDecrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
         if (showIcon) {
-            if (holder.iconBadge != null) holder.iconBadge.setVisibility(View.VISIBLE);
             holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
             holder.iconImageView.setVisibility(View.VISIBLE);
+        } else holder.iconImageView.setVisibility(View.GONE);
 
-            // ---- status badge background ----
-            var status = statusMap.getOrDefault(itemKey, IngredientStatus.ENOUGH);
-
-            holder.iconImageView.clearColorFilter();
-            holder.iconImageView.setAlpha(1f);
-
-            int bgRes;
-            switch (status) {
-                case PARTIAL:
-                    bgRes = R.drawable.bg_icon_badge_partial;
-                    break;
-                case MISSING:
-                    bgRes = R.drawable.bg_icon_badge_missing;
-                    break;
-                case ENOUGH:
-                default:
-                    bgRes = R.drawable.bg_icon_badge_enough;
-                    break;
-            }
-
-            if (holder.iconBadge != null) {
-                holder.iconBadge.setBackgroundResource(bgRes);
-            }
-
-        } else {
-            holder.iconImageView.setVisibility(View.GONE);
-            if (holder.iconBadge != null) holder.iconBadge.setVisibility(View.GONE);
-
-        }
-
+		if (statusMap != null) {
+			holder.iconBadge.setVisibility(View.VISIBLE);
+			var status = statusMap.getOrDefault(itemKey, IngredientStatus.ENOUGH);
+			holder.iconBadge.setBackgroundResource(
+					switch (status != null ? status : IngredientStatus.ENOUGH) {
+						case PARTIAL -> R.drawable.bg_icon_badge_partial;
+						case MISSING -> R.drawable.bg_icon_badge_missing;
+						default -> R.drawable.bg_icon_badge_enough;
+					}
+			);
+		} else holder.iconBadge.setVisibility(View.GONE);
 
         // quantity controls
 		if (quantityListener != null) {
