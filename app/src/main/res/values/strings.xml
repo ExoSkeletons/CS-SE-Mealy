@@ -22,6 +22,14 @@
     <string name="ing_yogurt">Yogurt</string>
     <string name="ing_pasta">Pasta</string>
     <string name="ing_garlic">Garlic</string>
+    <string name="ing_water">Water</string>
+    <string name="ing_baking_soda">Baking Soda</string>
+    <string name="ing_baking_powder">Baking Powder</string>
+    <string name="ing_oil">Oil</string>
+    <string name="ing_chocolate">Chocolate</string>
+    <string name="ing_olive">Olive</string>
+    <string name="ing_vanilla">Vanilla</string>
+
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -49,6 +57,7 @@
     <string name="amount_base">Base Amount</string>
     <string name="units">Units</string>
     <string name="instructions">Instructions</string>
+
 
     <string name="kitchen_title">%s\'s Kitchen</string>
     <string name="kitchen">Kitchen</string>

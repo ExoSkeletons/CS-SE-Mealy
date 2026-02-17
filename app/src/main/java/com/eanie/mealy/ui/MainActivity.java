@@ -1,10 +1,22 @@
 package com.eanie.mealy.ui;
 
+import static com.eanie.mealy.models.UserViewModel.withUserId;
+
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.eanie.mealy.R;
+import com.eanie.mealy.notifications.NotificationService;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.recipe.RecipeNavFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -12,11 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.function.Supplier;
 
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
-import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class MainActivity extends AppCompatActivity {
 	public static void start(Activity caller) {
@@ -52,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
 		var user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user == null) return;
 		uuid = user.getUid();
-
-		bottomNav = findViewById(R.id.bottom_navigation);
+        startNotificationServiceWithPermission();
+        bottomNav = findViewById(R.id.bottom_navigation);
 		bottomNav.setOnItemSelectedListener(item -> {
 			int id = item.getItemId();
 			for (NavOption option : NavOption.values())
@@ -68,9 +75,47 @@ public class MainActivity extends AppCompatActivity {
 
 		selectFragment(NavOption.KITCHEN);
 	}
+    private void startNotificationServiceWithPermission() {
 
-	private void selectFragment(NavOption option) {
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        100
+                );
+                return;
+            }
+        }
+
+        android.util.Log.d("FGS", "Starting NotificationService...");
+        // android.widget.Toast.makeText(this, "Starting service", android.widget.Toast.LENGTH_SHORT).show();
+
+        Intent svc = new Intent(this, NotificationService.class);
+        svc.putExtra("uid", uuid);
+        ContextCompat.startForegroundService(this, svc);
+    }
+
+
+    private void selectFragment(NavOption option) {
 		if (bottomNav == null) return;
 		bottomNav.setSelectedItemId(option.navId);
 	}
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100 &&
+                grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            startNotificationServiceWithPermission();
+        }
+    }
+
 }

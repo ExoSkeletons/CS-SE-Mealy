@@ -7,15 +7,19 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +40,10 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 	private final List<String> favorites = new ArrayList<>();
 	private boolean showFavored = false;
 
+	@Nullable
+	private Map<Recipe, Map<String, IngredientStatus>> statusMap = new HashMap<>();
+
+
 	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
 		super(new ItemKeyCallback<>(Recipe::getId));
 		this.clickListener = clickListener;
@@ -50,6 +58,11 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
 	public void favoritesEnabled(boolean enable) {
 		this.showFavored = enable;
+		notifyDataSetChanged();
+	}
+
+	public void submitStatusMap(@Nullable Map<Recipe, Map<String, IngredientStatus>> statusMap) {
+		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
 		notifyDataSetChanged();
 	}
 
@@ -82,18 +95,15 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			holder.ingredientsRv.setVisibility(View.GONE);
 		} else {
 			holder.ingredientsRv.setVisibility(View.VISIBLE);
-			holder.ingredientsAdapter.submitList(limit(ingredients, 8));
+			holder.ingredientsAdapter.submitList(ingredients);
+
+			if (statusMap != null)
+				holder.ingredientsAdapter.setStatusMap(statusMap.get(recipe));
 		}
 
 		holder.itemView.setOnClickListener(v -> {
 			if (clickListener != null) clickListener.onRecipeClick(recipe);
 		});
-
-	}
-
-	private static <T> List<T> limit(List<T> list, int max) {
-		if (list == null) return List.of();
-		return list.size() <= max ? list : list.subList(0, max);
 	}
 
 

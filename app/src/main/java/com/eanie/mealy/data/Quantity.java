@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import androidx.annotation.NonNull;
 
-public class Quantity implements Cloneable, Serializable, Comparable<Quantity> {
+public class Quantity implements Cloneable, Serializable {
 	private double amount = 1.0;
 	private UnitType unitType = UnitType.COUNT;
 	private Quantifier quantifier = Quantifier.NONE;
@@ -91,13 +91,12 @@ public class Quantity implements Cloneable, Serializable, Comparable<Quantity> {
 		}
 	}
 
-	@Override
-	public int compareTo(Quantity other) {
+	public double subtract(Quantity other) {
 		if (!other.getUnitType().equals(getUnitType()))
-			throw new IllegalStateException("Cannot compare quantities with different unit types"); // todo: add conversion
+			throw new IllegalStateException("Cannot compare differing unit types " + getUnitType() + "," + other.getUnitType()); // todo: add conversion
 
 		var a1 = quantifier.apply(amount);
 		var a2 = other.quantifier.apply(other.amount);
-		return Double.compare(a1, a2);
+		return a1 - a2;
 	}
 }
