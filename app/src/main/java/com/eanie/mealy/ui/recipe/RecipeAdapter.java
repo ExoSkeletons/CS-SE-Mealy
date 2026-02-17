@@ -39,8 +39,9 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
 	private final List<String> favorites = new ArrayList<>();
 	private boolean showFavored = false;
+
 	@Nullable
-	private List<KitchenItem> existingItems = null;
+	private Map<Recipe, Map<String, IngredientStatus>> statusMap = new HashMap<>();
 
 
 	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
@@ -60,8 +61,8 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		notifyDataSetChanged();
 	}
 
-	public void submitExistingItems(@Nullable List<KitchenItem> items) {
-		this.existingItems = items;
+	public void submitStatusMap(@Nullable Map<Recipe, Map<String, IngredientStatus>> statusMap) {
+		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
 		notifyDataSetChanged();
 	}
 
@@ -94,43 +95,15 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			holder.ingredientsRv.setVisibility(View.GONE);
 		} else {
 			holder.ingredientsRv.setVisibility(View.VISIBLE);
-
 			holder.ingredientsAdapter.submitList(ingredients);
-			if (existingItems != null)
-				holder.ingredientsAdapter.setStatusMap(calcStatusMap(
-						existingItems,
-						holder.ingredientsAdapter.getCurrentList())
-				);
+
+			if (statusMap != null)
+				holder.ingredientsAdapter.setStatusMap(statusMap.get(recipe));
 		}
 
 		holder.itemView.setOnClickListener(v -> {
 			if (clickListener != null) clickListener.onRecipeClick(recipe);
 		});
-	}
-
-	private static Map<String, IngredientStatus> calcStatusMap(@NonNull List<KitchenItem> recipeIngredients, @NonNull List<KitchenItem> existingItems) {
-		Map<String, IngredientStatus> map = new HashMap<>();
-
-		for (KitchenItem req : recipeIngredients) {
-			if (req == null) continue;
-			String key = req.getIngredientKey();
-
-			KitchenItem item = KitchenItem.match(key, existingItems);
-			if (item == null || item.getQuantity() == null) {
-				map.put(key, IngredientStatus.MISSING);
-				continue;
-			}
-
-			var reqAmount = req.getQuantity().getAmount();
-			var itemAmount = item.getQuantity().getAmount();
-
-			var diff = reqAmount - itemAmount;
-			if (diff >= reqAmount) map.put(key, IngredientStatus.MISSING);
-			else if (diff > 0) map.put(key, IngredientStatus.PARTIAL);
-			else map.put(key, IngredientStatus.ENOUGH);
-		}
-
-		return map;
 	}
 
 

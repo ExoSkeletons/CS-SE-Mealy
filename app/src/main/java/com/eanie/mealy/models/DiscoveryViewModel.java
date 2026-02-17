@@ -19,6 +19,8 @@ public class DiscoveryViewModel extends ViewModel {
 
 	private final MediatorLiveData<List<Recipe>> makeableRecipes = new MediatorLiveData<>(new ArrayList<>());
 
+	private final MediatorLiveData<Map<Recipe, Map<String, IngredientStatus>>> makeabilityStatus = new MediatorLiveData<>(new HashMap<>());
+
 	public DiscoveryViewModel() {
 		makeableRecipes.addSource(recipes, r -> {
 			if (items.getValue() != null)
@@ -28,6 +30,14 @@ public class DiscoveryViewModel extends ViewModel {
 			if (recipes.getValue() != null)
 				makeableRecipes.postValue(filterMakeable(recipes.getValue(), i));
 		});
+	}
+
+	@NonNull
+	private HashMap<Recipe, Map<String, IngredientStatus>> mapRecipesMakeability(List<Recipe> recipes, List<KitchenItem> i) {
+		var status = new HashMap<Recipe, Map<String, IngredientStatus>>();
+		for (Recipe r : recipes)
+			status.put(r, r.completionStatusWith(i));
+		return status;
 	}
 
 	private static List<Recipe> filterMakeable(List<Recipe> recipes, List<KitchenItem> i) {
