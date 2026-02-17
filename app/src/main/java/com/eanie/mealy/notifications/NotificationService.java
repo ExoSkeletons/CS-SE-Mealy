@@ -1,13 +1,11 @@
 package com.eanie.mealy.notifications;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 import com.eanie.mealy.R;
 
@@ -37,22 +35,6 @@ public class NotificationService extends Service {
         }
         android.util.Log.d("FGS", "NotificationService listening for uid=" + uid);
         startListeningForNotifications();
-
-
-        Log.d("FGS", "NotificationService onStartCommand()");
-        Log.d("FGS", "Calling startForeground()");
-
-        Notification notification = new NotificationCompat.Builder(
-                this,
-                NotificationChannels.CHANNEL_ID
-        )
-                .setContentTitle("Mealy is running")
-                .setContentText("Listening for new notifications")
-                .setSmallIcon(R.mipmap.ic_launcher) //CHANGE TO DRAWABLE?
-                .setOngoing(true)
-                .build();
-
-        startForeground(FOREGROUND_ID, notification);
 
         return START_STICKY;
     }
