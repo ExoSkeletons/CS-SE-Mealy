@@ -1,7 +1,5 @@
 package com.eanie.mealy.data;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
@@ -9,32 +7,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+
 public final class Recipe implements Serializable {
 	@DocumentId
 	private String id;
 	private String name;
 	private String instructions;
 	private List<KitchenItem> ingredients;
-    private String imageUri;
+	private String imageUri;
 	private String chefId;
 
 	public Recipe() {
 		this.ingredients = new ArrayList<>();
 	}
 
-    public Recipe(
-            String id,
-            String name,
-            String instructions,
-            List<KitchenItem> ingredients,
-            String chefId
-    ) {
-        this.id = id;
-        this.name = name;
-        this.instructions = instructions;
-        this.ingredients = ingredients;
-        this.chefId = chefId;
-    }
+	public Recipe(
+			String id,
+			String name,
+			String instructions,
+			List<KitchenItem> ingredients,
+			String chefId
+	) {
+		this.id = id;
+		this.name = name;
+		this.instructions = instructions;
+		this.ingredients = ingredients;
+		this.chefId = chefId;
+	}
 
 	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients) {
 		// check each item in this recipe's ingredients list
@@ -59,14 +59,37 @@ public final class Recipe implements Serializable {
 		return true; // all ingredients are available
 	}
 
-    public String getImageUri() {
-        return imageUri;
-    }
+	public List<KitchenItem> calculateMissing(List<KitchenItem> existing) {
+		var missing = new ArrayList<KitchenItem>();
+		if (getIngredients() == null) return missing;
+
+		for (KitchenItem req : getIngredients()) {
+			if (req == null) continue;
+
+			var item = KitchenItem.match(req.getIngredientKey(), existing);
+			if (item == null || item.getQuantity() == null) {
+				missing.add(req);
+				continue;
+			}
+
+			var diffAmount = req.getQuantity().getAmount() - item.getQuantity().getAmount();
+			if (diffAmount > 0) {
+				var diff = req.clone();
+				diff.getQuantity().setAmount(diffAmount);
+				missing.add(diff);
+			}
+		}
+		return missing;
+	}
+
+	public String getImageUri() {
+		return imageUri;
+	}
 
 
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
-    }
+	public void setImageUri(String imageUri) {
+		this.imageUri = imageUri;
+	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -115,27 +138,4 @@ public final class Recipe implements Serializable {
 		var that = (Recipe) obj;
 		return Objects.equals(this.id, that.id);
 	}
-    public java.util.List<KitchenItem> missingIngredients(java.util.List<KitchenItem> items) {
-        var missing = new java.util.ArrayList<KitchenItem>();
-        if (getIngredients() == null) return missing;
-
-        for (KitchenItem req : getIngredients()) {
-            if (req == null) continue;
-
-            var have = KitchenItem.match(req.getIngredientKey(), items);
-
-            double needAmount = (req.getQuantity() != null) ? req.getQuantity().getAmount() : 0.0;
-            double haveAmount = (have != null && have.getQuantity() != null)
-                    ? have.getQuantity().getAmount()
-                    : 0.0;
-
-            if (haveAmount < needAmount) {
-                var clone = req.clone();
-                clone.getQuantity().setAmount(needAmount - haveAmount);
-                missing.add(clone);
-            }
-        }
-        return missing;
-    }
-
 }

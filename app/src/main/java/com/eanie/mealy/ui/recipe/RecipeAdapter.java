@@ -6,11 +6,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
@@ -22,6 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemViewHolder> {
@@ -111,7 +111,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		return list.size() <= max ? list : list.subList(0, max);
 	}
     private Map<String, IngredientStatus> calcStatusMap(List<KitchenItem> recipeIngredients, Recipe recipe) {
-        var missing = recipe.missingIngredients(userItems);
+	    var missing = recipe.calculateMissing(userItems);
 
         Map<String, IngredientStatus> map = new HashMap<>();
         if (recipeIngredients == null) return map;
