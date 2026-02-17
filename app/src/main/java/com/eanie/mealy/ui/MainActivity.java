@@ -12,7 +12,6 @@ import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.eanie.mealy.R;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 		var user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user == null) return;
 		uuid = user.getUid();
-        startNotificationServiceWithPermission();
+        //startNotificationServiceWithPermission();
         bottomNav = findViewById(R.id.bottom_navigation);
 		bottomNav.setOnItemSelectedListener(item -> {
 			int id = item.getItemId();
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent svc = new Intent(this, NotificationService.class);
         svc.putExtra("uid", uuid);
-        ContextCompat.startForegroundService(this, svc);
+        startService(svc);
     }
 
 
