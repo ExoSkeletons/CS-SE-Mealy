@@ -176,25 +176,6 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			);
 			ingredientsRv.setAdapter(ingredientsAdapter);
 			favoriteCheckBox = itemView.findViewById(R.id.btn_favorite);
-            ingredientsRv.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
-
-                private final android.view.GestureDetector detector =
-                        new android.view.GestureDetector(itemView.getContext(),
-                                new android.view.GestureDetector.SimpleOnGestureListener() {
-                                    @Override
-                                    public boolean onSingleTapUp(android.view.MotionEvent e) {
-                                        itemView.performClick();
-                                        return true;
-                                    }
-                                });
-
-                @Override
-                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv,
-                                                     @NonNull android.view.MotionEvent e) {
-                    return detector.onTouchEvent(e);
-                }
-            });
-
-        }
+		}
 	}
 }
