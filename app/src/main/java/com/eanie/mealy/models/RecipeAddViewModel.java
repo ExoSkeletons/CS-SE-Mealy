@@ -3,6 +3,7 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.net.Uri;
 
+import com.eanie.mealy.data.ImageRepo;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 
@@ -17,6 +18,8 @@ import androidx.lifecycle.MutableLiveData;
 import static com.eanie.mealy.data.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
+	ImageRepo imageRepo = new ImageRepo();
+
 	public RecipeAddViewModel(@NonNull Application application) {
 		super(application);
 	}
@@ -29,29 +32,32 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
 	public Recipe buildRecipe() {
-        String imageUriStr = (image.getValue() == null) ? null : image.getValue().toString();
+		String imageUriStr = (image.getValue() == null) ? null : image.getValue().toString();
 
-        var r = new Recipe(
-                owner.getValue(),
-                name.getValue(),
-                instructions.getValue(),
-                ingredients.getValue(),
-                owner.getValue()
-        );
-        r.setImageUri(imageUriStr);
-        return r;
+		var r = new Recipe(
+				owner.getValue(),
+				name.getValue(),
+				instructions.getValue(),
+				ingredients.getValue(),
+				owner.getValue()
+		);
+		r.setImageUri(imageUriStr);
+		return r;
 	}
 
 	public void saveRecipe() {
 		var recipe = buildRecipe();
-		//var newUri = ...
-		//recipe.setImageUri(netUri);
-		// todo: submit image to firebase storage, then update recipe uri to storage uri or cash..?
+		var uri = this.image.getValue();
+		if (uri != null) {
+			var url = imageRepo.upload(recipe, uri);
+			recipe.setImageUri(url);
+		}
 		add(recipe); // save recipe to firebase
 	}
-    public void setImage(@Nullable Uri uri) {
-        image.postValue(uri);
-    }
+
+	public void setImage(@Nullable Uri uri) {
+		image.postValue(uri);
+	}
 
 	public void addIngredient(KitchenItem kitchenItem) {
 		var items = ingredients.getValue();
