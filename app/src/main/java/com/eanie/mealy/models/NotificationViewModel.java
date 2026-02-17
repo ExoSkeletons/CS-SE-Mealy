@@ -84,9 +84,13 @@ public class NotificationViewModel extends UserViewModel {
 		if (userId.getValue() == null) return;
 		if (recipe == null || recipe.getChefId() == null) return;
 
-		String displayName = "A user"; // todo: replace with displayName when we change userId to firebase User class
 		var notification = new Notification();
-		notification.setText(displayName + " used your " + recipe.getName() + " recipe!");
+        String displayName = "Someone";
+        var fbUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (fbUser != null && fbUser.getDisplayName() != null && !fbUser.getDisplayName().isEmpty()) {
+            displayName = fbUser.getDisplayName().split(" ")[0];
+        }
+        notification.setText("used your " + recipe.getName() + " recipe!");
 
 		send(recipe.getChefId(), notification);
 	}
