@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.Notification;
@@ -14,11 +18,8 @@ import com.eanie.mealy.data.Notification;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class NotificationAdapter extends ListAdapter<Notification, NotificationAdapter.ViewHolder> {
+
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
 
 	public interface OnMarkReadListener {
@@ -26,13 +27,17 @@ public class NotificationAdapter extends ListAdapter<Notification, NotificationA
 	}
 
 	private final OnMarkReadListener markAsRead;
+    private final java.util.Map<String, String> senderNameCache;
 
-	protected NotificationAdapter(OnMarkReadListener markAsRead) {
-		super(new ItemKeyCallback<>(Notification::getId));
-		this.markAsRead = markAsRead;
-	}
+    protected NotificationAdapter(OnMarkReadListener markAsRead,
+                                  java.util.Map<String, String> senderNameCache) {
+        super(new ItemKeyCallback<>(Notification::getId));
+        this.markAsRead = markAsRead;
+        this.senderNameCache = senderNameCache;
+    }
 
-	@NonNull
+
+    @NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false));
@@ -43,7 +48,18 @@ public class NotificationAdapter extends ListAdapter<Notification, NotificationA
 		Notification notification = getItem(position);
 		if (notification == null) return;
 
-		holder.tvText.setText(notification.getText());
+        String text = notification.getText();
+
+        String senderId = notification.getSenderUuid();
+        String name = (senderId != null && senderNameCache != null)
+                ? senderNameCache.get(senderId)
+                : null;
+
+        if (name != null && !name.isEmpty()) {
+            holder.tvText.setText(name + " " + text);
+        } else {
+            holder.tvText.setText(text);
+        }
 		if (notification.getTimestamp() != null)
 			holder.tvTime.setText(dateFormat.format(notification.getTimestamp().toDate()));
 		else holder.tvTime.setText("");
