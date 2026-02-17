@@ -27,8 +27,6 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-
-
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
 	public interface OnItemClickListener {
 		void onItemClick(KitchenItem item);
@@ -107,8 +105,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 
 	public void setStatusMap(@Nullable Map<String, IngredientStatus> statusMap) {
 		this.statusMap = statusMap;
-        notifyDataSetChanged();
-    }
+		notifyDataSetChanged();
+	}
 
 
 	public Set<String> getSelectedKeys() {
@@ -143,7 +141,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			card.setCardElevation(8f);
 			holder.iconImageView.setElevation(0f);
 		}
-		if (smallIcons) holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
+		if (smallIcons) {
+			holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
+			holder.badgeView.setLayoutParams(new FrameLayout.LayoutParams(24, 24));
+		}
 
 		// selection and clicking
 		if (isSelectionEnabled) {
@@ -181,24 +182,23 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		holder.quantityTextView.setVisibility(showQuantity ? View.VISIBLE : View.GONE);
 		holder.btnIncrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
 		holder.btnDecrease.setVisibility(quantityListener != null ? View.VISIBLE : View.GONE);
-        if (showIcon) {
-            holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
-            holder.iconImageView.setVisibility(View.VISIBLE);
-        } else holder.iconImageView.setVisibility(View.GONE);
+		if (showIcon) {
+			holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
+			holder.iconImageView.setVisibility(View.VISIBLE);
+		} else holder.iconImageView.setVisibility(View.GONE);
 
 		if (statusMap != null) {
-			holder.iconBadge.setVisibility(View.VISIBLE);
 			var status = statusMap.getOrDefault(itemKey, IngredientStatus.ENOUGH);
-			holder.iconBadge.setBackgroundResource(
+			holder.badgeView.setBackgroundResource(
 					switch (status != null ? status : IngredientStatus.ENOUGH) {
 						case PARTIAL -> R.drawable.bg_icon_badge_partial;
 						case MISSING -> R.drawable.bg_icon_badge_missing;
 						default -> R.drawable.bg_icon_badge_enough;
 					}
 			);
-		} else holder.iconBadge.setVisibility(View.GONE);
+		} else holder.badgeView.setBackground(null);
 
-        // quantity controls
+		// quantity controls
 		if (quantityListener != null) {
 			holder.btnIncrease.setOnClickListener(v -> quantityListener.onPlus(itemKey));
 			holder.btnDecrease.setOnClickListener(v -> quantityListener.onMinus(itemKey));
@@ -213,10 +213,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		ImageButton btnIncrease;
 		ImageButton btnDecrease;
 		CheckBox checkBox;
-        FrameLayout iconBadge;
+		View badgeView;
 
 
-        public ViewHolder(@NonNull View itemView) {
+		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			iconImageView = itemView.findViewById(R.id.item_icon);
 			nameTextView = itemView.findViewById(R.id.item_name);
@@ -224,8 +224,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			btnIncrease = itemView.findViewById(R.id.btn_increase);
 			btnDecrease = itemView.findViewById(R.id.btn_decrease);
 			checkBox = itemView.findViewById(R.id.item_checkbox);
-            iconBadge = itemView.findViewById(R.id.icon_badge);
-
-        }
+			badgeView = itemView.findViewById(R.id.item_badge);
+		}
 	}
 }

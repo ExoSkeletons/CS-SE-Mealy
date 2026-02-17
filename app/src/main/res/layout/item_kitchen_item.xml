@@ -20,23 +20,15 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <FrameLayout
-            android:id="@+id/icon_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:layout_gravity="center"
-            android:foregroundGravity="center"
-            android:background="@drawable/bg_icon_badge_enough">
 
             <ImageView
                 android:id="@+id/item_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:padding="6dp"
                 android:scaleType="fitCenter"
+                android:visibility="visible"
                 app:srcCompat="@drawable/ic_ing_butter" />
-        </FrameLayout>
 
             <CheckBox
                 android:id="@+id/item_checkbox"
@@ -47,6 +39,16 @@
                 android:layout_marginEnd="-2dp"
                 android:background="@android:color/transparent"
                 android:buttonTint="@android:color/holo_green_dark"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/item_badge"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start|top"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:background="@android:color/transparent"
                 android:visibility="visible" />
 
         </FrameLayout>
