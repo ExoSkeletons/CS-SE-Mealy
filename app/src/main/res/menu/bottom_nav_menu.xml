@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_recipes"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_book"
         android:title="@string/recipes" />
     <item
         android:id="@+id/nav_kitchen"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_fridge"
         android:title="@string/kitchen" />
 </menu>
