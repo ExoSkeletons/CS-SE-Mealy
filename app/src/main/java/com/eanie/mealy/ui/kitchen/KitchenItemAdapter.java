@@ -47,24 +47,29 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	private boolean isSelectionEnabled = false;
 	private final Set<String> selectedKeys = new HashSet<>();
 
-	private final OnQuantityChangeListener quantityListener;
-	private final OnItemClickListener itemClickListener;
-    private Map<String, IngredientStatus> statusMap = Map.of();
+	private OnQuantityChangeListener quantityListener;
+	private OnItemClickListener itemClickListener;
+	private final boolean compact;
+	private Map<String, IngredientStatus> statusMap = Map.of();
 
 
-
-    public KitchenItemAdapter(OnItemClickListener itemClickListener, OnQuantityChangeListener quantityListener) {
+	public KitchenItemAdapter(boolean compact) {
 		super(new ItemKeyCallback<>(KitchenItem::getIngredientKey));
-		this.itemClickListener = itemClickListener;
-		this.quantityListener = quantityListener;
-	}
-
-	public KitchenItemAdapter(OnQuantityChangeListener quantityListener) {
-		this(null, quantityListener);
+		this.compact = compact;
 	}
 
 	public KitchenItemAdapter() {
-		this(null);
+		this(false);
+	}
+
+	public void setQuantityListener(OnQuantityChangeListener quantityListener) {
+		this.quantityListener = quantityListener;
+		notifyDataSetChanged();
+	}
+
+	public void setItemClickListener(OnItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+		notifyDataSetChanged();
 	}
 
 	public void setMinimalStyle(boolean minimalStyle) {
@@ -102,15 +107,17 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
     }
 
 
-    public Set<String> getSelectedKeys() {
+	public Set<String> getSelectedKeys() {
 		return selectedKeys;
 	}
 
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.item_kitchen_item, parent, false);
+		View view = LayoutInflater.from(parent.getContext()).inflate(
+				compact ? R.layout.item_kitchen_item_compact : R.layout.item_kitchen_item,
+				parent, false
+		);
 		return new ViewHolder(view);
 	}
 
@@ -132,6 +139,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			card.setCardElevation(8f);
 			holder.iconImageView.setElevation(0f);
 		}
+		if (smallIcons) holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
 
 		// selection and clicking
 		if (isSelectionEnabled) {
