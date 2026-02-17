@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.Notification;
 import com.eanie.mealy.data.Quantifier;
 import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.UnitType;
@@ -48,8 +49,12 @@ public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private NotificationViewModel notificationVM;
 	private DiscoveryViewModel discoveryVM;
+    private String lastPushedNotificationId = null;
+    private final java.util.Map<String, String> senderNameCache = new java.util.HashMap<>();
+    private final com.eanie.mealy.data.UserRepo userRepo = new com.eanie.mealy.data.UserRepo();
 
-	@Override
+
+    @Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -100,16 +105,56 @@ public class KitchenFragment extends Fragment {
 		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
 		View notificationBadge = view.findViewById(R.id.notification_badge);
 
-		notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
-			if (notifications == null) return;
+        notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
+            if (notifications == null) return;
+            // ---- fill senderNameCache once per sender ----
+            for (Notification n : notifications) {
+                String senderIdLoop = n.getSenderUuid();
+                if (senderIdLoop == null || senderIdLoop.isEmpty()) continue;
 
-			boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
-			notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+                if (senderNameCache.containsKey(senderIdLoop)) continue;
 
-			Log.d("Notifications", "Count: " + notifications.size() + ", Unread: " + hasUnread);
-		});
+                senderNameCache.put(senderIdLoop, "");
 
-		btnNotifications.setOnClickListener(v -> showNotificationsDialog());
+                userRepo.getDataOf(senderIdLoop)
+                        .observe(getViewLifecycleOwner(), userData -> {
+                            if (userData != null && userData.getDisplayName() != null) {
+                                senderNameCache.put(senderIdLoop, userData.getDisplayName());
+                            }
+                        });
+            }
+
+
+            boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
+            notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+
+            // ---- NEW: pop a system notification once for the newest unread ----
+            Notification newestUnread = notifications.stream()
+                    .filter(n -> !n.isRead())
+                    .findFirst()
+                    .orElse(null);
+
+            if (newestUnread != null) {
+                String id = newestUnread.getId();
+                if (id != null && !id.equals(lastPushedNotificationId)) {
+                    lastPushedNotificationId = id;
+                    String senderId = newestUnread.getSenderUuid();
+                    String name = (senderId != null) ? senderNameCache.get(senderId) : null;
+
+                    String text = newestUnread.getText();
+                    if (name != null && !name.isEmpty()) {
+                        text = name + " " + text;
+                    }
+
+                    showSystemNotification(text);
+                }
+            }
+
+            Log.d("Notifications", "Count: " + notifications.size() + ", Unread: " + hasUnread);
+        });
+
+
+        btnNotifications.setOnClickListener(v -> showNotificationsDialog());
 
 		Button btnSendNotif = view.findViewById(R.id.btn_send_notif);
 		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
@@ -150,6 +195,20 @@ public class KitchenFragment extends Fragment {
 			discoveryVM.updateIngredients(items);
 		});
 	}
+    private void showSystemNotification(String text) {
+        if (text == null || text.isEmpty()) return;
+
+        var notification =
+                new androidx.core.app.NotificationCompat.Builder(requireContext(), com.eanie.mealy.notifications.NotificationChannels.CHANNEL_ID)
+                        .setContentTitle("Mealy")
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setAutoCancel(true)
+                        .build();
+
+        var nm = (android.app.NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm != null) nm.notify((int) System.currentTimeMillis(), notification);
+    }
 
 	private void showNotificationsDialog() {
 		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
@@ -157,12 +216,33 @@ public class KitchenFragment extends Fragment {
         TextView tvEmpty = dialogView.findViewById(R.id.tv_no_notifications);
 
 		NotificationAdapter adapter = new NotificationAdapter(
-				n -> notificationVM.markAsRead(n)
+				n -> notificationVM.markAsRead(n),
+                senderNameCache
 		);
 		rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 		rv.setAdapter(adapter);
 
         notificationVM.notifications().observe(getViewLifecycleOwner(), list -> {
+            if (list != null) {
+                for (Notification n : list) {
+                    String senderId = n.getSenderUuid();
+                    if (senderId == null || senderId.isEmpty()) continue;
+
+                    if (senderNameCache.containsKey(senderId)) continue;
+
+                    senderNameCache.put(senderId, "");
+
+                    new com.eanie.mealy.data.UserRepo()
+                            .getDataOf(senderId)
+                            .observe(getViewLifecycleOwner(), userData -> {
+                                if (userData != null && userData.getDisplayName() != null) {
+                                    senderNameCache.put(senderId, userData.getDisplayName());
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                }
+            }
+
             adapter.submitList(list);
 
             boolean empty = (list == null || list.isEmpty());
