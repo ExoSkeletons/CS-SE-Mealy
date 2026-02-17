@@ -1,11 +1,11 @@
 package com.eanie.mealy.data;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class UserData {
 	@DocumentId
@@ -13,8 +13,13 @@ public class UserData {
 	private boolean isChef = false;
 	@NonNull
 	private List<String> favoriteRecipes = List.of();
+    @NonNull
+    private String displayName = "";
 
-	public UserData() {
+
+
+
+    public UserData() {
 	}
 
 	public String getUserId() {
@@ -45,4 +50,12 @@ public class UserData {
 	public void setFavoriteRecipes(@Nullable List<String> favoriteRecipes) {
 		this.favoriteRecipes = favoriteRecipes != null ? favoriteRecipes : List.of();
 	}
+    @NonNull
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(@Nullable String displayName) {
+        this.displayName = (displayName != null) ? displayName : "";
+    }
 }
