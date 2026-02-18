@@ -18,7 +18,7 @@ import androidx.lifecycle.MutableLiveData;
 import static com.eanie.mealy.data.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
-	ImageRepo imageRepo = new ImageRepo();
+	private final ImageRepo imageRepo = new ImageRepo();
 
 	public RecipeAddViewModel(@NonNull Application application) {
 		super(application);
