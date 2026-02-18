@@ -2,9 +2,13 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 import android.net.Uri;
+import android.widget.Toast;
 
+import com.eanie.mealy.data.ImageRepo;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +21,8 @@ import androidx.lifecycle.MutableLiveData;
 import static com.eanie.mealy.data.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
+	private final ImageRepo imageRepo = new ImageRepo();
+
 	public RecipeAddViewModel(@NonNull Application application) {
 		super(application);
 	}
@@ -29,29 +35,42 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
 	public Recipe buildRecipe() {
-        String imageUriStr = (image.getValue() == null) ? null : image.getValue().toString();
-
-        var r = new Recipe(
-                owner.getValue(),
-                name.getValue(),
-                instructions.getValue(),
-                ingredients.getValue(),
-                owner.getValue()
-        );
-        r.setImageUri(imageUriStr);
-        return r;
+		return new Recipe(
+				owner.getValue(),
+				name.getValue(),
+				instructions.getValue(),
+				ingredients.getValue(),
+				owner.getValue()
+		);
 	}
 
-	public void saveRecipe() {
+	public void saveRecipe(OnSuccessListener<Recipe> onComplete) {
 		var recipe = buildRecipe();
-		//var newUri = ...
-		//recipe.setImageUri(netUri);
-		// todo: submit image to firebase storage, then update recipe uri to storage uri or cash..?
-		add(recipe); // save recipe to firebase
+		// todo: add validation
+		OnFailureListener onFailure = e -> {
+			e.printStackTrace();
+			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+		};
+		var uri = this.image.getValue();
+		if (uri != null) {
+			imageRepo.upload(recipe, uri,
+					path -> {
+						recipe.setImagePath(path);
+						add(recipe, onComplete, onFailure);
+					},
+					e -> {
+						e.printStackTrace();
+						Toast.makeText(getApplication(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+					}
+			);
+			return;
+		}
+		add(recipe, onComplete, onFailure);
 	}
-    public void setImage(@Nullable Uri uri) {
-        image.postValue(uri);
-    }
+
+	public void setImage(@Nullable Uri uri) {
+		image.postValue(uri);
+	}
 
 	public void addIngredient(KitchenItem kitchenItem) {
 		var items = ingredients.getValue();

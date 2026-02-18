@@ -19,26 +19,26 @@ public final class Recipe implements Serializable {
 	private String name;
 	private String instructions;
 	private List<KitchenItem> ingredients;
-	private String imageUri;
+	private String imagePath;
 	private String chefId;
 
 	public Recipe() {
 		this.ingredients = new ArrayList<>();
 	}
 
-	public Recipe(
-			String id,
-			String name,
-			String instructions,
-			List<KitchenItem> ingredients,
-			String chefId
-	) {
-		this.id = id;
-		this.name = name;
-		this.instructions = instructions;
-		this.ingredients = ingredients;
-		this.chefId = chefId;
-	}
+    public Recipe(
+            String id,
+            String name,
+            String instructions,
+            List<KitchenItem> ingredients,
+            String chefId
+    ) {
+        this.id = id;
+        this.name = name;
+        this.instructions = instructions;
+        this.ingredients = ingredients;
+        this.chefId = chefId;
+    }
 
 	public boolean canBeMadeWith(@NonNull List<KitchenItem> ingredients, boolean matchQuantity) {
 		// check each item in this recipe's ingredients list
@@ -131,13 +131,12 @@ public final class Recipe implements Serializable {
 		return map;
 	}
 
-	public String getImageUri() {
-		return imageUri;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-
-	public void setImageUri(String imageUri) {
-		this.imageUri = imageUri;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	public void setId(String id) {
