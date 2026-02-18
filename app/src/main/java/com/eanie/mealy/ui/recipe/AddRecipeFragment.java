@@ -198,7 +198,6 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void saveRecipe() {
-		recipeAddVM.saveRecipe();
-		getParentFragmentManager().popBackStack();
+		recipeAddVM.saveRecipe(recipe -> getParentFragmentManager().popBackStack());
 	}
 }
