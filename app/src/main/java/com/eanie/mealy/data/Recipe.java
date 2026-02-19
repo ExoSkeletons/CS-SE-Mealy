@@ -15,7 +15,7 @@ public final class Recipe implements Serializable {
 	private String name;
 	private String instructions;
 	private List<KitchenItem> ingredients;
-    private String imageUri;
+	private String imagePath;
 	private String chefId;
 
 	public Recipe() {
@@ -47,14 +47,13 @@ public final class Recipe implements Serializable {
 		return true;
 	}
 
-    public String getImageUri() {
-        return imageUri;
-    }
+	public String getImagePath() {
+		return imagePath;
+	}
 
-
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
-    }
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
 
 	public void setId(String id) {
 		this.id = id;

@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.data.RecipeRepo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +32,19 @@ public class UserRecipesViewModel extends UserViewModel {
 		return myRecipes;
 	}
 
-	public void add(Recipe recipe) {
+	public void add(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
 		if (getUserId() == null) return;
 		recipe.setChefId(getUserId());
 		recipe.setId(null);
-		repo.insert(recipe, recipe::setId, e -> {
-			e.printStackTrace();
-			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
-		});
+		repo.insert(recipe, id -> {
+					recipe.setId(id);
+					onSuccess.onSuccess(recipe);
+				},
+				e -> {
+					e.printStackTrace();
+					Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+					onFailure.onFailure(e);
+				}
+		);
 	}
 }

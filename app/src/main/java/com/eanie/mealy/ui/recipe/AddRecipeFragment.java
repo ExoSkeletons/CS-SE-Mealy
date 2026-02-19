@@ -12,6 +12,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.eanie.mealy.R;
+import com.eanie.mealy.models.ItemsViewModel;
+import com.eanie.mealy.models.RecipeAddViewModel;
+import com.eanie.mealy.ui.kitchen.KitchenFragment;
+import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -31,7 +44,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import java.io.File;
 import java.util.ArrayList;
-import java.io.IOException;
 
 public class AddRecipeFragment extends Fragment {
 	public AddRecipeFragment() {
@@ -194,7 +206,6 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void saveRecipe() {
-		recipeAddVM.saveRecipe();
-		getParentFragmentManager().popBackStack();
+		recipeAddVM.saveRecipe(recipe -> getParentFragmentManager().popBackStack());
 	}
 }
