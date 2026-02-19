@@ -26,9 +26,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
-        <service
+        <!--<service
             android:name=".notifications.NotificationService"
-            android:exported="false" />
+            android:exported="false" />-->
     </application>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
