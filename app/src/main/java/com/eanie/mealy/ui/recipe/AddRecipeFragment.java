@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import java.io.File;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class AddRecipeFragment extends Fragment {
 	public AddRecipeFragment() {
