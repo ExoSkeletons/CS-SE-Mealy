@@ -18,9 +18,11 @@ public class NotificationViewModel extends UserViewModel {
 	private final NotificationRepo repo = new NotificationRepo();
 
 	private final LiveData<List<Notification>> notifications = Transformations.switchMap(userId, repo::getForUser);
+/*
     private static final long SPAM_COOLDOWN_MS = 15_000; // 15 seconds
     private long lastSentAtMs = 0;
     private String lastSentKey = null;
+*/
 
 
 
@@ -37,8 +39,7 @@ public class NotificationViewModel extends UserViewModel {
         if (notification == null) return;
         if (userId.getValue() == null) return;
 
-        // --- Spam mitigation (throttle duplicates) ---
-        String text = notification.getText() == null ? "" : notification.getText();
+       /* String text = notification.getText() == null ? "" : notification.getText();
         String key = toUserId + "|" + text;
 
         long now = System.currentTimeMillis();
@@ -50,8 +51,7 @@ public class NotificationViewModel extends UserViewModel {
         }
 
         lastSentKey = key;
-        lastSentAtMs = now;
-        // --- end spam mitigation ---
+        lastSentAtMs = now;*/
 
         notification.setReceiverUuid(toUserId);
         notification.setSenderUuid(userId.getValue());
