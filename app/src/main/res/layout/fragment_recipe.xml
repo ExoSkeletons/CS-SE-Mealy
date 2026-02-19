@@ -88,4 +88,37 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/action_make_recipe" />
 
+    <!-- Owner Actions (Edit & Delete) -->
+    <LinearLayout
+        android:id="@+id/layout_owner_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone">
+
+    <Button
+            android:id="@+id/btn_update_recipe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Update"
+            android:backgroundTint="#BB86FC"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btn_delete_recipe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Delete"
+            android:backgroundTint="#CF6679"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+
 </LinearLayout>
