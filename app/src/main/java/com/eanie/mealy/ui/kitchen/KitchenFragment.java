@@ -128,7 +128,7 @@ public class KitchenFragment extends Fragment {
             boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
             notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
 
-            // ---- NEW: pop a system notification once for the newest unread ----
+           /* // ---- NEW: pop a system notification once for the newest unread ----
             Notification newestUnread = notifications.stream()
                     .filter(n -> !n.isRead())
                     .findFirst()
@@ -148,7 +148,7 @@ public class KitchenFragment extends Fragment {
 
                     showSystemNotification(text);
                 }
-            }
+            }*/
 
             Log.d("Notifications", "Count: " + notifications.size() + ", Unread: " + hasUnread);
         });
@@ -195,7 +195,7 @@ public class KitchenFragment extends Fragment {
 			discoveryVM.updateIngredients(items);
 		});
 	}
-    private void showSystemNotification(String text) {
+ /*   private void showSystemNotification(String text) {
         if (text == null || text.isEmpty()) return;
 
         var notification =
@@ -208,7 +208,7 @@ public class KitchenFragment extends Fragment {
 
         var nm = (android.app.NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.notify((int) System.currentTimeMillis(), notification);
-    }
+    }*/
 
 	private void showNotificationsDialog() {
 		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
