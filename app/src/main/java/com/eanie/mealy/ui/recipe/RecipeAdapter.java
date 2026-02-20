@@ -83,6 +83,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
 
 		holder.favoriteCheckBox.setVisibility(showFavored ? View.VISIBLE : View.GONE);
+		holder.favoriteCheckBox.setOnCheckedChangeListener(null);
 		holder.favoriteCheckBox.setChecked(showFavored && favorites.contains(recipe.getId()));
 		holder.favoriteCheckBox.setEnabled(favoriteListener != null);
 		holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
