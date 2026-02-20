@@ -42,4 +42,21 @@ public class RecipeRepo {
 				.document(recipe.getId())
 				.delete();
 	}
+	public void update(Recipe recipe,
+					   OnSuccessListener<Void> onSuccessListener,
+					   OnFailureListener onFailureListener) {
+
+		if (recipe.getId() == null) {
+			onFailureListener.onFailure(
+					new Exception("Recipe id is null"));
+			return;
+		}
+
+		db.collection("recipes")
+				.document(recipe.getId())
+				.set(recipe)
+				.addOnSuccessListener(onSuccessListener)
+				.addOnFailureListener(onFailureListener);
+	}
+
 }

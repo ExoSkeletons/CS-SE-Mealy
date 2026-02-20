@@ -47,4 +47,18 @@ public class UserRecipesViewModel extends UserViewModel {
 				}
 		);
 	}
+	public void update(Recipe recipe,
+					   OnSuccessListener<Recipe> onSuccess,
+					   OnFailureListener onFailure) {
+
+		repo.update(recipe,
+				r -> onSuccess.onSuccess(recipe),
+				e -> {
+					e.printStackTrace();
+					Toast.makeText(getApplication(),
+							"Failed to update recipe",
+							Toast.LENGTH_SHORT).show();
+					onFailure.onFailure(e);
+				});
+	}
 }
