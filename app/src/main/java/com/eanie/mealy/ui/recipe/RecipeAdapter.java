@@ -41,7 +41,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 	private boolean showFavored = false;
 
 	@Nullable
-	private Map<Recipe, Map<String, IngredientStatus>> statusMap = new HashMap<>();
+	private Map<String, Map<String, IngredientStatus>> statusMap = new HashMap<>();
 
 
 	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
@@ -61,7 +61,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		notifyDataSetChanged();
 	}
 
-	public void submitStatusMap(@Nullable Map<Recipe, Map<String, IngredientStatus>> statusMap) {
+	public void submitStatusMap(@Nullable Map<String, Map<String, IngredientStatus>> statusMap) {
 		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
 		notifyDataSetChanged();
 	}

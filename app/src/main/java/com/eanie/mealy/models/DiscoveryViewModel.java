@@ -25,7 +25,7 @@ public class DiscoveryViewModel extends ViewModel {
 	private final MediatorLiveData<List<Recipe>> makeableRecipes = new MediatorLiveData<>(new ArrayList<>());
 	private final MediatorLiveData<List<Recipe>> partiallyMakeableRecipes = new MediatorLiveData<>(new ArrayList<>());
 
-	private final MediatorLiveData<Map<Recipe, Map<String, IngredientStatus>>> makeabilityStatus = new MediatorLiveData<>(new HashMap<>());
+	private final MediatorLiveData<Map<String, Map<String, IngredientStatus>>> makeabilityStatus = new MediatorLiveData<>(new HashMap<>());
 
 	public DiscoveryViewModel() {
 		makeableRecipes.addSource(recipes, r -> {
@@ -60,10 +60,10 @@ public class DiscoveryViewModel extends ViewModel {
 	}
 
 	@NonNull
-	private HashMap<Recipe, Map<String, IngredientStatus>> mapRecipesMakeability(List<Recipe> recipes, List<KitchenItem> i) {
-		var status = new HashMap<Recipe, Map<String, IngredientStatus>>();
+	private HashMap<String, Map<String, IngredientStatus>> mapRecipesMakeability(List<Recipe> recipes, List<KitchenItem> i) {
+		var status = new HashMap<String, Map<String, IngredientStatus>>();
 		for (Recipe r : recipes)
-			status.put(r, r.completionStatusWith(i));
+			status.put(r.getId(), r.completionStatusWith(i));
 		return status;
 	}
 
@@ -95,7 +95,7 @@ public class DiscoveryViewModel extends ViewModel {
 		return recipes;
 	}
 
-	public LiveData<Map<Recipe, Map<String, IngredientStatus>>> makeStatus() {
+	public LiveData<Map<String, Map<String, IngredientStatus>>> makeStatus() {
 		return makeabilityStatus;
 	}
 }
