@@ -107,6 +107,13 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		});
 	}
 
+	@Override
+	public void onViewRecycled(@NonNull RecipeItemViewHolder holder) {
+		super.onViewRecycled(holder);
+		// Force the inner list to empty so it doesn't
+		// get re-used when this ViewHolder is reused.
+		holder.ingredientsAdapter.submitList(null);
+	}
 
 	public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
 		TextView titleTextView;
