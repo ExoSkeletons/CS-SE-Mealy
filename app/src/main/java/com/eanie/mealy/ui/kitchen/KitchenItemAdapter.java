@@ -17,6 +17,7 @@ import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +105,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	}
 
 	public void setStatusMap(@Nullable Map<String, IngredientStatus> statusMap) {
-		this.statusMap = statusMap;
+		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
 		notifyDataSetChanged();
 	}
 
