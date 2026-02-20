@@ -118,18 +118,17 @@ public class RecipeFragment extends Fragment {
 			if (userItemsVM.getUserId().equals(currentRecipe.getChefId())) {
 				ownerLayout.setVisibility(View.VISIBLE);
 
-				btnDelete.setOnClickListener(v -> {
-					new AlertDialog.Builder(requireContext())
-							.setTitle("Delete Recipe")
-							.setMessage("Are you sure you want to delete this recipe?")
-							.setPositiveButton("Delete", (dialog, which) -> {
-								recipeVM.delete(currentRecipe);
-								Toast.makeText(getContext(), "Recipe deleted", Toast.LENGTH_SHORT).show();
-								requireActivity().onBackPressed();
-							})
-							.setNegativeButton("Cancel", null)
-							.show();
-				});
+				btnDelete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
+						.setTitle(R.string.delete_recipe)
+						.setMessage("Are you sure you want to delete this recipe?")
+						.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+							recipeVM.delete(currentRecipe);
+							Toast.makeText(getContext(), "Recipe deleted", Toast.LENGTH_SHORT).show();
+							requireActivity().onBackPressed();
+						})
+						.setNegativeButton(android.R.string.cancel, null)
+						.show()
+				);
 			}
 		}
 	}

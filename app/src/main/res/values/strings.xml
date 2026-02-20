@@ -68,6 +68,7 @@
     <string name="favorites">Favorites</string>
     <string name="create_recipe">Create Recipe</string>
     <string name="edit_recipe">Edit Recipe</string>
+    <string name="delete_recipe">Delete Recipe</string>
     <string name="create_ingredient">Create Ingredient</string>
     <string name="edit_ingredient">Edit Ingredient</string>
     <string name="delete_ingredient">Delete Ingredient</string>
