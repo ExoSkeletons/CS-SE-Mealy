@@ -81,6 +81,12 @@ public class KitchenItem implements Cloneable, Serializable {
 		}
 	}
 
+	@NonNull
+	@Override
+	public String toString() {
+		return ingredientKey + " " + quantity + " {" + documentId + "}";
+	}
+
 	@Nullable
 	public static KitchenItem match(@NonNull String itemKey, @Nullable List<KitchenItem> items) {
 		if (items == null) return null;

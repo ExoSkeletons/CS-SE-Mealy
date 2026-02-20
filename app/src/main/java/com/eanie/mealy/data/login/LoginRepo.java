@@ -14,9 +14,6 @@ public class LoginRepo {
 	private final LoginDataSource<EmailCredentials> emailDataSource;
 	private final LoginDataSource<GAuthCredentials> googleDataSource;
 
-
-	// If user credentials will be cached in local storage, it is recommended it be encrypted
-	// @see https://developer.android.com/training/articles/keystore
 	private LoggedInUser user = null;
 
 	public LoginRepo(LoginDataSource<EmailCredentials> emailDataSource, LoginDataSource<GAuthCredentials> googleDataSource) {
@@ -31,12 +28,11 @@ public class LoginRepo {
 	public void logout() {
 		user = null;
 		emailDataSource.logout();
+		googleDataSource.logout();
 	}
 
 	private void setLoggedInUser(LoggedInUser user) {
 		this.user = user;
-		// If user credentials will be cached in local storage, it is recommended it be encrypted
-		// @see https://developer.android.com/training/articles/keystore
 	}
 
 	public void login(String email, String password, OnSuccessListener<LoggedInUser> onSuccess, OnFailureListener onFailure) {

@@ -1,6 +1,9 @@
 package com.eanie.mealy.ui.kitchen;
 
+import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
+
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +17,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Quantifier;
@@ -24,6 +36,7 @@ import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
+import com.eanie.mealy.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -31,17 +44,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
 
 public class KitchenFragment extends Fragment {
 	private ItemsViewModel itemsVM;
@@ -97,6 +99,16 @@ public class KitchenFragment extends Fragment {
 			}
 		}
 
+		ImageButton btnLogout = view.findViewById(R.id.btn_logout);
+		btnLogout.setOnClickListener(v -> {
+			FirebaseAuth.getInstance().signOut();
+
+			Intent intent = new Intent(requireActivity(), LoginActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(intent);
+			requireActivity().finish();
+		});
+
 		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
 		View notificationBadge = view.findViewById(R.id.notification_badge);
 
@@ -138,6 +150,8 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
+		itemsVM.ingredients().observe(getViewLifecycleOwner(), items -> {
+		});
 		btnAddIngredient.setOnClickListener(v ->
 				showAddIngredientsDialog(requireContext(),
 						userItemsVM.myItems().getValue(), itemsVM.ingredients().getValue(),
@@ -155,6 +169,7 @@ public class KitchenFragment extends Fragment {
 	private void showNotificationsDialog() {
 		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
 		RecyclerView rv = dialogView.findViewById(R.id.rv_notifications);
+        TextView tvEmpty = dialogView.findViewById(R.id.tv_no_notifications);
 
 		NotificationAdapter adapter = new NotificationAdapter(
 				n -> notificationVM.markAsRead(n)
@@ -162,9 +177,15 @@ public class KitchenFragment extends Fragment {
 		rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 		rv.setAdapter(adapter);
 
-		notificationVM.notifications().observe(getViewLifecycleOwner(), adapter::submitList);
+        notificationVM.notifications().observe(getViewLifecycleOwner(), list -> {
+            adapter.submitList(list);
 
-		new AlertDialog.Builder(requireContext())
+            boolean empty = (list == null || list.isEmpty());
+            rv.setVisibility(empty ? View.GONE : View.VISIBLE);
+            tvEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        });
+
+        new AlertDialog.Builder(requireContext())
 				.setTitle(R.string.notifications)
 				.setView(dialogView)
 				.setPositiveButton(android.R.string.ok, (dialog, which) -> notificationVM.markAllAsRead())

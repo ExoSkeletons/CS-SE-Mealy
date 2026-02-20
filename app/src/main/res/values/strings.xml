@@ -22,11 +22,22 @@
     <string name="ing_yogurt">Yogurt</string>
     <string name="ing_pasta">Pasta</string>
     <string name="ing_garlic">Garlic</string>
+    <string name="ing_water">Water</string>
+    <string name="ing_baking_soda">Baking Soda</string>
+    <string name="ing_baking_powder">Baking Powder</string>
+    <string name="ing_oil">Oil</string>
+    <string name="ing_chocolate">Chocolate</string>
+    <string name="ing_olive">Olive</string>
+    <string name="ing_vanilla">Vanilla</string>
+
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="login_mode_register">Don\'t have an account? Register</string>
+    <string name="login_mode_login">Already have an account? Sign in</string>
     <string name="welcome">"Welcome!"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
@@ -47,6 +58,7 @@
     <string name="units">Units</string>
     <string name="instructions">Instructions</string>
 
+
     <string name="kitchen_title">%s\'s Kitchen</string>
     <string name="kitchen">Kitchen</string>
     <string name="notifications">Notifications</string>
@@ -66,4 +78,5 @@
     <string name="add">Add</string>
     <string name="create">Create New</string>
     <string name="action_make_recipe">Start Cooking</string>
+    <string name="logout">Logout</string>
 </resources>

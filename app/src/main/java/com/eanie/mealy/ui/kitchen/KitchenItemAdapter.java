@@ -1,5 +1,6 @@
 package com.eanie.mealy.ui.kitchen;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdapter.ViewHolder> {
 	public interface OnItemClickListener {
@@ -45,6 +51,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 	private OnQuantityChangeListener quantityListener;
 	private OnItemClickListener itemClickListener;
 	private final boolean compact;
+	@Nullable
+	private Map<String, IngredientStatus> statusMap = null;
 
 
 	public KitchenItemAdapter(boolean compact) {
@@ -96,6 +104,12 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		notifyDataSetChanged();
 	}
 
+	public void setStatusMap(@Nullable Map<String, IngredientStatus> statusMap) {
+		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
+		notifyDataSetChanged();
+	}
+
+
 	public Set<String> getSelectedKeys() {
 		return selectedKeys;
 	}
@@ -119,7 +133,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		// style
 		var card = (MaterialCardView) holder.itemView;
 		if (minimalStyle) {
-			card.setCardBackgroundColor(android.graphics.Color.TRANSPARENT);
+			card.setCardBackgroundColor(Color.TRANSPARENT);
 			card.setCardElevation(0);
 			card.setStrokeWidth(0);
 			((ViewGroup.MarginLayoutParams) card.getLayoutParams()).setMargins(0, 0, 0, 0);
@@ -128,7 +142,10 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			card.setCardElevation(8f);
 			holder.iconImageView.setElevation(0f);
 		}
-		if (smallIcons) holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
+		if (smallIcons) {
+			holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
+			holder.badgeView.setLayoutParams(new FrameLayout.LayoutParams(24, 24));
+		}
 
 		// selection and clicking
 		if (isSelectionEnabled) {
@@ -169,8 +186,18 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		if (showIcon) {
 			holder.iconImageView.setImageDrawable(Resources.getItemIcon(context, itemKey));
 			holder.iconImageView.setVisibility(View.VISIBLE);
-		} else
-			holder.iconImageView.setVisibility(View.GONE);
+		} else holder.iconImageView.setVisibility(View.GONE);
+
+		if (statusMap != null) {
+			var status = statusMap.getOrDefault(itemKey, IngredientStatus.ENOUGH);
+			holder.badgeView.setBackgroundResource(
+					switch (status != null ? status : IngredientStatus.ENOUGH) {
+						case PARTIAL -> R.drawable.bg_icon_badge_partial;
+						case MISSING -> R.drawable.bg_icon_badge_missing;
+						default -> R.drawable.bg_icon_badge_enough;
+					}
+			);
+		} else holder.badgeView.setBackground(null);
 
 		// quantity controls
 		if (quantityListener != null) {
@@ -187,6 +214,8 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		ImageButton btnIncrease;
 		ImageButton btnDecrease;
 		CheckBox checkBox;
+		View badgeView;
+
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -196,6 +225,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 			btnIncrease = itemView.findViewById(R.id.btn_increase);
 			btnDecrease = itemView.findViewById(R.id.btn_decrease);
 			checkBox = itemView.findViewById(R.id.item_checkbox);
+			badgeView = itemView.findViewById(R.id.item_badge);
 		}
 	}
 }

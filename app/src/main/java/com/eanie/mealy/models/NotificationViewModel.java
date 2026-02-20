@@ -2,6 +2,10 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
+
 import com.eanie.mealy.data.Notification;
 import com.eanie.mealy.data.NotificationRepo;
 import com.eanie.mealy.data.Recipe;
@@ -10,17 +14,17 @@ import com.google.firebase.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
-
 public class NotificationViewModel extends UserViewModel {
 	private final NotificationRepo repo = new NotificationRepo();
 
 	private final LiveData<List<Notification>> notifications = Transformations.switchMap(userId, repo::getForUser);
+    private static final long SPAM_COOLDOWN_MS = 15_000; // 15 seconds
+    private long lastSentAtMs = 0;
+    private String lastSentKey = null;
 
 
-	public NotificationViewModel(@NonNull Application application) {
+
+    public NotificationViewModel(@NonNull Application application) {
 		super(application);
 	}
 
@@ -28,14 +32,35 @@ public class NotificationViewModel extends UserViewModel {
 		return notifications;
 	}
 
-	private void send(String toUserId, Notification notification) {
-		notification.setReceiverUuid(toUserId);
-		notification.setSenderUuid(userId.getValue());
-		notification.setTimestamp(Timestamp.now());
-		repo.insert(notification);
-	}
+    private void send(String toUserId, Notification notification) {
+        if (toUserId == null || toUserId.isEmpty()) return;
+        if (notification == null) return;
+        if (userId.getValue() == null) return;
 
-	public void send(String text, String toUserId) {
+        // --- Spam mitigation (throttle duplicates) ---
+        String text = notification.getText() == null ? "" : notification.getText();
+        String key = toUserId + "|" + text;
+
+        long now = System.currentTimeMillis();
+        boolean sameAsLast = key.equals(lastSentKey);
+        boolean tooSoon = (now - lastSentAtMs) < SPAM_COOLDOWN_MS;
+
+        if (sameAsLast && tooSoon) {
+            return; // ignore spam
+        }
+
+        lastSentKey = key;
+        lastSentAtMs = now;
+        // --- end spam mitigation ---
+
+        notification.setReceiverUuid(toUserId);
+        notification.setSenderUuid(userId.getValue());
+        notification.setTimestamp(Timestamp.now());
+        repo.insert(notification);
+    }
+
+
+    public void send(String text, String toUserId) {
 		if (text == null || text.isEmpty()) return;
 		if (userId.getValue() == null) return;
 
@@ -50,10 +75,9 @@ public class NotificationViewModel extends UserViewModel {
 		if (recipe == null || recipe.getChefId() == null) return;
 
 		var notification = new Notification();
-		String displayName = "A user"; // todo: replace with displayName
-		notification.setText(displayName + " liked your " + recipe.getName() + " recipe!");
+        notification.setText("liked your " + recipe.getName() + " recipe!");
 
-		send(recipe.getChefId(), notification);
+        send(recipe.getChefId(), notification);
 	}
 
 	public void sendRecipeUsed(Recipe recipe) {

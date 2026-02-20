@@ -15,5 +15,8 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="border_light">#DDDDDD</color>
+    <color name="ingredient_partial">#FFC107</color>
+    <color name="ingredient_missing">#F44336</color>
+
 
 </resources>
