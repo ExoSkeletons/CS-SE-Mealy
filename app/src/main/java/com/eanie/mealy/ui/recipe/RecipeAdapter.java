@@ -76,7 +76,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
 	@Override
 	public void onBindViewHolder(@NonNull RecipeItemViewHolder holder, int position) {
-		Recipe recipe = getItem(position);
+		var recipe = getItem(position);
 		if (recipe == null) return;
 
 		holder.titleTextView.setText(recipe.getName());
@@ -99,7 +99,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			holder.ingredientsAdapter.submitList(ingredients);
 
 			if (statusMap != null)
-				holder.ingredientsAdapter.setStatusMap(statusMap.get(recipe));
+				holder.ingredientsAdapter.setStatusMap(statusMap.get(recipe.getId()));
 		}
 
 		holder.itemView.setOnClickListener(v -> {
