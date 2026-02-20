@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -69,13 +70,13 @@ public class DiscoveryViewModel extends ViewModel {
 	private static List<Recipe> filterMakeable(List<Recipe> recipes, List<KitchenItem> i) {
 		return recipes.stream()
 				.filter(r -> r.canBeMadeWith(i, true))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	private static List<Recipe> filterPartiallyMakeable(List<Recipe> recipes, List<KitchenItem> i) {
 		return recipes.stream()
 				.filter(r -> r.canBeMadeWith(i, false))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public void updateIngredients(List<KitchenItem> ingredients) {
