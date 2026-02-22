@@ -97,6 +97,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="gone">
+        tools:visibility="visible">
 
     <Button
             android:id="@+id/btn_update_recipe"
