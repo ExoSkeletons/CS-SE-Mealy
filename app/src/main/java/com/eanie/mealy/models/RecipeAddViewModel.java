@@ -2,20 +2,27 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 import android.net.Uri;
+import android.widget.Toast;
 
+import com.eanie.mealy.data.ImageRepo;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import static com.eanie.mealy.data.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
+	private final ImageRepo imageRepo = new ImageRepo();
+
 	public RecipeAddViewModel(@NonNull Application application) {
 		super(application);
 	}
@@ -37,9 +44,32 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		);
 	}
 
-	public void saveRecipe() {
-		// todo: submit image to firebase storage
-		add(buildRecipe()); // save recipe to firebase
+	public void saveRecipe(OnSuccessListener<Recipe> onComplete) {
+		var recipe = buildRecipe();
+		// todo: add validation
+		OnFailureListener onFailure = e -> {
+			e.printStackTrace();
+			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+		};
+		var uri = this.image.getValue();
+		if (uri != null) {
+			imageRepo.upload(recipe, uri,
+					path -> {
+						recipe.setImagePath(path);
+						add(recipe, onComplete, onFailure);
+					},
+					e -> {
+						e.printStackTrace();
+						Toast.makeText(getApplication(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+					}
+			);
+			return;
+		}
+		add(recipe, onComplete, onFailure);
+	}
+
+	public void setImage(@Nullable Uri uri) {
+		image.postValue(uri);
 	}
 
 	public void addIngredient(KitchenItem kitchenItem) {

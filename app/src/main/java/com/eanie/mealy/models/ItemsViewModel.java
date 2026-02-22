@@ -5,8 +5,6 @@ import android.content.Context;
 
 import com.eanie.mealy.data.ItemsRepo;
 import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Quantifier;
-import com.eanie.mealy.data.Quantity;
 import com.eanie.mealy.data.UnitType;
 import com.eanie.mealy.ui.Resources;
 
@@ -16,32 +14,11 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import static com.eanie.mealy.data.KitchenItem.match;
 
 public class ItemsViewModel extends AndroidViewModel {
 	private final ItemsRepo repo = new ItemsRepo();
-	private final LiveData<List<KitchenItem>> demoItems = new MutableLiveData<>(List.of(
-			new KitchenItem("ing_apple", 3),
-			new KitchenItem("ing_bread", new Quantity(2.5, UnitType.GRAMS, Quantifier.KILO)),
-			new KitchenItem("ing_butter", new Quantity(100, UnitType.GRAMS)),
-			new KitchenItem("ing_cheese", new Quantity(200, UnitType.GRAMS)),
-			new KitchenItem("ing_cucumber"),
-			new KitchenItem("ing_eggs", 12),
-			new KitchenItem("ing_flour", new Quantity(1, UnitType.GRAMS, Quantifier.KILO)),
-			new KitchenItem("ing_milk", new Quantity(250, UnitType.LITERS, Quantifier.MILLI)),
-			new KitchenItem("ing_mushroom", new Quantity(200, UnitType.GRAMS)),
-			new KitchenItem("ing_onion", 5),
-			new KitchenItem("ing_tomato", 2),
-			new KitchenItem("ing_yogurt"),
-			new KitchenItem("ing_water", new Quantity(1, UnitType.LITERS)),
-			new KitchenItem("ing_salt", new Quantity(100, UnitType.GRAMS)),
-			new KitchenItem("ing_pepper", new Quantity(1, UnitType.GRAMS)),
-			new KitchenItem("ing_garlic", new Quantity(1, UnitType.GRAMS)),
-			new KitchenItem("ing_oil", new Quantity(200, UnitType.LITERS, Quantifier.MILLI)),
-			new KitchenItem("ing_sugar", new Quantity(400, UnitType.GRAMS))
-	));
 
 	private final LiveData<List<KitchenItem>> ingredients = repo.items();
 
@@ -50,9 +27,7 @@ public class ItemsViewModel extends AndroidViewModel {
 	}
 
 	public LiveData<List<KitchenItem>> ingredients() {
-		// demo ingredients
-		// todo: replace with repo.items()
-		return demoItems;
+		return ingredients;
 	}
 
 

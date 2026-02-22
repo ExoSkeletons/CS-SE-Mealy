@@ -1,6 +1,7 @@
 package com.eanie.mealy.ui.kitchen;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
 import com.eanie.mealy.ui.Resources;
+import com.eanie.mealy.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -85,9 +87,7 @@ public class KitchenFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		var btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
 
-		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
-		if (user != null) {
-			var name = user.getDisplayName();
+		notificationVM.userName().observe(getViewLifecycleOwner(), name -> {
 			if (name != null) {
 				var firstName = name.split(" ")[0];
 				var capitalizedName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
@@ -95,7 +95,17 @@ public class KitchenFragment extends Fragment {
 						requireContext().getString(R.string.kitchen_title, capitalizedName)
 				);
 			}
-		}
+		});
+
+		ImageButton btnLogout = view.findViewById(R.id.btn_logout);
+		btnLogout.setOnClickListener(v -> {
+			FirebaseAuth.getInstance().signOut();
+
+			Intent intent = new Intent(requireActivity(), LoginActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(intent);
+			requireActivity().finish();
+		});
 
 		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
 		View notificationBadge = view.findViewById(R.id.notification_badge);
@@ -118,8 +128,9 @@ public class KitchenFragment extends Fragment {
 		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
 
 		RecyclerView stock_list = view.findViewById(R.id.stock_rv);
-		KitchenItemAdapter adapter = new KitchenItemAdapter(
-				clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient),
+		KitchenItemAdapter adapter = new KitchenItemAdapter();
+		adapter.setItemClickListener(clicked -> showEditIngredientDialog(requireContext(), clicked, userItemsVM::updateIngredient));
+		adapter.setQuantityListener(
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
@@ -140,6 +151,8 @@ public class KitchenFragment extends Fragment {
 		stock_list.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 		// open add items dialog
+		itemsVM.ingredients().observe(getViewLifecycleOwner(), items -> {
+		});
 		btnAddIngredient.setOnClickListener(v ->
 				showAddIngredientsDialog(requireContext(),
 						userItemsVM.myItems().getValue(), itemsVM.ingredients().getValue(),

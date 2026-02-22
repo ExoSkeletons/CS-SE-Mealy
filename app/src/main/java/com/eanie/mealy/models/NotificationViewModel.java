@@ -75,7 +75,7 @@ public class NotificationViewModel extends UserViewModel {
 		if (recipe == null || recipe.getChefId() == null) return;
 
 		var notification = new Notification();
-        notification.setText("liked your " + recipe.getName() + " recipe!");
+		notification.setText(getUserName() + " liked your " + recipe.getName() + " recipe!");
 
         send(recipe.getChefId(), notification);
 	}
@@ -85,12 +85,7 @@ public class NotificationViewModel extends UserViewModel {
 		if (recipe == null || recipe.getChefId() == null) return;
 
 		var notification = new Notification();
-        String displayName = "Someone";
-        var fbUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
-        if (fbUser != null && fbUser.getDisplayName() != null && !fbUser.getDisplayName().isEmpty()) {
-            displayName = fbUser.getDisplayName().split(" ")[0];
-        }
-        notification.setText("used your " + recipe.getName() + " recipe!");
+		notification.setText(getUserName() + " used your " + recipe.getName() + " recipe!");
 
 		send(recipe.getChefId(), notification);
 	}

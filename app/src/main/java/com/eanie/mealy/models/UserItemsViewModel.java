@@ -49,7 +49,7 @@ public class UserItemsViewModel extends UserViewModel {
 		var items = myItems().getValue();
 		if (items == null) throw new RuntimeException("Items is null");
 
-		if (!recipe.canBeMadeWith(items))
+		if (!recipe.canBeMadeWith(items, false))
 			throw new RuntimeException("Recipe cannot be made with ingredients");
 
 		for (KitchenItem item : recipe.getIngredients())

@@ -74,7 +74,7 @@ public class Quantity implements Cloneable, Serializable {
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
 		Quantity oq = (Quantity) o;
-		return Double.compare(amount, oq.amount) == 0 && unitType == oq.unitType;
+		return Double.compare(amount, oq.amount) == 0 && quantifier == oq.quantifier && unitType == oq.unitType;
 	}
 
 	@NonNull
@@ -89,5 +89,14 @@ public class Quantity implements Cloneable, Serializable {
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError();
 		}
+	}
+
+	public double subtract(Quantity other) {
+		if (!other.getUnitType().equals(getUnitType()))
+			throw new IllegalStateException("Cannot compare differing unit types " + getUnitType() + "," + other.getUnitType()); // todo: add conversion
+
+		var a1 = quantifier.apply(amount);
+		var a2 = other.quantifier.apply(other.amount);
+		return a1 - a2;
 	}
 }

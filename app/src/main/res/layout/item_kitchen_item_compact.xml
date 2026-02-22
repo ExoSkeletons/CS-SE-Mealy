@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_container"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     app:cardCornerRadius="12dp"
@@ -13,51 +13,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:gravity="center|start"
+        android:orientation="horizontal"
         android:padding="12dp">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/item_checkbox"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            android:buttonTint="@android:color/holo_green_dark"
+            android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/item_icon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_ing_butter" />
+        <ImageView
+            android:id="@+id/item_icon"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_ing_butter" />
 
-            <CheckBox
-                android:id="@+id/item_checkbox"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="bottom|end"
-                android:layout_marginBottom="-2dp"
-                android:layout_marginEnd="-2dp"
-                android:background="@android:color/transparent"
-                android:buttonTint="@android:color/holo_green_dark"
-                android:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/item_badge"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="start|top"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:background="@android:color/transparent"
-                android:visibility="visible" />
-
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/item_badge"
+            android:layout_width="12dp"
+            android:layout_height="10dp"
+            android:background="@android:color/transparent"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_weight="1"
             android:textSize="12sp"
             android:textStyle="bold"
             tools:text="@string/ing_butter" />
@@ -66,7 +54,6 @@
             android:id="@+id/quantity_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -94,5 +81,6 @@
                 app:srcCompat="@android:drawable/arrow_up_float" />
 
         </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

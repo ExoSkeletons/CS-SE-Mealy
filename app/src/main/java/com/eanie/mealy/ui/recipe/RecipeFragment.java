@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,8 +82,11 @@ public class RecipeFragment extends Fragment {
 		recipeVM.description.observe(getViewLifecycleOwner(), description -> ((TextView) view.findViewById(R.id.tv_recipe_short_description)).setText(description));
 		recipeVM.instructions.observe(getViewLifecycleOwner(), instructions -> ((TextView) view.findViewById(R.id.tv_preparation)).setText(instructions));
 
+		ImageView ivRecipe = view.findViewById(R.id.iv_recipe_photo);
+		recipeVM.imagePath.observe(getViewLifecycleOwner(), path -> recipeVM.loadImage(path, ivRecipe));
+
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
-		KitchenItemAdapter adapter = new KitchenItemAdapter();
+		KitchenItemAdapter adapter = new KitchenItemAdapter(true);
 		rvIngredients.setAdapter(adapter);
 		rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
 		recipeVM.ingredients.observe(getViewLifecycleOwner(), adapter::submitList);
