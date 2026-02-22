@@ -1,26 +1,37 @@
 package com.eanie.mealy.notifications;
 
-
 import android.content.Context;
 import android.util.Log;
 
+import com.eanie.mealy.data.Notification;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.work.Data;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 public class NotificationPollWorker extends Worker {
 	private static final String TAG = "NOTIF_WORKER";
-	SharedPreferences sp = getApplicationContext().getSharedPreferences("notif_prefs", Context.MODE_PRIVATE);
 
 	public static void enqueue(Context context, String uuid) {
 		if (uuid == null || uuid.isEmpty()) return;
-		var dataMap = new HashMap<String, String>();
+		var dataMap = new HashMap<String, Object>();
 		dataMap.put("uuid", uuid);
 
 		PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
 				NotificationPollWorker.class,
-				15, TimeUnit.SECONDS
+				15, TimeUnit.MINUTES // Minimum interval allowed by WorkManager
 		)
 				.setInputData(new Data(dataMap))
 				.build();
@@ -30,83 +41,58 @@ public class NotificationPollWorker extends Worker {
 	public NotificationPollWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
+
     @NonNull
     @Override
     public Result doWork() {
-        final String TAG = "NOTIF_WORKER";
-
         try {
             Log.d(TAG, "doWork STARTED");
 
 	        var data = getInputData();
-	        String uid = data.getString("uuid");
+	        String uuid = data.getString("uuid");
+	        if (uuid == null || uuid.isEmpty()) {
+		        Log.d(TAG, "Worker is missing uuid input data");
+		        return Result.failure();
+	        }
 
-            long lastMs = sp.getLong("last_notified_ms", 0L);
-            com.google.firebase.Timestamp lastTs =
-                    new com.google.firebase.Timestamp(new java.util.Date(lastMs));
-Log.d(TAG, "Before Firestore query");
-            var query = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+	        long lastMs = SystemNotifications.getLastNotifiedMs(getApplicationContext());
+	        Timestamp lastTs = new Timestamp(new Date(lastMs));
+
+	        var query = FirebaseFirestore.getInstance()
                     .collection("users")
-                    .document(uid)
+			        .document(uuid)
                     .collection("notifications")
                     .whereEqualTo("read", false)
-                    .whereGreaterThan("timestamp", lastTs)
-                    .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.ASCENDING);
-            var snap = com.google.android.gms.tasks.Tasks.await(
+			        // .whereGreaterThan("timestamp", lastTs) todo: create fb index for multi-field query
+			        ;
+
+	        var snapshot = Tasks.await(
                     query.get(),
                     10,
-                    java.util.concurrent.TimeUnit.SECONDS
+			        TimeUnit.SECONDS
             );
-            Log.d(TAG, "After Firestore query");
 
-            if (snap == null || snap.isEmpty()) {
+	        if (snapshot == null || snapshot.isEmpty()) {
                 Log.d(TAG, "No new notifications");
                 return Result.success();
             }
 
-            com.eanie.mealy.notifications.NotificationChannels.ensureCreated(getApplicationContext());
-
-            android.app.NotificationManager nm =
-                    (android.app.NotificationManager) getApplicationContext()
-                            .getSystemService(Context.NOTIFICATION_SERVICE);
-
-            long maxSeenMs = lastMs;
-
-            for (var doc : snap.getDocuments()) {
-                String text = doc.getString("text");
-                if (text == null || text.isEmpty()) text = "New notification";
-
-                com.google.firebase.Timestamp ts = doc.getTimestamp("timestamp");
-                if (ts != null) {
-                    long t = ts.toDate().getTime();
-                    if (t > maxSeenMs) maxSeenMs = t;
+	        List<Notification> notifications = new ArrayList<>();
+	        for (var doc : snapshot.getDocuments()) {
+		        Notification n = doc.toObject(Notification.class);
+		        if (n != null) {
+			        notifications.add(n);
                 }
-
-                android.app.Notification n =
-                        new androidx.core.app.NotificationCompat.Builder(
-                                getApplicationContext(),
-                                com.eanie.mealy.notifications.NotificationChannels.CHANNEL_ID
-                        )
-                                .setContentTitle("Mealy")
-                                .setContentText(text)
-                                .setSmallIcon(com.eanie.mealy.R.drawable.ic_notification)
-                                .setAutoCancel(true)
-                                .build();
-
-                if (nm != null) nm.notify((int) System.currentTimeMillis(), n);
             }
 
-            sp.edit().putLong("last_notified_ms", maxSeenMs).apply();
+	        SystemNotifications.notify(getApplicationContext(), notifications);
 
-            Log.d(TAG, "Pushed " + snap.size() + " notifications. last_notified_ms=" + maxSeenMs);
+	        Log.d(TAG, "Processed " + notifications.size() + " notifications");
             return Result.success();
 
         } catch (Exception e) {
-            Log.d("NOTIF_WORKER", "Worker error: " , e);
+	        Log.d(TAG, "Worker error: ", e);
             return Result.retry();
         }
     }
-
-
-
 }
