@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.function.Supplier;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -28,16 +29,19 @@ public class RecipeNavFragment extends Fragment {
 	private UserDataViewModel userInfoVM;
 
 	private enum RecipeTab {
-		BROWSE(R.string.available_recipes, RecipeBrowseFragment::new),
-		MY_RECIPES(R.string.my_recipes, MyRecipesFragment::new),
-		FAVORITES(R.string.favorites, FavoriteRecipesFragment::new);
+		BROWSE(R.string.available_recipes, android.R.drawable.ic_menu_search, RecipeBrowseFragment::new),
+		MY_RECIPES(R.string.my_recipes, R.drawable.ic_book, MyRecipesFragment::new),
+		FAVORITES(R.string.favorites, R.drawable.ic_heart_filled, FavoriteRecipesFragment::new);
 
 		@StringRes
 		final int titleRes;
+		@DrawableRes
+		final int iconRes;
 		final Supplier<Fragment> supplier;
 
-		RecipeTab(@StringRes int titleRes, Supplier<Fragment> supplier) {
+		RecipeTab(@StringRes int titleRes, @DrawableRes int iconRes, Supplier<Fragment> supplier) {
 			this.titleRes = titleRes;
+			this.iconRes = iconRes;
 			this.supplier = supplier;
 		}
 	}
@@ -70,9 +74,12 @@ public class RecipeNavFragment extends Fragment {
 
 		viewPager.setAdapter(new RecipePagerAdapter(this, uuid));
 
-		new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->
-				tab.setText(RecipeTab.values()[position].titleRes)
-		).attach();
+		new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+			RecipeTab tabInfo = RecipeTab.values()[position];
+			// tab.setText(tabInfo.titleRes);
+			tab.setContentDescription(tabInfo.titleRes);
+			tab.setIcon(tabInfo.iconRes);
+		}).attach();
 
 		userInfoVM.isChef().observe(getViewLifecycleOwner(), isChef -> {
 			btnAddRecipe.setVisibility(isChef ? View.VISIBLE : View.GONE);
