@@ -1,10 +1,7 @@
 package com.eanie.mealy.ui.kitchen;
 
-import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +46,10 @@ public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private NotificationViewModel notificationVM;
 	private DiscoveryViewModel discoveryVM;
-    private String lastPushedNotificationId = null;
-    private final java.util.Map<String, String> senderNameCache = new java.util.HashMap<>();
-    private final com.eanie.mealy.data.UserRepo userRepo = new com.eanie.mealy.data.UserRepo();
+	private final com.eanie.mealy.data.UserRepo userRepo = new com.eanie.mealy.data.UserRepo();
 
 
-    @Override
+	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -105,56 +100,19 @@ public class KitchenFragment extends Fragment {
 		ImageButton btnNotifications = view.findViewById(R.id.btn_notifications);
 		View notificationBadge = view.findViewById(R.id.notification_badge);
 
-        notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
-            if (notifications == null) return;
-            // ---- fill senderNameCache once per sender ----
-            for (Notification n : notifications) {
-                String senderIdLoop = n.getSenderUuid();
-                if (senderIdLoop == null || senderIdLoop.isEmpty()) continue;
+		notificationVM.notifications().observe(getViewLifecycleOwner(), notifications -> {
+			if (notifications == null) return;
 
-                if (senderNameCache.containsKey(senderIdLoop)) continue;
-
-                senderNameCache.put(senderIdLoop, "");
-
-                userRepo.getDataOf(senderIdLoop)
-                        .observe(getViewLifecycleOwner(), userData -> {
-                            if (userData != null && userData.getDisplayName() != null) {
-                                senderNameCache.put(senderIdLoop, userData.getDisplayName());
-                            }
-                        });
-            }
+			boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
+			notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+		});
 
 
-            boolean hasUnread = notifications.stream().anyMatch(n -> !n.isRead());
-            notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
-
-           /* // ---- NEW: pop a system notification once for the newest unread ----
-            Notification newestUnread = notifications.stream()
-                    .filter(n -> !n.isRead())
-                    .findFirst()
-                    .orElse(null);
-
-            if (newestUnread != null) {
-                String id = newestUnread.getId();
-                if (id != null && !id.equals(lastPushedNotificationId)) {
-                    lastPushedNotificationId = id;
-                    String senderId = newestUnread.getSenderUuid();
-                    String name = (senderId != null) ? senderNameCache.get(senderId) : null;
-
-                    String text = newestUnread.getText();
-                    if (name != null && !name.isEmpty()) {
-                        text = name + " " + text;
-                    }
-
-                    showSystemNotification(text);
-                }
-            }*/
-
-            Log.d("Notifications", "Count: " + notifications.size() + ", Unread: " + hasUnread);
-        });
-
-
-        btnNotifications.setOnClickListener(v -> showNotificationsDialog());
+		btnNotifications.setOnClickListener(v -> showNotificationsDialog(
+				requireContext(), getViewLifecycleOwner(),
+				notificationVM.notifications(),
+				notificationVM::markAsRead, notificationVM::markAllAsRead
+		));
 
 		Button btnSendNotif = view.findViewById(R.id.btn_send_notif);
 		btnSendNotif.setOnClickListener(v -> notificationVM.send("Test Notification ", notificationVM.getUserId()));
@@ -195,66 +153,28 @@ public class KitchenFragment extends Fragment {
 			discoveryVM.updateIngredients(items);
 		});
 	}
- /*   private void showSystemNotification(String text) {
-        if (text == null || text.isEmpty()) return;
 
-        var notification =
-                new androidx.core.app.NotificationCompat.Builder(requireContext(), com.eanie.mealy.notifications.NotificationChannels.CHANNEL_ID)
-                        .setContentTitle("Mealy")
-                        .setContentText(text)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setAutoCancel(true)
-                        .build();
-
-        var nm = (android.app.NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null) nm.notify((int) System.currentTimeMillis(), notification);
-    }*/
-
-	private void showNotificationsDialog() {
-		View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_notifications, null);
+	private static void showNotificationsDialog(Context context, LifecycleOwner lifecycleOwner, LiveData<List<Notification>> notifications, Consumer<Notification> markAsRead, Runnable markAllAsRead) {
+		View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_notifications, null);
 		RecyclerView rv = dialogView.findViewById(R.id.rv_notifications);
-        TextView tvEmpty = dialogView.findViewById(R.id.tv_no_notifications);
+		TextView tvEmpty = dialogView.findViewById(R.id.tv_no_notifications);
 
-		NotificationAdapter adapter = new NotificationAdapter(
-				n -> notificationVM.markAsRead(n),
-                senderNameCache
-		);
-		rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+		NotificationAdapter adapter = new NotificationAdapter(markAsRead::accept);
+		notifications.observe(lifecycleOwner, list -> {
+			adapter.submitList(list);
+
+			tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+			rv.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+		});
+
+		rv.setLayoutManager(new LinearLayoutManager(context));
 		rv.setAdapter(adapter);
 
-        notificationVM.notifications().observe(getViewLifecycleOwner(), list -> {
-            if (list != null) {
-                for (Notification n : list) {
-                    String senderId = n.getSenderUuid();
-                    if (senderId == null || senderId.isEmpty()) continue;
-
-                    if (senderNameCache.containsKey(senderId)) continue;
-
-                    senderNameCache.put(senderId, "");
-
-                    new com.eanie.mealy.data.UserRepo()
-                            .getDataOf(senderId)
-                            .observe(getViewLifecycleOwner(), userData -> {
-                                if (userData != null && userData.getDisplayName() != null) {
-                                    senderNameCache.put(senderId, userData.getDisplayName());
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                }
-            }
-
-            adapter.submitList(list);
-
-            boolean empty = (list == null || list.isEmpty());
-            rv.setVisibility(empty ? View.GONE : View.VISIBLE);
-            tvEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
-        });
-
-        new AlertDialog.Builder(requireContext())
+		new AlertDialog.Builder(context)
 				.setTitle(R.string.notifications)
 				.setView(dialogView)
-				.setPositiveButton(android.R.string.ok, (dialog, which) -> notificationVM.markAllAsRead())
-				.setOnDismissListener(dialog -> notificationVM.markAllAsRead())
+				.setPositiveButton(android.R.string.ok, (dialog, which) -> markAllAsRead.run())
+				.setOnDismissListener(dialog -> markAllAsRead.run())
 				.show();
 	}
 

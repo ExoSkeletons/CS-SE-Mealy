@@ -8,7 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.notifications.NotificationPollWorker;
+import com.eanie.mealy.notifications.SystemNotifications;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.recipe.RecipeNavFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -19,6 +21,7 @@ import java.util.function.Supplier;
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
@@ -66,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
         uuid = user.getUid();
 
 	    NotificationPollWorker.enqueue(this, uuid);
+
+		var notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+		notificationViewModel.setUserId(uuid);
+		notificationViewModel.notifications().observe(this, list -> {
+			SystemNotifications.notify(this, list);
+		});
 
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(item -> {
