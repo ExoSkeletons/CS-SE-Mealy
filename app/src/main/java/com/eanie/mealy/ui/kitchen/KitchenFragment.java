@@ -1,7 +1,5 @@
 package com.eanie.mealy.ui.kitchen;
 
-import static com.eanie.mealy.models.UserViewModel.ARG_UUID;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,9 +85,7 @@ public class KitchenFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		var btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
 
-		var user = FirebaseAuth.getInstance().getCurrentUser(); // todo: remove uuid arg pass and just call getCurrentUser()..
-		if (user != null) {
-			var name = user.getDisplayName();
+		notificationVM.userName().observe(getViewLifecycleOwner(), name -> {
 			if (name != null) {
 				var firstName = name.split(" ")[0];
 				var capitalizedName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
@@ -97,7 +93,7 @@ public class KitchenFragment extends Fragment {
 						requireContext().getString(R.string.kitchen_title, capitalizedName)
 				);
 			}
-		}
+		});
 
 		ImageButton btnLogout = view.findViewById(R.id.btn_logout);
 		btnLogout.setOnClickListener(v -> {

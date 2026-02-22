@@ -2,10 +2,6 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
-
 import com.eanie.mealy.data.Notification;
 import com.eanie.mealy.data.NotificationRepo;
 import com.eanie.mealy.data.Recipe;
@@ -13,6 +9,10 @@ import com.google.firebase.Timestamp;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 public class NotificationViewModel extends UserViewModel {
 	private final NotificationRepo repo = new NotificationRepo();
@@ -75,7 +75,7 @@ public class NotificationViewModel extends UserViewModel {
 		if (recipe == null || recipe.getChefId() == null) return;
 
 		var notification = new Notification();
-        notification.setText("liked your " + recipe.getName() + " recipe!");
+		notification.setText(getUserName() + " liked your " + recipe.getName() + " recipe!");
 
         send(recipe.getChefId(), notification);
 	}
@@ -84,9 +84,8 @@ public class NotificationViewModel extends UserViewModel {
 		if (userId.getValue() == null) return;
 		if (recipe == null || recipe.getChefId() == null) return;
 
-		String displayName = "A user"; // todo: replace with displayName when we change userId to firebase User class
 		var notification = new Notification();
-		notification.setText(displayName + " used your " + recipe.getName() + " recipe!");
+		notification.setText(getUserName() + " used your " + recipe.getName() + " recipe!");
 
 		send(recipe.getChefId(), notification);
 	}
