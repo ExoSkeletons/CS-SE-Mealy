@@ -48,14 +48,17 @@ public class SystemNotifications {
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (nm == null) return;
 
+		// todo: add notification type and use it for icon, priority, category, etc.
+
 		String text = notification.getText();
 		if (text == null || text.isEmpty()) return;
 
 		var n = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_ID)
 				.setContentTitle(context.getString(R.string.app_name))
 				.setContentText(text)
-				.setSmallIcon(R.drawable.ic_notification)
+				.setSmallIcon(R.drawable.ic_mealy)
 				.setAutoCancel(true)
+				.setCategory(NotificationCompat.CATEGORY_SOCIAL)
 				.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 				.build();
 
