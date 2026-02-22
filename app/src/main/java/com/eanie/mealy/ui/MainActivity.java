@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.notifications.NotificationPollWorker;
@@ -21,8 +20,6 @@ import java.util.function.Supplier;
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import static com.eanie.mealy.models.UserViewModel.withUserId;
 
@@ -59,14 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("NOTIF_WORKER", "Enqueue periodic worker");
-
-	    PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
-			    NotificationPollWorker.class,
-			    15, TimeUnit.SECONDS
-	    ).build();
-
-	    WorkManager.getInstance(this).enqueue(req);
+	    NotificationPollWorker.enqueue(this);
 
 	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)

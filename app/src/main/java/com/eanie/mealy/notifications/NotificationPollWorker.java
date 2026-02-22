@@ -9,7 +9,18 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 public class NotificationPollWorker extends Worker {
-    public NotificationPollWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+	private static final String TAG = "NOTIF_WORKER";
+	SharedPreferences sp = getApplicationContext().getSharedPreferences("notif_prefs", Context.MODE_PRIVATE);
+
+	public static void enqueue(Context context) {
+		PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
+				NotificationPollWorker.class,
+				15, TimeUnit.SECONDS
+		).build();
+		WorkManager.getInstance(context).enqueue(req);
+	}
+
+	public NotificationPollWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
     @NonNull
