@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+	private static final int PERMISSION_REQUEST_CODE = 1075460;
+
     private String uuid = null;
     BottomNavigationView bottomNav = null;
 
@@ -85,9 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 33) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
-            }
+		            != PackageManager.PERMISSION_GRANTED)
+	            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
         }
 
         var user = FirebaseAuth.getInstance().getCurrentUser();
@@ -113,20 +114,5 @@ public class MainActivity extends AppCompatActivity {
     private void selectFragment(NavOption option) {
         if (bottomNav == null) return;
         bottomNav.setSelectedItemId(option.navId);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 100 &&
-                grantResults.length > 0 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // permission granted
-        }
     }
 }
