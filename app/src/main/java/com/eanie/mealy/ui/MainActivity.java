@@ -1,7 +1,5 @@
 package com.eanie.mealy.ui;
 
-import static com.eanie.mealy.models.UserViewModel.withUserId;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -9,15 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.notifications.NotificationPollWorker;
@@ -28,6 +17,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import static com.eanie.mealy.models.UserViewModel.withUserId;
 
 public class MainActivity extends AppCompatActivity {
     public static void start(Activity caller) {
@@ -64,26 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("NOTIF_WORKER", "Enqueue periodic worker");
 
-        PeriodicWorkRequest req =
-                new PeriodicWorkRequest.Builder(NotificationPollWorker.class, 15, TimeUnit.MINUTES)
-                        .build();
+	    PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
+			    NotificationPollWorker.class,
+			    15, TimeUnit.SECONDS
+	    ).build();
 
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "notif_poll",
-                ExistingPeriodicWorkPolicy.UPDATE,
-                req
-        );
-
-        WorkManager.getInstance(this)
-                .getWorkInfosForUniqueWorkLiveData("notif_poll")
-                .observe(this, infos -> {
-                    if (infos == null || infos.isEmpty()) {
-                        Log.d("NOTIF_WORKER", "Work state = (no info yet)");
-                        return;
-                    }
-                    WorkInfo info = infos.get(0);
-                    Log.d("NOTIF_WORKER", "Work state = " + info.getState());
-                });
+	    WorkManager.getInstance(this).enqueue(req);
 
         if (Build.VERSION.SDK_INT >= 33) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
