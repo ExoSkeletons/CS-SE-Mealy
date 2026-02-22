@@ -144,7 +144,7 @@ public class KitchenItemAdapter extends ListAdapter<KitchenItem, KitchenItemAdap
 		}
 		if (smallIcons) {
 			holder.iconImageView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
-			holder.badgeView.setLayoutParams(new FrameLayout.LayoutParams(24, 24));
+			holder.badgeView.setLayoutParams(new FrameLayout.LayoutParams(94, 94));
 		}
 
 		// selection and clicking
