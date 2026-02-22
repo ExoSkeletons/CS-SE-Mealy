@@ -97,9 +97,9 @@ public class NotificationService extends Service {
 
         android.app.Notification notification =
                 new androidx.core.app.NotificationCompat.Builder(this, NotificationChannels.CHANNEL_ID)
-                        .setContentTitle("Mealy")
+		                .setContentTitle(getApplicationContext().getString(R.string.app_name))
                         .setContentText(text)
-                        .setSmallIcon(R.drawable.ic_notification)
+		                .setSmallIcon(R.drawable.ic_mealy)
                         .setAutoCancel(true)
                         .build();
 
