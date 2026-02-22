@@ -54,7 +54,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.cardview)
-    val work_version = "2.11.1"
-    implementation("androidx.work:work-runtime:$work_version")
-    implementation("com.google.guava:guava:32.1.3-android")
+    implementation(libs.work)
+    implementation(libs.guava)
 }
