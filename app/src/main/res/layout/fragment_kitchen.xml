@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bg_fridge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,20 +22,26 @@
             android:id="@+id/btn_logout"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:tint="?attr/colorOnSurface"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/logout"
             android:src="?attr/homeAsUpIndicator" />
 
         <TextView
             android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:layout_weight="1"
+            android:gravity="start"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textStyle="bold"
-            tools:text="Username's Kitchen" />
+            android:textColor="@color/black"
+            android:includeFontPadding="true"
+            android:lineSpacingExtra="2dp"
+            tools:text="Username's Kitchen"/>
 
         <Button
             android:id="@+id/btn_send_notif"
@@ -51,6 +58,7 @@
                 android:id="@+id/btn_notifications"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:tint="?attr/colorOnSurface"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_popup_reminder"
                 android:visibility="visible" />

@@ -17,6 +17,8 @@
     <color name="border_light">#DDDDDD</color>
     <color name="ingredient_partial">#FFC107</color>
     <color name="ingredient_missing">#F44336</color>
+    <color name="mealy_on_primary">#FFFFFF</color>
+
 
 
 </resources>

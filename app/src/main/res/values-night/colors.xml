@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_background">#121212</color>
+    <color name="mealy_on_primary">#000000</color>
+    <color name="text_primary">#EDEDED</color>
+
+</resources>

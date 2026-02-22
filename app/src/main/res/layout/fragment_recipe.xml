@@ -11,13 +11,13 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <!-- שם מתכון -->
     <TextView
         android:id="@+id/tv_recipe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Chocolate Cake"
         android:textSize="22sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <ImageView
@@ -30,14 +30,13 @@
         tools:srcCompat="@tools:sample/backgrounds/scenic"
         tools:visibility="visible" />
 
-    <!-- תיאור קצר -->
     <TextView
         android:id="@+id/tv_recipe_short_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         tools:text="Rich and moist chocolate cake with dark chocolate ganache."
-        android:textColor="#666666"
+        android:textColor="@color/black"
         android:textSize="14sp" />
 
     <TextView
@@ -56,12 +55,14 @@
         android:layout_marginTop="16dp"
         android:text="@string/ingredient"
         android:textSize="18sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginTop="8dp"
         tools:itemCount="2"
         tools:listitem="@layout/item_kitchen_item" />
@@ -73,12 +74,14 @@
         android:rotationX="0"
         android:text="@string/instructions"
         android:textSize="16sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_preparation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         tools:text="Preheat the oven to 180°C.  Mix the eggs and sugar in a bowl.  Add the butter, flour, and chocolate.  Pour into a baking pan and bake for 30 minutes." />
 
     <Button
