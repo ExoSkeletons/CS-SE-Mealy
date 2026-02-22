@@ -13,7 +13,10 @@ import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.SingleRecipeViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.models.UserRecipesViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
+
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +33,7 @@ public class RecipeFragment extends Fragment {
 
 	private UserItemsViewModel userItemsVM;
 	private SingleRecipeViewModel recipeVM;
+	private UserRecipesViewModel userRecipeVM;
 	private NotificationViewModel notificationVM;
 	private Recipe currentRecipe;
 
@@ -48,6 +52,7 @@ public class RecipeFragment extends Fragment {
 		var provider = new ViewModelProvider(requireActivity());
 		userItemsVM = provider.get(UserItemsViewModel.class);
 		recipeVM = provider.get(SingleRecipeViewModel.class);
+		userRecipeVM = provider.get(UserRecipesViewModel.class);
 		notificationVM = provider.get(NotificationViewModel.class);
 
 		var args = getArguments();
@@ -62,6 +67,7 @@ public class RecipeFragment extends Fragment {
 			if (chefId != null) {
 				userItemsVM.setUserId(chefId);
 				notificationVM.setUserId(chefId);
+				userRecipeVM.setUserId(chefId);
 			}
 		}
 	}
@@ -69,17 +75,18 @@ public class RecipeFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater,
-							 @Nullable ViewGroup container,
-							 @Nullable Bundle savedInstanceState) {
+	                         @Nullable ViewGroup container,
+	                         @Nullable Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_recipe, container, false);
 	}
 
 	@Override
 	public void onViewCreated(@NonNull View view,
-							  @Nullable Bundle savedInstanceState) {
+	                          @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {});
+		userItemsVM.myItems().observe(getViewLifecycleOwner(), items -> {
+		});
 
 		recipeVM.name.observe(getViewLifecycleOwner(), name ->
 				((TextView) view.findViewById(R.id.tv_recipe_title)).setText(name));
@@ -111,25 +118,25 @@ public class RecipeFragment extends Fragment {
 			}
 		});
 
-		View ownerLayout = view.findViewById(R.id.layout_owner_actions);
-		View btnDelete = view.findViewById(R.id.btn_delete_recipe);
+		var currentUserId = userRecipeVM.getUserId();
+		var recipeChef = currentRecipe != null ? currentRecipe.getChefId() : null;
+		if (Objects.equals(currentUserId, recipeChef)) {
+			View ownerLayout = view.findViewById(R.id.layout_owner_actions);
+			View btnDelete = view.findViewById(R.id.btn_delete_recipe);
 
-		if (currentRecipe != null && userItemsVM.getUserId() != null) {
-			if (userItemsVM.getUserId().equals(currentRecipe.getChefId())) {
-				ownerLayout.setVisibility(View.VISIBLE);
+			ownerLayout.setVisibility(View.VISIBLE);
 
-				btnDelete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
-						.setTitle(R.string.delete_recipe)
-						.setMessage("Are you sure you want to delete this recipe?")
-						.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-							recipeVM.delete(currentRecipe);
-							Toast.makeText(getContext(), "Recipe deleted", Toast.LENGTH_SHORT).show();
-							requireActivity().onBackPressed();
-						})
-						.setNegativeButton(android.R.string.cancel, null)
-						.show()
-				);
-			}
+			btnDelete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
+					.setTitle(R.string.delete_recipe)
+					.setMessage("Are you sure you want to delete this recipe?")
+					.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+						userRecipeVM.delete(currentRecipe);
+						Toast.makeText(getContext(), "Recipe deleted", Toast.LENGTH_SHORT).show();
+						requireActivity().onBackPressed();
+					})
+					.setNegativeButton(android.R.string.cancel, null)
+					.show()
+			);
 		}
 	}
 }
