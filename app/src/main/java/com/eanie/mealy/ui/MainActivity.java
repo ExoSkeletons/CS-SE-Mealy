@@ -14,7 +14,6 @@ import com.eanie.mealy.ui.recipe.RecipeNavFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import androidx.annotation.IdRes;
@@ -56,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-	    NotificationPollWorker.enqueue(this);
-
 	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
 		            != PackageManager.PERMISSION_GRANTED)
@@ -67,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         var user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
         uuid = user.getUid();
+
+	    NotificationPollWorker.enqueue(this, uuid);
 
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(item -> {

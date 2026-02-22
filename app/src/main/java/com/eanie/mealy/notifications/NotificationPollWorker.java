@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -12,11 +13,17 @@ public class NotificationPollWorker extends Worker {
 	private static final String TAG = "NOTIF_WORKER";
 	SharedPreferences sp = getApplicationContext().getSharedPreferences("notif_prefs", Context.MODE_PRIVATE);
 
-	public static void enqueue(Context context) {
+	public static void enqueue(Context context, String uuid) {
+		if (uuid == null || uuid.isEmpty()) return;
+		var dataMap = new HashMap<String, String>();
+		dataMap.put("uuid", uuid);
+
 		PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
 				NotificationPollWorker.class,
 				15, TimeUnit.SECONDS
-		).build();
+		)
+				.setInputData(new Data(dataMap))
+				.build();
 		WorkManager.getInstance(context).enqueue(req);
 	}
 
@@ -31,15 +38,8 @@ public class NotificationPollWorker extends Worker {
         try {
             Log.d(TAG, "doWork STARTED");
 
-            var user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
-            if (user == null) {
-                Log.d(TAG, "No user logged in");
-                return Result.success();
-            }
-            String uid = user.getUid();
-
-            android.content.SharedPreferences sp =
-                    getApplicationContext().getSharedPreferences("notif_prefs", Context.MODE_PRIVATE);
+	        var data = getInputData();
+	        String uid = data.getString("uuid");
 
             long lastMs = sp.getLong("last_notified_ms", 0L);
             com.google.firebase.Timestamp lastTs =
