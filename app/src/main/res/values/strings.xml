@@ -29,6 +29,9 @@
     <string name="ing_chocolate">Chocolate</string>
     <string name="ing_olive">Olive</string>
     <string name="ing_vanilla">Vanilla</string>
+    <string name="ing_zucchini">Zucchini</string>
+    <string name="potato">Potato</string>
+    <string name="tometo_pasta">Tomate Pasta</string>
 
 
     <string name="prompt_email">Email</string>
