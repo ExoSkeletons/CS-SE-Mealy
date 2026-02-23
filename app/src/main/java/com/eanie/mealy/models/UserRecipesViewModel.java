@@ -61,4 +61,8 @@ public class UserRecipesViewModel extends UserViewModel {
 					onFailure.onFailure(e);
 				});
 	}
+
+	public void delete(Recipe recipe) {
+		repo.delete(recipe);
+	}
 }

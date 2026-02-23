@@ -5,6 +5,7 @@ import android.app.Application;
 import android.util.Patterns;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.login.FirebaseLoggedInUser;
 import com.eanie.mealy.data.login.LoginRepo;
 import com.eanie.mealy.data.login.sources.FirebaseEmailLoginDataSource;
 import com.eanie.mealy.data.login.sources.FirebaseGoogleLoginDataSource;
@@ -12,8 +13,10 @@ import com.eanie.mealy.ui.login.AuthResult;
 import com.eanie.mealy.ui.login.LoginFormState;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.CustomCredential;
@@ -27,13 +30,22 @@ import androidx.lifecycle.MutableLiveData;
 public class LoginViewModel extends AndroidViewModel {
 	private final MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 	private final MutableLiveData<AuthResult> authResult = new MutableLiveData<>();
+	private final MutableLiveData<Boolean> loginMode = new MutableLiveData<>(true);
 	private final LoginRepo loginRepo = new LoginRepo(
 			new FirebaseEmailLoginDataSource(),
 			new FirebaseGoogleLoginDataSource()
 	);
 
+	private final FirebaseAuth auth = FirebaseAuth.getInstance();
+
 	public LoginViewModel(@NonNull Application application) {
 		super(application);
+	}
+
+	public void restoreSession() {
+		var fbCachedUser = auth.getCurrentUser();
+		if (fbCachedUser != null)
+			authResult.postValue(new AuthResult(new FirebaseLoggedInUser(fbCachedUser)));
 	}
 
 	public LiveData<LoginFormState> getLoginFormState() {
@@ -42,6 +54,21 @@ public class LoginViewModel extends AndroidViewModel {
 
 	public LiveData<AuthResult> getAuthResult() {
 		return authResult;
+	}
+
+	public LiveData<Boolean> loginMode() {
+		return loginMode;
+	}
+
+	public void toggleLoginMode() {
+		loginMode.setValue(!Boolean.TRUE.equals(loginMode.getValue()));
+	}
+
+	public void signIn(@Nullable String username, @Nullable String password) {
+		if (username == null || password == null) return;
+		boolean isLoginMode = Boolean.TRUE.equals(loginMode.getValue());
+		if (isLoginMode) login(username, password);
+		else register(username, password);
 	}
 
 	public void login(String username, String password) {

@@ -7,15 +7,19 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
 import com.eanie.mealy.data.KitchenItem;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +40,10 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 	private final List<String> favorites = new ArrayList<>();
 	private boolean showFavored = false;
 
+	@Nullable
+	private Map<String, Map<String, IngredientStatus>> statusMap = new HashMap<>();
+
+
 	public RecipeAdapter(OnRecipeClickListener clickListener, OnFavoriteClickListener favoriteListener) {
 		super(new ItemKeyCallback<>(Recipe::getId));
 		this.clickListener = clickListener;
@@ -53,6 +61,11 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 		notifyDataSetChanged();
 	}
 
+	public void submitStatusMap(@Nullable Map<String, Map<String, IngredientStatus>> statusMap) {
+		this.statusMap = statusMap != null ? statusMap : new HashMap<>();
+		notifyDataSetChanged();
+	}
+
 	@NonNull
 	@Override
 	public RecipeItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,13 +76,14 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 
 	@Override
 	public void onBindViewHolder(@NonNull RecipeItemViewHolder holder, int position) {
-		Recipe recipe = getItem(position);
+		var recipe = getItem(position);
 		if (recipe == null) return;
 
 		holder.titleTextView.setText(recipe.getName());
 		holder.descriptionTextView.setText(recipe.getInstructions()); // todo: get description
 
 		holder.favoriteCheckBox.setVisibility(showFavored ? View.VISIBLE : View.GONE);
+		holder.favoriteCheckBox.setOnCheckedChangeListener(null);
 		holder.favoriteCheckBox.setChecked(showFavored && favorites.contains(recipe.getId()));
 		holder.favoriteCheckBox.setEnabled(favoriteListener != null);
 		holder.favoriteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -82,20 +96,24 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeItemV
 			holder.ingredientsRv.setVisibility(View.GONE);
 		} else {
 			holder.ingredientsRv.setVisibility(View.VISIBLE);
-			holder.ingredientsAdapter.submitList(limit(ingredients, 8));
+			holder.ingredientsAdapter.submitList(ingredients);
+
+			if (statusMap != null)
+				holder.ingredientsAdapter.setStatusMap(statusMap.get(recipe.getId()));
 		}
 
 		holder.itemView.setOnClickListener(v -> {
 			if (clickListener != null) clickListener.onRecipeClick(recipe);
 		});
-
 	}
 
-	private static <T> List<T> limit(List<T> list, int max) {
-		if (list == null) return List.of();
-		return list.size() <= max ? list : list.subList(0, max);
+	@Override
+	public void onViewRecycled(@NonNull RecipeItemViewHolder holder) {
+		super.onViewRecycled(holder);
+		// Force the inner list to empty so it doesn't
+		// get re-used when this ViewHolder is reused.
+		holder.ingredientsAdapter.submitList(null);
 	}
-
 
 	public static class RecipeItemViewHolder extends RecyclerView.ViewHolder {
 		TextView titleTextView;

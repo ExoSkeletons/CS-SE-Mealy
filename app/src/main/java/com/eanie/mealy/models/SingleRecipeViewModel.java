@@ -84,6 +84,4 @@ public class SingleRecipeViewModel extends ViewModel {
 				}
 		);
 	}
-	public void delete(Recipe currentRecipe) {
-	}
 }

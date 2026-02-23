@@ -11,10 +11,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toTopOf="@+id/bg_fridge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_logout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/logout"
+            android:src="?attr/homeAsUpIndicator" />
 
         <TextView
             android:id="@+id/tv_username"
@@ -64,7 +73,7 @@
         android:id="@+id/bg_fridge"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_fridge"
+        android:src="@drawable/bg_fridge"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,12 +98,12 @@
         android:id="@+id/btn_add_ingredient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/add_ingredient"
         app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_cart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
