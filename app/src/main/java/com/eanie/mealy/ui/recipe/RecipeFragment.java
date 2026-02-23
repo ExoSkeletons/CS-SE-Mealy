@@ -123,57 +123,30 @@ public class RecipeFragment extends Fragment {
 			}
 		});
 
-		var currentUserId = userRecipeVM.getUserId();
-		var recipeChef = currentRecipe != null ? currentRecipe.getChefId() : null;
+		View ownerLayout = view.findViewById(R.id.layout_owner_actions);
+		View btnDelete = view.findViewById(R.id.btn_delete_recipe);
+		View btnEdit = view.findViewById(R.id.btn_update_recipe);
+
+		String currentUserId = userRecipeVM.getUserId();
+		String recipeChef = currentRecipe != null ? currentRecipe.getChefId() : null;
+
 		if (Objects.equals(currentUserId, recipeChef)) {
-			View ownerLayout = view.findViewById(R.id.layout_owner_actions);
-			View btnDelete = view.findViewById(R.id.btn_delete_recipe);
-		View ownerLayout =
-				view.findViewById(R.id.layout_owner_actions);
-
-		View btnDelete =
-				view.findViewById(R.id.btn_delete_recipe);
-
-			ownerLayout.setVisibility(View.VISIBLE);
-
-			btnDelete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
-					.setTitle(R.string.delete_recipe)
-					.setMessage("Are you sure you want to delete this recipe?")
-					.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-						userRecipeVM.delete(currentRecipe);
-						Toast.makeText(getContext(), "Recipe deleted", Toast.LENGTH_SHORT).show();
-						requireActivity().onBackPressed();
-					})
-					.setNegativeButton(android.R.string.cancel, null)
-					.show()
-			);
-		View btnEdit =
-				view.findViewById(R.id.btn_update_recipe);
-
-		if (currentRecipe != null &&
-				userItemsVM.getUserId() != null &&
-				userItemsVM.getUserId()
-						.equals(currentRecipe.getChefId())) {
-
 			ownerLayout.setVisibility(View.VISIBLE);
 			btnDelete.setOnClickListener(v ->
 					new AlertDialog.Builder(requireContext())
-							.setTitle("Delete Recipe")
-							.setMessage("Are you sure?")
-							.setPositiveButton("Delete",
+							.setTitle(R.string.delete_recipe)
+							.setMessage("Are you sure you want to delete this recipe?")
+							.setPositiveButton(android.R.string.yes,
 									(dialog, which) -> {
-										recipeVM.delete(currentRecipe);
+										userRecipeVM.delete(currentRecipe);
 										Toast.makeText(getContext(),
 												"Recipe deleted",
 												Toast.LENGTH_SHORT).show();
-										requireActivity()
-												.getSupportFragmentManager()
-												.popBackStack();
+										requireActivity().getSupportFragmentManager().popBackStack();
 									})
-							.setNegativeButton("Cancel", null)
+							.setNegativeButton(android.R.string.cancel, null)
 							.show()
 			);
-
 			btnEdit.setOnClickListener(v ->
 					requireActivity()
 							.getSupportFragmentManager()
@@ -187,3 +160,4 @@ public class RecipeFragment extends Fragment {
 		}
 	}
 }
+

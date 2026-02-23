@@ -177,6 +177,13 @@ public class AddRecipeFragment extends Fragment {
 
 		KitchenItemAdapter adapter =
 				new KitchenItemAdapter(true);
+		adapter.setItemClickListener(clicked ->
+				KitchenFragment.showEditIngredientDialog(
+						requireContext(),
+						clicked,
+						recipeAddVM::updateIngredient
+				)
+		);
 
 		rvIngredients.setLayoutManager(
 				new GridLayoutManager(
