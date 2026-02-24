@@ -142,44 +142,44 @@ public class RecipeFragment extends Fragment {
 					.setNegativeButton(android.R.string.cancel, null)
 					.show()
 			);
-		View btnEdit =
-				view.findViewById(R.id.btn_update_recipe);
+			View btnEdit =
+					view.findViewById(R.id.btn_update_recipe);
 
-		if (currentRecipe != null &&
-				userItemsVM.getUserId() != null &&
-				userItemsVM.getUserId()
-						.equals(currentRecipe.getChefId())) {
+			if (currentRecipe != null &&
+					userItemsVM.getUserId() != null &&
+					userItemsVM.getUserId()
+							.equals(currentRecipe.getChefId())) {
 
-			ownerLayout.setVisibility(View.VISIBLE);
-			btnDelete.setOnClickListener(v ->
-					new AlertDialog.Builder(requireContext())
-							.setTitle("Delete Recipe")
-							.setMessage("Are you sure?")
-							.setPositiveButton("Delete",
-									(dialog, which) -> {
-										userRecipeVM.delete(currentRecipe);
-										Toast.makeText(getContext(),
-												"Recipe deleted",
-												Toast.LENGTH_SHORT).show();
-										requireActivity()
-												.getSupportFragmentManager()
-												.popBackStack();
-									})
-							.setNegativeButton("Cancel", null)
-							.show()
-			);
+				ownerLayout.setVisibility(View.VISIBLE);
+				btnDelete.setOnClickListener(v ->
+						new AlertDialog.Builder(requireContext())
+								.setTitle("Delete Recipe")
+								.setMessage("Are you sure?")
+								.setPositiveButton("Delete",
+										(dialog, which) -> {
+											userRecipeVM.delete(currentRecipe);
+											Toast.makeText(getContext(),
+													"Recipe deleted",
+													Toast.LENGTH_SHORT).show();
+											requireActivity()
+													.getSupportFragmentManager()
+													.popBackStack();
+										})
+								.setNegativeButton("Cancel", null)
+								.show()
+				);
 
-			btnEdit.setOnClickListener(v ->
-					requireActivity()
-							.getSupportFragmentManager()
-							.beginTransaction()
-							.replace(R.id.container,
-									AddRecipeFragment
-											.newInstance(currentRecipe))
-							.addToBackStack("edit-recipe")
-							.commit()
-			);
+				btnEdit.setOnClickListener(v ->
+						requireActivity()
+								.getSupportFragmentManager()
+								.beginTransaction()
+								.replace(R.id.container,
+										AddRecipeFragment
+												.newInstance(currentRecipe))
+								.addToBackStack("edit-recipe")
+								.commit()
+				);
+			}
 		}
-	}
 	}
 }
