@@ -27,6 +27,7 @@ import com.eanie.mealy.R;
 import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.RecipeAddViewModel;
+import com.eanie.mealy.models.SingleRecipeViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -258,27 +259,24 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void saveRecipe() {
-
 		if (editingRecipe != null) {
 
 			recipeAddVM.updateRecipe(
 					editingRecipe,
 					updatedRecipe -> {
-						RecipeFragment fragment =
-								RecipeFragment.newInstance(updatedRecipe);
-						getParentFragmentManager()
-								.beginTransaction()
-								.replace(R.id.container, fragment)
-								.commit();
+						SingleRecipeViewModel recipeVM =
+								new ViewModelProvider(requireActivity())
+										.get(SingleRecipeViewModel.class);
+
+						recipeVM.set(updatedRecipe);
+						getParentFragmentManager().popBackStack();
 					}
 			);
 
 		} else {
-
-			recipeAddVM.saveRecipe(
-					recipe ->
-							getParentFragmentManager()
-									.popBackStack());
+			recipeAddVM.saveRecipe(r ->
+					getParentFragmentManager().popBackStack()
+			);
 		}
 	}
 
