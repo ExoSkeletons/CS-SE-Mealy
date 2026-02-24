@@ -1,6 +1,7 @@
-package com.eanie.mealy.data;
+package com.eanie.mealy.repos;
 
 import com.eanie.mealy.data.firestore.FirestoreQueryLiveData;
+import com.eanie.mealy.data.notification.Notification;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.WriteBatch;

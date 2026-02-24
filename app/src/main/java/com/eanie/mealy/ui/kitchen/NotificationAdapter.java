@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.ItemKeyCallback;
-import com.eanie.mealy.data.Notification;
+import com.eanie.mealy.data.notification.Notification;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

@@ -15,15 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Notification;
-import com.eanie.mealy.data.Quantifier;
-import com.eanie.mealy.data.Quantity;
-import com.eanie.mealy.data.UnitType;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Quantifier;
+import com.eanie.mealy.data.kitchen.Quantity;
+import com.eanie.mealy.data.kitchen.UnitType;
+import com.eanie.mealy.data.notification.Notification;
 import com.eanie.mealy.models.DiscoveryViewModel;
 import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
+import com.eanie.mealy.repos.UserRepo;
 import com.eanie.mealy.ui.Resources;
 import com.eanie.mealy.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +53,7 @@ public class KitchenFragment extends Fragment {
 	private UserItemsViewModel userItemsVM;
 	private NotificationViewModel notificationVM;
 	private DiscoveryViewModel discoveryVM;
-	private final com.eanie.mealy.data.UserRepo userRepo = new com.eanie.mealy.data.UserRepo();
+	private final UserRepo userRepo = new UserRepo();
 
 
 	@Override

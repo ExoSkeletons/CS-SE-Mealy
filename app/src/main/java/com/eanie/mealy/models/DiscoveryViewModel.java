@@ -1,9 +1,9 @@
 package com.eanie.mealy.models;
 
-import com.eanie.mealy.data.IngredientStatus;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Recipe;
-import com.eanie.mealy.data.RecipeRepo;
+import com.eanie.mealy.data.kitchen.IngredientStatus;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.repos.RecipeRepo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

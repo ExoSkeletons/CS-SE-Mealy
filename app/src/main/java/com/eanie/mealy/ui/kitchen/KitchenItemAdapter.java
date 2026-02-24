@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
-import com.eanie.mealy.data.KitchenItem;
+import com.eanie.mealy.data.kitchen.IngredientStatus;
+import com.eanie.mealy.data.kitchen.KitchenItem;
 import com.eanie.mealy.ui.Resources;
 import com.google.android.material.card.MaterialCardView;
 

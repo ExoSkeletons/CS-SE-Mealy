@@ -7,10 +7,10 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.IngredientStatus;
 import com.eanie.mealy.data.ItemKeyCallback;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.IngredientStatus;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Recipe;
 import com.eanie.mealy.ui.kitchen.KitchenItemAdapter;
 
 import java.util.ArrayList;

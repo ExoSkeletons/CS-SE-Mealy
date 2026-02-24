@@ -3,9 +3,9 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.content.Context;
 
-import com.eanie.mealy.data.ItemsRepo;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.UnitType;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.UnitType;
+import com.eanie.mealy.repos.ItemsRepo;
 import com.eanie.mealy.ui.Resources;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import static com.eanie.mealy.data.KitchenItem.match;
+import static com.eanie.mealy.data.kitchen.KitchenItem.match;
 
 public class ItemsViewModel extends AndroidViewModel {
 	private final ItemsRepo repo = new ItemsRepo();

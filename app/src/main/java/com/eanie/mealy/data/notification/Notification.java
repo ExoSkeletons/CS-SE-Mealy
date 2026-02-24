@@ -1,11 +1,11 @@
-package com.eanie.mealy.data;
-
-import androidx.annotation.NonNull;
+package com.eanie.mealy.data.notification;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
 
 public class Notification {
 	@DocumentId

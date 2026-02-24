@@ -1,5 +1,7 @@
-package com.eanie.mealy.data.login;
+package com.eanie.mealy.repos;
 
+import com.eanie.mealy.data.login.LoggedInUser;
+import com.eanie.mealy.data.login.LoginDataSource;
 import com.eanie.mealy.data.login.cred.EmailCredentials;
 import com.eanie.mealy.data.login.cred.GAuthCredentials;
 import com.google.android.gms.tasks.OnFailureListener;

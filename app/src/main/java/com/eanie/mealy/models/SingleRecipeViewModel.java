@@ -6,9 +6,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.ImageRepo;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.repos.ImageRepo;
 
 import java.util.ArrayList;
 import java.util.List;

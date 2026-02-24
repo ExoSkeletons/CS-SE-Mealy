@@ -3,7 +3,7 @@ package com.eanie.mealy.notifications;
 import android.content.Context;
 import android.util.Log;
 
-import com.eanie.mealy.data.Notification;
+import com.eanie.mealy.data.notification.Notification;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;

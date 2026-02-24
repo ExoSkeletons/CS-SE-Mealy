@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.Notification;
+import com.eanie.mealy.data.notification.Notification;
 
 import java.util.List;
 

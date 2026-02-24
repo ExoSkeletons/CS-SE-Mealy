@@ -4,9 +4,9 @@ import android.app.Application;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.eanie.mealy.data.ImageRepo;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.repos.ImageRepo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
-import static com.eanie.mealy.data.KitchenItem.match;
+import static com.eanie.mealy.data.kitchen.KitchenItem.match;
 
 public class RecipeAddViewModel extends UserRecipesViewModel {
 	private final ImageRepo imageRepo = new ImageRepo();

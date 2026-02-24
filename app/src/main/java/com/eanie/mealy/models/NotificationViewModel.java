@@ -2,17 +2,17 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
-
-import com.eanie.mealy.data.Notification;
-import com.eanie.mealy.data.NotificationRepo;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.data.notification.Notification;
+import com.eanie.mealy.repos.NotificationRepo;
 import com.google.firebase.Timestamp;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 public class NotificationViewModel extends UserViewModel {
 	private final NotificationRepo repo = new NotificationRepo();

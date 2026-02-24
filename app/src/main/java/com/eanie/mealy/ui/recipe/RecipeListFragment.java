@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Quantity;
-import com.eanie.mealy.data.Recipe;
-import com.eanie.mealy.data.UnitType;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Quantity;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.data.kitchen.UnitType;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.UserDataViewModel;
 

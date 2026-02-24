@@ -1,6 +1,7 @@
-package com.eanie.mealy.data;
+package com.eanie.mealy.repos;
 
 import com.eanie.mealy.data.firestore.FirestoreQueryLiveData;
+import com.eanie.mealy.data.kitchen.Recipe;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;

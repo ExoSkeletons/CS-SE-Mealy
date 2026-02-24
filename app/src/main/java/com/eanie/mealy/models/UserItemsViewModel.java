@@ -2,9 +2,9 @@ package com.eanie.mealy.models;
 
 import android.app.Application;
 
-import com.eanie.mealy.data.ItemsRepo;
-import com.eanie.mealy.data.KitchenItem;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.KitchenItem;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.repos.ItemsRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import static com.eanie.mealy.data.KitchenItem.match;
+import static com.eanie.mealy.data.kitchen.KitchenItem.match;
 
 public class UserItemsViewModel extends UserViewModel {
 	private final ItemsRepo repo = new ItemsRepo();

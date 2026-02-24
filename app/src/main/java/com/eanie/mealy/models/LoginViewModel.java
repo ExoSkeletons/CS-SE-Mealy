@@ -6,9 +6,9 @@ import android.util.Patterns;
 
 import com.eanie.mealy.R;
 import com.eanie.mealy.data.login.FirebaseLoggedInUser;
-import com.eanie.mealy.data.login.LoginRepo;
 import com.eanie.mealy.data.login.sources.FirebaseEmailLoginDataSource;
 import com.eanie.mealy.data.login.sources.FirebaseGoogleLoginDataSource;
+import com.eanie.mealy.repos.LoginRepo;
 import com.eanie.mealy.ui.login.AuthResult;
 import com.eanie.mealy.ui.login.LoginFormState;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;

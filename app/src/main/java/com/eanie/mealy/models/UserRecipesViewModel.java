@@ -3,8 +3,8 @@ package com.eanie.mealy.models;
 import android.app.Application;
 import android.widget.Toast;
 
-import com.eanie.mealy.data.Recipe;
-import com.eanie.mealy.data.RecipeRepo;
+import com.eanie.mealy.data.kitchen.Recipe;
+import com.eanie.mealy.repos.RecipeRepo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 

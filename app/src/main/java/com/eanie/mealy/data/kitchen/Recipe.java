@@ -1,4 +1,4 @@
-package com.eanie.mealy.data;
+package com.eanie.mealy.data.kitchen;
 
 import android.util.Log;
 

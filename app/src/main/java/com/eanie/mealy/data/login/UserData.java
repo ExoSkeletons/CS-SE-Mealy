@@ -1,11 +1,11 @@
-package com.eanie.mealy.data;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+package com.eanie.mealy.data.login;
 
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class UserData {
 	@DocumentId

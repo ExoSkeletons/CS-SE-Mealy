@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eanie.mealy.R;
-import com.eanie.mealy.data.Recipe;
+import com.eanie.mealy.data.kitchen.Recipe;
 import com.eanie.mealy.models.NotificationViewModel;
 import com.eanie.mealy.models.SingleRecipeViewModel;
 import com.eanie.mealy.models.UserItemsViewModel;
