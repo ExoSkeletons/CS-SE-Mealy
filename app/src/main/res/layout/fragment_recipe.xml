@@ -9,6 +9,19 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
+    <!-- שם מתכון -->
+    <TextView
+        android:id="@+id/tv_recipe_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:background="@android:color/white"
+        android:textColor="#212121"
+        android:elevation="4dp"
+        tools:text="Chocolate Cake" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,15 +33,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-        <!-- שם מתכון -->
-        <TextView
-            android:id="@+id/tv_recipe_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Chocolate Cake"
-            android:textSize="22sp"
-            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_recipe_photo"
@@ -69,17 +73,17 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_ingredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:nestedScrollingEnabled="false"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_kitchen_item" />
+            <!-- הוראות הכנה -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_kitchen_item" />
 
-        <!-- הוראות הכנה -->
-        <TextView
+            <TextView
             android:id="@+id/tv_preparation_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="8dp"
         android:background="@android:color/white"
         android:elevation="12dp">
 
@@ -110,7 +114,7 @@
             android:id="@+id/btn_make"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/action_make_recipe" />
 
@@ -125,28 +129,36 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_update_recipe"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:contentDescription="@string/edit_recipe"
-                app:backgroundTint="?attr/colorPrimary"
-                app:elevation="6dp"
-                app:fabSize="mini"
-                android:src="@android:drawable/ic_menu_edit"
-                app:tint="@android:color/white" />
+                android:padding="8dp">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_delete_recipe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/delete"
-                app:fabSize="mini"
-                android:src="@android:drawable/ic_menu_delete"
-                app:backgroundTint="#E57373"
-                app:tint="@android:color/white"
-                app:elevation="6dp" />
+                <!-- כפתור עריכה - שמאל -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_update_recipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit_recipe"
+                    app:backgroundTint="?attr/colorPrimary"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <!-- כפתור מחיקה - ימין -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_delete_recipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/delete"
+                    android:src="@android:drawable/ic_menu_delete"
+                    app:backgroundTint="#E57373"
+                    app:tint="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
