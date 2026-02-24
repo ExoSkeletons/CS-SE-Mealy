@@ -185,6 +185,20 @@ public class AddRecipeFragment extends Fragment {
 						recipeAddVM::updateIngredient
 				)
 		);
+		adapter.setQuantityListener(
+				new KitchenItemAdapter.OnQuantityChangeListener() {
+					@Override
+					public void onPlus(String ingredientKey) {
+						recipeAddVM.increaseAmount(ingredientKey, 1.0);
+					}
+
+					@Override
+					public void onMinus(String ingredientKey) {
+						recipeAddVM.increaseAmount(ingredientKey, -1.0);
+					}
+				}
+		);
+		adapter.setShowQuantity(true);
 
 		rvIngredients.setLayoutManager(
 				new GridLayoutManager(
@@ -249,9 +263,13 @@ public class AddRecipeFragment extends Fragment {
 
 			recipeAddVM.updateRecipe(
 					editingRecipe,
-					recipe -> {
-						getParentFragmentManager().popBackStack(null,
-								FragmentManager.POP_BACK_STACK_INCLUSIVE);
+					updatedRecipe -> {
+						RecipeFragment fragment =
+								RecipeFragment.newInstance(updatedRecipe);
+						getParentFragmentManager()
+								.beginTransaction()
+								.replace(R.id.container, fragment)
+								.commit();
 					}
 			);
 
