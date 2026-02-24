@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -248,9 +249,11 @@ public class AddRecipeFragment extends Fragment {
 
 			recipeAddVM.updateRecipe(
 					editingRecipe,
-					recipe ->
-							getParentFragmentManager()
-									.popBackStack());
+					recipe -> {
+						getParentFragmentManager().popBackStack(null,
+								FragmentManager.POP_BACK_STACK_INCLUSIVE);
+					}
+			);
 
 		} else {
 
