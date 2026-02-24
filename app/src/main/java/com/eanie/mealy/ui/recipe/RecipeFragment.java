@@ -181,4 +181,5 @@ public class RecipeFragment extends Fragment {
 			);
 		}
 	}
+	}
 }
