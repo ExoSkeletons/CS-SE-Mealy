@@ -128,11 +128,6 @@ public class RecipeFragment extends Fragment {
 		if (Objects.equals(currentUserId, recipeChef)) {
 			View ownerLayout = view.findViewById(R.id.layout_owner_actions);
 			View btnDelete = view.findViewById(R.id.btn_delete_recipe);
-		View ownerLayout =
-				view.findViewById(R.id.layout_owner_actions);
-
-		View btnDelete =
-				view.findViewById(R.id.btn_delete_recipe);
 
 			ownerLayout.setVisibility(View.VISIBLE);
 
