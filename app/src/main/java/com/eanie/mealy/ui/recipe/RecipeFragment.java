@@ -157,7 +157,7 @@ public class RecipeFragment extends Fragment {
 							.setMessage("Are you sure?")
 							.setPositiveButton("Delete",
 									(dialog, which) -> {
-										recipeVM.delete(currentRecipe);
+										userRecipeVM.delete(currentRecipe);
 										Toast.makeText(getContext(),
 												"Recipe deleted",
 												Toast.LENGTH_SHORT).show();
