@@ -1,6 +1,7 @@
 package com.eanie.mealy.models;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.eanie.mealy.data.Recipe;
@@ -69,6 +70,11 @@ public class UserRecipesViewModel extends UserViewModel {
 	}
 
 	public void delete(Recipe recipe) {
+		if (recipe.getId() == null) {
+			Toast.makeText(getApplication(), "Failed to delete recipe", Toast.LENGTH_SHORT).show();
+			Log.e("UserRecipesViewModel", "Error deleting recipe.\nRecipe " + recipe + " has no id");
+			return;
+		}
 		repo.delete(recipe);
 	}
 }
