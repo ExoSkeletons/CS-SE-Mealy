@@ -78,6 +78,6 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="create">Create New</string>
-    <string name="action_make_recipe">Start Cooking</string>
+    <string name="action_make_recipe">Use Recipe</string>
     <string name="logout">Logout</string>
 </resources>
