@@ -49,7 +49,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		// todo: add validation
 		OnFailureListener onFailure = e -> {
 			e.printStackTrace();
-			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplication(), "Failed to save recipe", Toast.LENGTH_SHORT).show();
 		};
 		var uri = this.image.getValue();
 		if (uri != null) {
