@@ -27,6 +27,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		super(application);
 	}
 
+	private final MutableLiveData<String> id = new MutableLiveData<>();
 	public MutableLiveData<String> name = new MutableLiveData<>();
 	public MutableLiveData<String> owner = new MutableLiveData<>();
 	public MutableLiveData<List<KitchenItem>> ingredients = new MutableLiveData<>(new ArrayList<>());
@@ -34,9 +35,18 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<String> instructions = new MutableLiveData<>();
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
+	public void set(Recipe recipe) {
+		id.setValue(recipe.getId());
+		name.setValue(recipe.getName());
+		instructions.setValue(recipe.getInstructions());
+		ingredients.setValue(new ArrayList<>(recipe.getIngredients()));
+		owner.setValue(recipe.getChefId());
+		// todo: load image
+	}
+
 	public Recipe buildRecipe() {
 		return new Recipe(
-				owner.getValue(),
+				id.getValue(),
 				name.getValue(),
 				instructions.getValue(),
 				ingredients.getValue(),
@@ -49,7 +59,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		// todo: add validation
 		OnFailureListener onFailure = e -> {
 			e.printStackTrace();
-			Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplication(), "Failed to save recipe", Toast.LENGTH_SHORT).show();
 		};
 		var uri = this.image.getValue();
 		if (uri != null) {

@@ -87,7 +87,7 @@ public class RecipeNavFragment extends Fragment {
 
 		btnAddRecipe.setOnClickListener(v ->
 				getParentFragmentManager().beginTransaction()
-						.replace(R.id.container, AddRecipeFragment.newInstance())
+						.replace(R.id.container, AddRecipeFragment.newInstance(null))
 						.addToBackStack("add-recipe")
 						.commit());
 	}

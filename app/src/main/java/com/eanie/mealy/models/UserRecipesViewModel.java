@@ -1,6 +1,7 @@
 package com.eanie.mealy.models;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.eanie.mealy.data.Recipe;
@@ -35,8 +36,8 @@ public class UserRecipesViewModel extends UserViewModel {
 	public void add(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
 		if (getUserId() == null) return;
 		recipe.setChefId(getUserId());
-		recipe.setId(null);
-		repo.insert(recipe, id -> {
+		if (recipe.getId() == null) repo.insert(recipe,
+				id -> {
 					recipe.setId(id);
 					onSuccess.onSuccess(recipe);
 				},
@@ -46,9 +47,34 @@ public class UserRecipesViewModel extends UserViewModel {
 					onFailure.onFailure(e);
 				}
 		);
+		else repo.update(recipe,
+				r -> onSuccess.onSuccess(recipe),
+				e -> {
+					e.printStackTrace();
+					Toast.makeText(getApplication(), "Failed to update recipe", Toast.LENGTH_SHORT).show();
+					onFailure.onFailure(e);
+				}
+		);
+	}
+
+	public void update(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
+		repo.update(recipe,
+				r -> onSuccess.onSuccess(recipe),
+				e -> {
+					e.printStackTrace();
+					Toast.makeText(getApplication(),
+							"Failed to update recipe",
+							Toast.LENGTH_SHORT).show();
+					onFailure.onFailure(e);
+				});
 	}
 
 	public void delete(Recipe recipe) {
+		if (recipe.getId() == null) {
+			Toast.makeText(getApplication(), "Failed to delete recipe", Toast.LENGTH_SHORT).show();
+			Log.e("UserRecipesViewModel", "Error deleting recipe.\nRecipe " + recipe + " has no id");
+			return;
+		}
 		repo.delete(recipe);
 	}
 }

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.eanie.mealy.R;
+import com.eanie.mealy.data.Recipe;
 import com.eanie.mealy.models.ItemsViewModel;
 import com.eanie.mealy.models.RecipeAddViewModel;
 import com.eanie.mealy.ui.kitchen.KitchenFragment;
@@ -24,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -34,16 +34,12 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AddRecipeFragment extends Fragment {
-	public AddRecipeFragment() {
-	}
 
-	public static AddRecipeFragment newInstance() {
-		return new AddRecipeFragment();
-	}
+	private static final String ARG_RECIPE = "recipe";
 
 	private RecipeAddViewModel recipeAddVM;
 	private ItemsViewModel itemsVM;
@@ -54,11 +50,21 @@ public class AddRecipeFragment extends Fragment {
 
 	private Uri pendingCameraUri = null;
 
+	public static AddRecipeFragment newInstance(@Nullable Recipe recipe) {
+		AddRecipeFragment fragment = new AddRecipeFragment();
+		if (recipe != null) {
+			Bundle args = new Bundle();
+			args.putSerializable(ARG_RECIPE, recipe);
+			fragment.setArguments(args);
+		}
+		return fragment;
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater,
-							 @Nullable ViewGroup container,
-							 @Nullable Bundle savedInstanceState) {
+	                         @Nullable ViewGroup container,
+	                         @Nullable Bundle savedInstanceState) {
 		var provider = new ViewModelProvider(requireActivity());
 		recipeAddVM = provider.get(RecipeAddViewModel.class);
 		itemsVM = provider.get(ItemsViewModel.class);
@@ -67,35 +73,33 @@ public class AddRecipeFragment extends Fragment {
 		if (user != null)
 			recipeAddVM.setUserId(user.getUid());
 
-		// Gallery picker: רק מעדכן ViewModel
+		if (getArguments() != null) {
+			var recipe = (Recipe) getArguments().getSerializable(ARG_RECIPE);
+			if (recipe != null)
+				recipeAddVM.set(recipe);
+		}
+
 		chooseImageLauncher = registerForActivityResult(
 				new ActivityResultContracts.GetContent(),
 				uri -> {
-					if (uri == null) return;
-					recipeAddVM.setImage(uri);
-				}
-		);
-		// Camera: מצלם לתוך Uri שיצרנו מראש
+					if (uri != null)
+						recipeAddVM.setImage(uri);
+				});
 		takePictureLauncher = registerForActivityResult(
 				new ActivityResultContracts.TakePicture(),
 				success -> {
-					if (!success) return;
-					if (pendingCameraUri == null) return;
-					recipeAddVM.setImage(pendingCameraUri);
-				}
-		);
-
-		// Permission camera
+					if (success && pendingCameraUri != null)
+						recipeAddVM.setImage(pendingCameraUri);
+				});
 		requestCameraPermissionLauncher = registerForActivityResult(
 				new ActivityResultContracts.RequestPermission(),
 				granted -> {
-					if (!granted) {
-						Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
-						return;
-					}
-					openCamera();
-				}
-		);
+					if (granted) openCamera();
+					else Toast.makeText(
+							requireContext(),
+							"Camera permission denied",
+							Toast.LENGTH_SHORT).show();
+				});
 
 		return inflater.inflate(R.layout.fragment_recipe_add, container, false);
 	}
@@ -117,58 +121,91 @@ public class AddRecipeFragment extends Fragment {
 		recipeAddVM.image.observe(getViewLifecycleOwner(), uri -> {
 			if (uri != null) ivRecipePhoto.setImageURI(uri);
 			else ivRecipePhoto.setImageDrawable(null);
+
 			btnRemoveImg.setVisibility(uri != null ? View.VISIBLE : View.GONE);
 		});
 
-		// Buttons
 		btnRemoveImg.setOnClickListener(v -> recipeAddVM.setImage(null));
 		btnChoose.setOnClickListener(v -> chooseImageLauncher.launch("image/*"));
 		btnCamera.setOnClickListener(v -> openCamera());
 
-		// Ingredients list
+
 		RecyclerView rvIngredients = view.findViewById(R.id.rv_ingredients);
-		KitchenItemAdapter ingredientAdapter = new KitchenItemAdapter(true);
-		ingredientAdapter.setItemClickListener(clicked -> KitchenFragment.showEditIngredientDialog(requireContext(), clicked, recipeAddVM::updateIngredient));
-		ingredientAdapter.setQuantityListener(
+
+		KitchenItemAdapter adapter = new KitchenItemAdapter(true);
+		adapter.setItemClickListener(item -> KitchenFragment.showEditIngredientDialog(requireContext(), item, recipeAddVM::updateIngredient));
+		adapter.setQuantityListener(
 				new KitchenItemAdapter.OnQuantityChangeListener() {
 					@Override
 					public void onPlus(String ingredientKey) {
-						recipeAddVM.increaseAmount(ingredientKey, itemsVM.stepSize(ingredientKey));
+						recipeAddVM.increaseAmount(ingredientKey, 1.0);
 					}
 
 					@Override
 					public void onMinus(String ingredientKey) {
-						recipeAddVM.increaseAmount(ingredientKey, -itemsVM.stepSize(ingredientKey));
+						recipeAddVM.increaseAmount(ingredientKey, -1.0);
 					}
 				}
 		);
-		ingredientAdapter.submitList(new ArrayList<>());
-		rvIngredients.setAdapter(ingredientAdapter);
-		rvIngredients.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+		adapter.setShowQuantity(true);
+		adapter.setMinimalStyle(true);
 
-		recipeAddVM.ingredients.observe(getViewLifecycleOwner(), ingredientAdapter::submitList);
+		rvIngredients.setLayoutManager(new LinearLayoutManager(requireContext()));
+		rvIngredients.setAdapter(adapter);
+
+		recipeAddVM.ingredients.observe(getViewLifecycleOwner(), adapter::submitList);
 
 		Button btnAddIngredient = view.findViewById(R.id.btn_add_ingredient);
+
 		btnAddIngredient.setOnClickListener(v -> KitchenFragment.showAddIngredientsDialog(getContext(),
 				recipeAddVM.ingredients.getValue(), itemsVM.ingredients().getValue(),
 				recipeAddVM::addIngredient, itemsVM::add
 		));
 
-		etName.addTextChangedListener(new TextWatcher() {
-			@Override public void afterTextChanged(Editable s) { recipeAddVM.name.postValue(s.toString()); }
-			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-		});
 
-		etInstructions.addTextChangedListener(new TextWatcher() {
-			@Override public void afterTextChanged(Editable s) { recipeAddVM.instructions.postValue(s.toString()); }
-			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-		});
+		etName.addTextChangedListener(
+				new TextWatcher() {
+					@Override
+					public void afterTextChanged(Editable s) {
+						recipeAddVM.name.postValue(s.toString());
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int a, int b, int c) {
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int a, int b, int c) {
+					}
+				});
+
+		etInstructions.addTextChangedListener(
+				new TextWatcher() {
+					@Override
+					public void afterTextChanged(Editable s) {
+						recipeAddVM.instructions.postValue(s.toString());
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int a, int b, int c) {
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int a, int b, int c) {
+					}
+				});
 
 		btnSave.setOnClickListener(v -> saveRecipe());
-
 		btnCancel.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+	}
+
+	private void saveRecipe() {
+		recipeAddVM.saveRecipe(r -> {
+			// todo: pass updated recipe to RecipeFragment instead of creating a new one
+			getParentFragmentManager().beginTransaction()
+					.replace(R.id.container, RecipeFragment.newInstance(r))
+					.commit();
+		});
 	}
 
 	private void openCamera() {
@@ -178,26 +215,17 @@ public class AddRecipeFragment extends Fragment {
 		}
 		try {
 			File dir = new File(requireContext().getCacheDir(), "images");
+
 			if (!dir.exists()) {
 				var success = dir.mkdirs();
-				if (!success) throw new IOException("Failed to create directory");
+				if (!success) throw new IOException("Failed to create image directory");
 			}
-
 			File imageFile = File.createTempFile("recipe_", ".jpg", dir);
 
-			pendingCameraUri = FileProvider.getUriForFile(
-					requireContext(),
-					requireContext().getPackageName() + ".fileprovider",
-					imageFile
-			);
-
+			pendingCameraUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", imageFile);
 			takePictureLauncher.launch(pendingCameraUri);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Toast.makeText(requireContext(), "Failed to open camera", Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	private void saveRecipe() {
-		recipeAddVM.saveRecipe(recipe -> getParentFragmentManager().popBackStack());
 	}
 }

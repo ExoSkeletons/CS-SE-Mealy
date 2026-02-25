@@ -42,4 +42,18 @@ public class RecipeRepo {
 				.document(recipe.getId())
 				.delete();
 	}
+
+	public void update(Recipe recipe, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+		if (recipe.getId() == null) {
+			onFailureListener.onFailure(new IllegalArgumentException("Cannot update recipe document, Recipe has no id"));
+			return;
+		}
+
+		db.collection("recipes")
+				.document(recipe.getId())
+				.set(recipe)
+				.addOnSuccessListener(onSuccessListener)
+				.addOnFailureListener(onFailureListener);
+	}
+
 }
