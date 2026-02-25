@@ -149,11 +149,8 @@ public class RecipeFragment extends Fragment {
 			);
 			btnEdit.setOnClickListener(v -> {
 				Recipe currentRecipe = recipeVM.build();
-				requireActivity()
-						.getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.container,
-								AddRecipeFragment.newInstance(currentRecipe))
+				requireActivity().getSupportFragmentManager().beginTransaction()
+						.replace(R.id.container, AddRecipeFragment.newInstance(currentRecipe))
 						.addToBackStack("edit-recipe")
 						.commit();
 			});
