@@ -136,35 +136,4 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public void increaseAmount(String itemKey, double amount) {
 		updateAmount(itemKey, amount, true);
 	}
-
-	public void updateRecipe(Recipe original, OnSuccessListener<Recipe> onComplete) {
-
-		Recipe updated = buildRecipe();
-		updated.setId(original.getId());
-		updated.setChefId(original.getChefId());
-
-		OnFailureListener onFailure = e -> {
-			e.printStackTrace();
-			Toast.makeText(getApplication(),
-					"Failed to update recipe",
-					Toast.LENGTH_SHORT).show();
-		};
-
-		var uri = image.getValue();
-
-		if (uri != null) {
-			imageRepo.upload(updated, uri,
-					path -> {
-						updated.setImagePath(path);
-						super.update(updated,
-								r -> onComplete.onSuccess(updated),
-								onFailure);
-					},
-					onFailure);
-			return;
-		}
-		super.update(updated,
-				r -> onComplete.onSuccess(updated),
-				onFailure);
-	}
 }
