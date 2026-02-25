@@ -195,12 +195,16 @@ public class AddRecipeFragment extends Fragment {
 				});
 
 		btnSave.setOnClickListener(v -> saveRecipe());
-
 		btnCancel.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 	}
 
 	private void saveRecipe() {
-		recipeAddVM.saveRecipe(r -> getParentFragmentManager().popBackStack());
+		recipeAddVM.saveRecipe(r -> {
+			// todo: pass updated recipe to RecipeFragment instead of creating a new one
+			getParentFragmentManager().beginTransaction()
+					.replace(R.id.container, RecipeFragment.newInstance(r))
+					.commit();
+		});
 	}
 
 	private void openCamera() {
