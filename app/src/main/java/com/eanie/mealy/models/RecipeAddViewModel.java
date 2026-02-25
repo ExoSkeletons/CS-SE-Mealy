@@ -27,7 +27,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		super(application);
 	}
 
-	public MutableLiveData<String> id = new MutableLiveData<>();
+	private final MutableLiveData<String> id = new MutableLiveData<>();
 	public MutableLiveData<String> name = new MutableLiveData<>();
 	public MutableLiveData<String> owner = new MutableLiveData<>();
 	public MutableLiveData<List<KitchenItem>> ingredients = new MutableLiveData<>(new ArrayList<>());
