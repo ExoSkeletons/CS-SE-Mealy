@@ -1,3 +1,83 @@
 <resources>
     <string name="app_name">Mealy</string>
+    <string name="app_name_desc">Meal Choice Made Simple</string>
+
+    <string name="ing_apple">Apple</string>
+    <string name="ing_carrot">Carrot</string>
+    <string name="ing_banana">Banana</string>
+    <string name="ing_orange">Orange</string>
+    <string name="ing_milk">Milk</string>
+    <string name="ing_bread">Bread</string>
+    <string name="ing_cheese">Cheese</string>
+    <string name="ing_butter">Butter</string>
+    <string name="ing_flour">Flour</string>
+    <string name="ing_sugar">Sugar</string>
+    <string name="ing_salt">Salt</string>
+    <string name="ing_pepper">Pepper</string>
+    <string name="ing_eggs">Eggs</string>
+    <string name="ing_cucumber">Cucumber</string>
+    <string name="ing_tomato">Tomato</string>
+    <string name="ing_onion">Onion</string>
+    <string name="ing_mushroom">Mushroom</string>
+    <string name="ing_yogurt">Yogurt</string>
+    <string name="ing_pasta">Pasta</string>
+    <string name="ing_garlic">Garlic</string>
+    <string name="ing_water">Water</string>
+    <string name="ing_baking_soda">Baking Soda</string>
+    <string name="ing_baking_powder">Baking Powder</string>
+    <string name="ing_oil">Oil</string>
+    <string name="ing_chocolate">Chocolate</string>
+    <string name="ing_olive">Olive</string>
+    <string name="ing_vanilla">Vanilla</string>
+
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="login_mode_register">Don\'t have an account? Register</string>
+    <string name="login_mode_login">Already have an account? Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="registration_failed">Registration failed</string>
+    <string name="google_sign_in_failed">Sign in with Google failed</string>
+
+    <string name="web_client_id">549702177131-hob22c3grna2ckv6l0tgbqkmssn1od07.apps.googleusercontent.com</string>
+
+    <string name="ingredient">Ingredient</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="recipe">Recipe</string>
+    <string name="recipes">Recipes</string>
+    <string name="name">Name</string>
+    <string name="quantity">Quantity</string>
+    <string name="amount">Amount</string>
+    <string name="amount_base">Base Amount</string>
+    <string name="units">Units</string>
+    <string name="instructions">Instructions</string>
+
+
+    <string name="kitchen_title">%s\'s Kitchen</string>
+    <string name="kitchen">Kitchen</string>
+    <string name="notifications">Notifications</string>
+    <string name="browse_recipes">Browse Recipes</string>
+    <string name="available_recipes">Available Recipes</string>
+    <string name="my_recipes">My Recipes</string>
+    <string name="favorites">Favorites</string>
+    <string name="create_recipe">Create Recipe</string>
+    <string name="edit_recipe">Edit Recipe</string>
+    <string name="delete_recipe">Delete Recipe</string>
+    <string name="create_ingredient">Create Ingredient</string>
+    <string name="edit_ingredient">Edit Ingredient</string>
+    <string name="delete_ingredient">Delete Ingredient</string>
+    <string name="add_ingredient">Add Ingredient</string>
+
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="create">Create New</string>
+    <string name="action_make_recipe">Use Recipe</string>
+    <string name="logout">Logout</string>
 </resources>

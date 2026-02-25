@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "549702177131-32mn4ajq8oqhemb6nj8m58pt8e8j2d3f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eanie.mealy",
+            "certificate_hash": "d88140d708939d877cbb62a4633f03540c048c4d"
+          }
+        },
+        {
+          "client_id": "549702177131-v2a0s6r2bf2e522j52uhnfqm1bjs3dmj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eanie.mealy",
+            "certificate_hash": "72bf99d86fa14adb380ce0a4c0a938ac02003e8e"
+          }
+        },
+        {
           "client_id": "549702177131-hob22c3grna2ckv6l0tgbqkmssn1od07.apps.googleusercontent.com",
           "client_type": 3
         }
