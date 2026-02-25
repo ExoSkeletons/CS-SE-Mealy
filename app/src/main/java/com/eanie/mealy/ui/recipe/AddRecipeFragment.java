@@ -298,8 +298,6 @@ public class AddRecipeFragment extends Fragment {
 							.getCacheDir(),
 					"images");
 
-			if (!dir.exists())
-				dir.mkdirs();
 
 			File imageFile =
 					File.createTempFile(
@@ -312,6 +310,11 @@ public class AddRecipeFragment extends Fragment {
 									.getPackageName()
 									+ ".fileprovider",
 							imageFile);
+			if (!dir.exists()) {
+				var success = dir.mkdirs();
+				if (!success) throw new IOException("Failed to create image directory");
+			}
+			File imageFile = File.createTempFile("recipe_", ".jpg", dir);
 
 			takePictureLauncher
 					.launch(pendingCameraUri);
