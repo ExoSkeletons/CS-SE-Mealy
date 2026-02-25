@@ -34,6 +34,14 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<String> instructions = new MutableLiveData<>();
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
+	public void set(Recipe recipe) {
+		name.setValue(recipe.getName());
+		instructions.setValue(recipe.getInstructions());
+		ingredients.setValue(new ArrayList<>(recipe.getIngredients()));
+		owner.setValue(recipe.getChefId());
+		// todo: load image
+	}
+
 	public Recipe buildRecipe() {
 		return new Recipe(
 				owner.getValue(),

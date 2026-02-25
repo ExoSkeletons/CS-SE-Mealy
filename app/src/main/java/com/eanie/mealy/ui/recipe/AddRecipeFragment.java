@@ -43,8 +43,6 @@ public class AddRecipeFragment extends Fragment {
 	private RecipeAddViewModel recipeAddVM;
 	private ItemsViewModel itemsVM;
 
-	private Recipe editingRecipe = null;
-
 	private ActivityResultLauncher<String> chooseImageLauncher;
 	private ActivityResultLauncher<Uri> takePictureLauncher;
 	private ActivityResultLauncher<String> requestCameraPermissionLauncher;
@@ -75,8 +73,9 @@ public class AddRecipeFragment extends Fragment {
 			recipeAddVM.setUserId(user.getUid());
 
 		if (getArguments() != null) {
-			editingRecipe =
-					(Recipe) getArguments().getSerializable(ARG_RECIPE);
+			var recipe = (Recipe) getArguments().getSerializable(ARG_RECIPE);
+			if (recipe != null)
+				recipeAddVM.set(recipe);
 		}
 
 		chooseImageLauncher =
@@ -136,20 +135,6 @@ public class AddRecipeFragment extends Fragment {
 				view.findViewById(R.id.btn_camera);
 
 
-		if (editingRecipe != null) {
-
-			etName.setText(editingRecipe.getName());
-			etInstructions.setText(
-					editingRecipe.getInstructions());
-
-			recipeAddVM.name.setValue(
-					editingRecipe.getName());
-			recipeAddVM.instructions.setValue(
-					editingRecipe.getInstructions());
-			recipeAddVM.ingredients.setValue(
-					new ArrayList<>(
-							editingRecipe.getIngredients()));
-		}
 
 
 		recipeAddVM.image.observe(
@@ -259,25 +244,7 @@ public class AddRecipeFragment extends Fragment {
 	}
 
 	private void saveRecipe() {
-		if (editingRecipe != null) {
-
-			recipeAddVM.updateRecipe(
-					editingRecipe,
-					updatedRecipe -> {
-						SingleRecipeViewModel recipeVM =
-								new ViewModelProvider(requireActivity())
-										.get(SingleRecipeViewModel.class);
-
-						recipeVM.set(updatedRecipe);
-						getParentFragmentManager().popBackStack();
-					}
-			);
-
-		} else {
-			recipeAddVM.saveRecipe(r ->
-					getParentFragmentManager().popBackStack()
-			);
-		}
+		recipeAddVM.saveRecipe(r -> getParentFragmentManager().popBackStack());
 	}
 
 	private void openCamera() {
