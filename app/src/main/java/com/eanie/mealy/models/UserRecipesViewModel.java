@@ -47,10 +47,8 @@ public class UserRecipesViewModel extends UserViewModel {
 				}
 		);
 	}
-	public void update(Recipe recipe,
-					   OnSuccessListener<Recipe> onSuccess,
-					   OnFailureListener onFailure) {
 
+	public void update(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
 		repo.update(recipe,
 				r -> onSuccess.onSuccess(recipe),
 				e -> {

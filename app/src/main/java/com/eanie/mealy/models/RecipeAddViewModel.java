@@ -128,8 +128,8 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public void increaseAmount(String itemKey, double amount) {
 		updateAmount(itemKey, amount, true);
 	}
-	public void updateRecipe(Recipe original,
-							 OnSuccessListener<Recipe> onComplete) {
+
+	public void updateRecipe(Recipe original, OnSuccessListener<Recipe> onComplete) {
 
 		Recipe updated = buildRecipe();
 		updated.setId(original.getId());
