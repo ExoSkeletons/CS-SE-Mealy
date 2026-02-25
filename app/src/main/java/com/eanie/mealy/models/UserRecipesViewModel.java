@@ -35,7 +35,7 @@ public class UserRecipesViewModel extends UserViewModel {
 	public void add(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
 		if (getUserId() == null) return;
 		recipe.setChefId(getUserId());
-		if (recipe.getId() != null) repo.insert(recipe,
+		if (recipe.getId() == null) repo.insert(recipe,
 				id -> {
 					recipe.setId(id);
 					onSuccess.onSuccess(recipe);
