@@ -27,6 +27,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 		super(application);
 	}
 
+	public MutableLiveData<String> id = new MutableLiveData<>();
 	public MutableLiveData<String> name = new MutableLiveData<>();
 	public MutableLiveData<String> owner = new MutableLiveData<>();
 	public MutableLiveData<List<KitchenItem>> ingredients = new MutableLiveData<>(new ArrayList<>());
@@ -35,6 +36,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 	public MutableLiveData<Uri> image = new MutableLiveData<>();
 
 	public void set(Recipe recipe) {
+		id.setValue(recipe.getId());
 		name.setValue(recipe.getName());
 		instructions.setValue(recipe.getInstructions());
 		ingredients.setValue(new ArrayList<>(recipe.getIngredients()));
@@ -44,7 +46,7 @@ public class RecipeAddViewModel extends UserRecipesViewModel {
 
 	public Recipe buildRecipe() {
 		return new Recipe(
-				owner.getValue(),
+				id.getValue(),
 				name.getValue(),
 				instructions.getValue(),
 				ingredients.getValue(),
