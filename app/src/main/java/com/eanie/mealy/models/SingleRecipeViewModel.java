@@ -20,6 +20,7 @@ public class SingleRecipeViewModel extends ViewModel {
 	private final ImageRepo imageRepo = new ImageRepo();
 
 	public MutableLiveData<String> name = new MutableLiveData<>("");
+	public MutableLiveData<String> chefId = new MutableLiveData<>(null);
 	public MutableLiveData<String> description = new MutableLiveData<>("");
 	public MutableLiveData<String> instructions = new MutableLiveData<>("");
 	public MutableLiveData<List<KitchenItem>> ingredients = new MutableLiveData<>(new ArrayList<>());
@@ -30,16 +31,15 @@ public class SingleRecipeViewModel extends ViewModel {
 				name.getValue(), // description.getValue(),
 				instructions.getValue(),
 				ingredients.getValue(),
-				null
+				chefId.getValue()
 		);
 		r.setImagePath(imagePath.getValue());
 		return r;
 	}
 
 	public Recipe buildFor(String chefId) {
-		var r = build();
-		r.setChefId(chefId);
-		return r;
+		this.chefId.setValue(chefId);
+		return build();
 	}
 
 	public void set(Recipe recipe) {
@@ -50,6 +50,7 @@ public class SingleRecipeViewModel extends ViewModel {
 				? new ArrayList<>(recipe.getIngredients())
 				: new ArrayList<>()
 		);
+		chefId.setValue(recipe.getChefId());
 		imagePath.setValue(recipe.getImagePath());
 	}
 
