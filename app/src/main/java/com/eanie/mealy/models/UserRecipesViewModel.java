@@ -35,14 +35,22 @@ public class UserRecipesViewModel extends UserViewModel {
 	public void add(Recipe recipe, OnSuccessListener<Recipe> onSuccess, OnFailureListener onFailure) {
 		if (getUserId() == null) return;
 		recipe.setChefId(getUserId());
-		recipe.setId(null);
-		repo.insert(recipe, id -> {
+		if (recipe.getId() != null) repo.insert(recipe,
+				id -> {
 					recipe.setId(id);
 					onSuccess.onSuccess(recipe);
 				},
 				e -> {
 					e.printStackTrace();
 					Toast.makeText(getApplication(), "Failed to add recipe", Toast.LENGTH_SHORT).show();
+					onFailure.onFailure(e);
+				}
+		);
+		else repo.update(recipe,
+				r -> onSuccess.onSuccess(recipe),
+				e -> {
+					e.printStackTrace();
+					Toast.makeText(getApplication(), "Failed to update recipe", Toast.LENGTH_SHORT).show();
 					onFailure.onFailure(e);
 				}
 		);
