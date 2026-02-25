@@ -34,7 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AddRecipeFragment extends Fragment {
@@ -148,8 +148,9 @@ public class AddRecipeFragment extends Fragment {
 				}
 		);
 		adapter.setShowQuantity(true);
+		adapter.setMinimalStyle(true);
 
-		rvIngredients.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+		rvIngredients.setLayoutManager(new LinearLayoutManager(requireContext()));
 		rvIngredients.setAdapter(adapter);
 
 		recipeAddVM.ingredients.observe(getViewLifecycleOwner(), adapter::submitList);
